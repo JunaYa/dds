@@ -147,13 +147,44 @@ button {
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
-    background-color: #2f2f2f;
+    background-color: #00000000;
   }
 
   .container {
+    margin-top: 10px;
+    height: calc(100vh - 14px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    border-radius: 8px;
     border: 1px solid #1e1d1d;
     background-color: #2f2f2f;
-    filter: drop-shadow(0 0 10px #dad9d9);
+    filter: drop-shadow(0 0 4px #150b0b);
+    position: relative;
+  }
+
+  .container::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 10px 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent #1e1d1d transparent;
+    z-index: 1;
+  }
+
+  .container::after {
+    content: "";
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 10px 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent #1e1d1d transparent;
   }
 
   input,
