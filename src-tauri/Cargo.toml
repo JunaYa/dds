@@ -26,6 +26,8 @@ tauri-plugin-positioner = { version = "2", features = ["tray-icon"] }
 tracing = "0.1.41"
 strum_macros = "0.26.4"
 strum = "0.25"
+chrono = "0.4.39"
+uuid = { version = "1.11.0", features = ["v4"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-positioner = "2"

@@ -13,9 +13,9 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 120,
+        "height": 240,
         "title": "DDs",
-        "width": 380,
+        "width": 430,
         "alwaysOnTop": true,
         "closable": false,
         "decorations": false,

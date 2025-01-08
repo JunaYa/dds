@@ -9,6 +9,8 @@ use tauri::{
 use tauri_plugin_positioner::WindowExt;
 use tracing::info;
 
+use crate::window;
+
 #[derive(Debug, Display, EnumString)]
 #[allow(non_camel_case_types, clippy::upper_case_acronyms)]
 enum MenuID {
@@ -51,15 +53,11 @@ fn handle_tray_icon_events(tray: &TrayIcon, event: TrayIconEvent) {
             ..
         } => {
             println!("left click pressed and released");
-            if let Some(window) = app.get_webview_window("main") {
-                if window.is_visible().unwrap_or(false) {
-                    let _ = window.hide();
-                } else {
-                    let _ = window.move_window(tauri_plugin_positioner::Position::TrayBottomCenter);
-                    let _ = window.show();
-                    let _ = window.set_focus();
-                    let _ = window.set_always_on_top(true);
-                }
+            let window = window::get_main_window(&app);
+            if window.is_visible().unwrap_or(false) {
+                window::hide_main_window(&window);
+            } else {
+                window::show_main_window(&window);
             }
         }
         TrayIconEvent::Enter {
@@ -68,15 +66,6 @@ fn handle_tray_icon_events(tray: &TrayIcon, event: TrayIconEvent) {
             rect: _,
         } => {
             println!("mouse entered tray icon");
-            // if let Some(window) = app.get_webview_window("main") {
-            //     if !window.is_visible().unwrap_or(false) {
-            //         let _ =
-            //             window.move_window(tauri_plugin_positioner::Position::TrayBottomCenter);
-            //         let _ = window.show();
-            //         let _ = window.set_focus();
-            //         let _ = window.set_always_on_top(true);
-            //     }
-            // }
         }
         TrayIconEvent::Leave {
             id: _,
@@ -84,16 +73,6 @@ fn handle_tray_icon_events(tray: &TrayIcon, event: TrayIconEvent) {
             rect: _,
         } => {
             println!("mouse left tray icon");
-            // if let Some(window) = app.get_webview_window("main") {
-            //     if !window.is_visible().unwrap_or(false) {
-            //         let _ =
-            //             window.move_window(tauri_plugin_positioner::Position::TrayBottomCenter);
-            //         let _ = window.show();
-            //         let _ = window.set_focus();
-            //     } else {
-            //         let _ = window.hide();
-            //     }
-            // }
         }
         TrayIconEvent::Move {
             id: _,

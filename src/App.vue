@@ -1,22 +1,44 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { invoke } from "@tauri-apps/api/core";
+import CurrentTask from "~/components/CurrentTask.vue";
 
 const greetMsg = ref("");
-const name = ref("");
+const tasks = ref<Task[]>([]);
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsg.value = await invoke("greet", { name: name.value });
+const taskPayload = ref<Task>({
+  name: "",
+  completed: false,
+  createdAt: "",
+});
+
+
+function resetTaskPayload() {
+  taskPayload.value = {
+    name: "",
+    completed: false,
+    createdAt: "",
+  };
+}
+
+async function addTask() {
+  await invoke("add_task", { name: taskPayload.value.name });
+  resetTaskPayload();
+  hide_main_window();
+}
+
+async function hide_main_window() {
+  await invoke("hide_main_window");
 }
 </script>
 
 <template>
   <main class="container">
-    <form class="row" @submit.prevent="greet">
-      <input id="greet-input" v-model="name" placeholder="Enter a name..." />
-      <button type="submit">Greet</button>
+    <form class="row" @submit.prevent="addTask">
+      <input id="greet-input" v-model="taskPayload.name" placeholder="Enter a task..." />
+      <button type="submit">Task</button>
     </form>
+    <CurrentTask />
   </main>
 </template>
 
@@ -57,7 +79,7 @@ body {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #e0e0e0;
   background-color: #FFFFFF;
   filter: drop-shadow(0 0 4px #150b0b);
