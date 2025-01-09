@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import CurrentTask from "~/components/CurrentTask.vue";
 
@@ -22,7 +22,8 @@ function resetTaskPayload() {
 }
 
 async function addTask() {
-  await invoke("add_task", { name: taskPayload.value.name });
+  const task = await invoke("add_task", { name: taskPayload.value.name });
+  console.log(task);
   resetTaskPayload();
   hide_main_window();
 }
@@ -30,6 +31,15 @@ async function addTask() {
 async function hide_main_window() {
   await invoke("hide_main_window");
 }
+
+async function getCurrentTasks() {
+  const tasks = await invoke("get_current_tasks");
+  console.log(tasks);
+}
+
+onMounted(async () => {
+  await getCurrentTasks();
+});
 </script>
 
 <template>

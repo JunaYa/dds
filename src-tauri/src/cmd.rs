@@ -22,6 +22,12 @@ pub fn hide_main_window(app: AppHandle) {
 }
 
 #[tauri::command]
+pub fn add_task(task: Task) -> Task {
+    let newTask = Task::new(task.name);
+    newTask
+}
+
+#[tauri::command]
 pub fn get_current_tasks() -> Vec<Task> {
     vec![Task::new("test".to_string())]
 }

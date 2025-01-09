@@ -23,6 +23,8 @@ pub fn run() {
             cmd::greet,
             cmd::show_main_window,
             cmd::hide_main_window,
+            cmd::add_task,
+            cmd::get_current_tasks,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
