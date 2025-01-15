@@ -3,29 +3,30 @@ import { onMounted, ref } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import CurrentTask from "~/components/CurrentTask.vue";
 
-const greetMsg = ref("");
 const tasks = ref<Task[]>([]);
 
-const taskPayload = ref<Task>({
+const DEFAULT_TASK: Task = {
   name: "",
   completed: false,
-  createdAt: "",
-});
+  created_at: "",
+  updated_at: "",
+  completed_at: "",
+  duration: 0,
+  tags: [],
+  children: [],
+};
 
+const taskPayload = ref<Task>(DEFAULT_TASK);
 
 function resetTaskPayload() {
-  taskPayload.value = {
-    name: "",
-    completed: false,
-    createdAt: "",
-  };
+  taskPayload.value = DEFAULT_TASK;
 }
 
 async function addTask() {
   const task = await invoke("add_task", { name: taskPayload.value.name });
   console.log(task);
   resetTaskPayload();
-  hide_main_window();
+  getCurrentTasks();
 }
 
 async function hide_main_window() {
@@ -33,8 +34,8 @@ async function hide_main_window() {
 }
 
 async function getCurrentTasks() {
-  const tasks = await invoke("get_current_tasks");
-  console.log(tasks);
+  const result = await invoke("get_current_tasks");
+  tasks.value = result as Task[];
 }
 
 onMounted(async () => {
@@ -48,7 +49,7 @@ onMounted(async () => {
       <input id="greet-input" v-model="taskPayload.name" placeholder="Enter a task..." />
       <button type="submit">Task</button>
     </form>
-    <CurrentTask />
+    <CurrentTask :tasks="tasks.slice(0, 1)" />
   </main>
 </template>
 

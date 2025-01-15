@@ -79,10 +79,10 @@ fn handle_tray_icon_events(tray: &TrayIcon, event: TrayIconEvent) {
             position: _,
             rect: _,
         } => {
-            println!("mouse moved over tray icon");
+            // println!("mouse moved over tray icon");
         }
         _ => {
-            println!("unhandled event");
+            // println!("unhandled event");
         }
     }
 }

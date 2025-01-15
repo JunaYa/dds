@@ -3,26 +3,28 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Task {
-    pub id: String,
+    pub id: Option<String>,
     pub name: String,
     pub completed: bool,
     pub created_at: String,
     pub updated_at: String,
-    pub completed_at: String,
+    pub completed_at: Option<String>,
     pub duration: i32,
+    pub tags: Vec<String>,
     pub children: Vec<Task>,
 }
 
 impl Task {
     pub fn new(name: String) -> Self {
         Self {
-            id: Uuid::new_v4().to_string(),
+            id: Some(Uuid::new_v4().to_string()),
             name,
             completed: false,
             created_at: chrono::Utc::now().to_string(),
-            updated_at: String::new(),
-            completed_at: String::new(),
+            updated_at: chrono::Utc::now().to_string(),
+            completed_at: None,
             duration: 0,
+            tags: vec![],
             children: vec![],
         }
     }
@@ -35,10 +37,8 @@ impl Task {
         self
     }
 
-    pub fn update_name(mut self, name: String) -> Self {
+    pub fn update_name(&mut self, name: String) {
         self.name = name;
-        self.updated_at = chrono::Utc::now().to_string();
-        self
     }
 
     pub fn add_child(mut self, child: Task) -> Self {
@@ -60,15 +60,4 @@ impl Task {
         self.duration = duration;
         self
     }
-
-    pub fn set_updated_at(mut self, updated_at: String) -> Self {
-        self.updated_at = updated_at;
-        self
-    }
-
-    pub fn set_completed_at(mut self, completed_at: String) -> Self {
-        self.completed_at = completed_at;
-        self
-    }
-
 }
