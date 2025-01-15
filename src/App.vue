@@ -49,7 +49,7 @@ onMounted(async () => {
       <input id="greet-input" v-model="taskPayload.name" placeholder="Enter a task..." />
       <button type="submit">Task</button>
     </form>
-    <CurrentTask :tasks="tasks.slice(0, 1)" />
+    <CurrentTask :tasks="tasks" />
   </main>
 </template>
 

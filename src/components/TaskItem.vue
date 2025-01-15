@@ -1,42 +1,60 @@
 <script setup lang="ts">
-import TaskItem from "~/components/TaskItem.vue";
+import { formatTime } from '~/utils/format';
 
 const props = defineProps<{
-  tasks: Task[];
+  task: Task;
 }>();
 
-console.log('current task', props.tasks);
+console.log('task', props.task);
 </script>
+
 <template>
-  <div class="current-task">
-    <h1>Current Tasks</h1>
-    <template v-if="tasks?.length > 0">
-      <TaskItem v-for="task in tasks" :key="task.id" :task="task" :tasks="task.children">
-        <template #children>
-          <TaskItem v-for="child in task.children" :key="child.id" :task="child" :tasks="child.children" />
-        </template>
-      </TaskItem>
-    </template>
+  <div class="task">
+    <div class="name">{{ task.name }}</div>
+    <div class="created-at">{{ formatTime(task.created_at) }}</div>
+    <!-- <div>{{ task.updated_at }}</div> -->
+    <div class="completed-at">{{ task.completed_at || '--:--' }}</div>
+    <div>{{ task.duration }}<span class="duration-unit">h</span></div>
+    <slot name="children"></slot>
   </div>
 </template>
+
 <style scoped>
-
-.current-task {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-}
-
-h1 {
-  font-size: 18px;
-  font-weight: bold;
-}
-
 .task {
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: center;
+  justify-content: space-between;
   gap: 4px;
+  background-color: #080101;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.created-at {
+  font-size: 14px;
+  color: #bbbbbb;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.completed-at {
+  font-size: 14px;
+  color: #bbbbbb;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.duration-unit {
+  font-size: 14px;
+  color: #bbbbbb;
+  font-weight: 500;
+  margin-left: 4px;
 }
 </style>
-
