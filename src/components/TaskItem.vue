@@ -6,6 +6,11 @@ const props = defineProps<{
 }>();
 
 console.log('task', props.task);
+
+const handleClick = () => {
+  console.log('click');
+};
+
 </script>
 
 <template>
@@ -15,6 +20,7 @@ console.log('task', props.task);
     <!-- <div>{{ task.updated_at }}</div> -->
     <div class="completed-at">{{ task.completed_at || '--:--' }}</div>
     <div>{{ task.duration }}<span class="duration-unit">h</span></div>
+    <button @click="handleClick">完成</button>
     <slot name="children"></slot>
   </div>
 </template>

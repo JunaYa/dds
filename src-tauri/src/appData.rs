@@ -33,4 +33,10 @@ impl AppState {
             existing_task.update_name(task.name);
         }
     }
+
+    pub fn complete_task(&mut self, id: String) {
+        if let Some(existing_task) = self.tasks.iter_mut().find(|t| t.id == Some(id)) {
+            existing_task.set_completed();
+        }
+    }
 }
