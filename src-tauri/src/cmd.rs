@@ -55,3 +55,9 @@ pub fn update_task(task: Task, state: State<Mutex<AppState>>) -> bool {
     true
 }
 
+#[tauri::command]
+pub fn complete_task(id: String, state: State<Mutex<AppState>>) -> bool {
+    let mut state = state.lock().unwrap();
+    state.complete_task(id);
+    true
+}

@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { formatTime } from '~/utils/format';
-
+import { invoke } from "@tauri-apps/api/core";
 const props = defineProps<{
   task: Task;
 }>();
 
 console.log('task', props.task);
 
-const handleClick = () => {
+const handleClick = async () => {
   console.log('click');
+  await invoke('complete_task', { id: props.task.id });
 };
 
 </script>

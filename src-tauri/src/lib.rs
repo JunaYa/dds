@@ -31,6 +31,7 @@ pub fn run() {
             cmd::get_current_tasks,
             cmd::remove_task,
             cmd::update_task,
+            cmd::complete_task,
         ])
         .manage(Mutex::new(AppState::default()))
         .run(tauri::generate_context!())
