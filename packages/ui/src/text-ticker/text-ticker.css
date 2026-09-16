@@ -1,0 +1,37 @@
+.vita-text-ticker-mask-x {
+  --vita-text-ticker-mask-size: 1rem;
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--vita-text-ticker-mask-size),
+    black calc(100% - var(--vita-text-ticker-mask-size)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--vita-text-ticker-mask-size),
+    black calc(100% - var(--vita-text-ticker-mask-size)),
+    transparent
+  );
+}
+
+.vita-text-ticker-marquee {
+  animation: vita-text-ticker-marquee var(--duration, 24s) linear infinite;
+}
+
+@keyframes vita-text-ticker-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vita-text-ticker-marquee {
+    animation: none;
+  }
+}

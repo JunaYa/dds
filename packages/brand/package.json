@@ -1,0 +1,26 @@
+{
+  "name": "@vita/brand",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Ancher brand assets \u2014 logo geometry, React lockups, and the generator that renders platform icon artifacts (web favicons, extension icons, desktop/dock icons) from a single source.",
+  "type": "module",
+  "exports": {
+    "./react": "./src/react.tsx",
+    "./logo-data": "./src/logo-data.ts",
+    "./constants": "./src/constants.ts",
+    "./identity": "./src/identity.ts",
+    "./links": "./src/links.ts"
+  },
+  "files": [
+    "src",
+    "assets"
+  ],
+  "peerDependencies": {
+    "react": ">=19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}

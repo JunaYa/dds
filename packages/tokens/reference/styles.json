@@ -1,0 +1,2925 @@
+{
+  "$schema": "figma-styles-export",
+  "$version": "1.0",
+  "$exportedAt": "2026-02-05T06:45:50.490Z",
+  "$counts": {
+    "paint": 50,
+    "text": 22,
+    "effect": 14,
+    "grid": 0,
+    "total": 86
+  },
+  "styles": {
+    "paint": {
+      "_figma_bg": {
+        "id": "S:5461b436b9bcdda56a07435f048df77ee8f60c12,",
+        "key": "5461b436b9bcdda56a07435f048df77ee8f60c12",
+        "type": "color",
+        "fills": [
+          {
+            "type": "image",
+            "scaleMode": "FILL",
+            "imageTransform": [[1, 0, 0], [0, 1, 0]],
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "opacity": 1
+          }
+        ],
+        "value": [
+          {
+            "type": "image",
+            "scaleMode": "FILL",
+            "imageTransform": [[1, 0, 0], [0, 1, 0]],
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "opacity": 1
+          }
+        ]
+      },
+      "macOS Tahoe-light": {
+        "id": "S:d4ca093569a3e7cfcb826412674d71e5069a18dc,",
+        "key": "d4ca093569a3e7cfcb826412674d71e5069a18dc",
+        "type": "color",
+        "fills": [
+          {
+            "type": "image",
+            "scaleMode": "FILL",
+            "imageTransform": [[1, 0, 0], [0, 1, 0]],
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "opacity": 1
+          }
+        ],
+        "value": [
+          {
+            "type": "image",
+            "scaleMode": "FILL",
+            "imageTransform": [[1, 0, 0], [0, 1, 0]],
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "opacity": 1
+          }
+        ]
+      },
+      "macOS Tahoe-dark": {
+        "id": "S:3e5fa728e7000fe89560768b6fc3403818143efd,",
+        "key": "3e5fa728e7000fe89560768b6fc3403818143efd",
+        "type": "color",
+        "fills": [
+          {
+            "type": "image",
+            "scaleMode": "FILL",
+            "imageTransform": [[1, 0, 0], [0, 1, 0]],
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "opacity": 1
+          }
+        ],
+        "value": [
+          {
+            "type": "image",
+            "scaleMode": "FILL",
+            "imageTransform": [[1, 0, 0], [0, 1, 0]],
+            "scalingFactor": 0.5,
+            "rotation": 0,
+            "filters": {
+              "exposure": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "temperature": 0,
+              "tint": 0,
+              "highlights": 0,
+              "shadows": 0
+            },
+            "opacity": 1
+          }
+        ]
+      },
+      "backplate": {
+        "1": {
+          "id": "S:0e090d097adebe106b65cefa45bc65bacff37df8,",
+          "key": "0e090d097adebe106b65cefa45bc65bacff37df8",
+          "type": "color",
+          "fills": [
+            {
+              "type": "solid",
+              "color": "rgba(0, 0, 0, 1)",
+              "opacity": 0.05000000074505806
+            }
+          ],
+          "value": "rgba(0, 0, 0, 1)"
+        },
+        "2": {
+          "id": "S:7bc11fc641af0c66416972b25a756f62dab92b37,",
+          "key": "7bc11fc641af0c66416972b25a756f62dab92b37",
+          "type": "color",
+          "fills": [
+            {
+              "type": "linear",
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": "rgba(0, 0, 0, 0.20000000298023224)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4284",
+                    "variableName": "backplate/2",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                },
+                {
+                  "position": 1,
+                  "color": "rgba(0, 0, 0, 0.20000000298023224)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4284",
+                    "variableName": "backplate/2",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                }
+              ],
+              "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+              "opacity": 0.5
+            }
+          ],
+          "value": [
+            {
+              "type": "linear",
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": "rgba(0, 0, 0, 0.20000000298023224)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4284",
+                    "variableName": "backplate/2",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                },
+                {
+                  "position": 1,
+                  "color": "rgba(0, 0, 0, 0.20000000298023224)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4284",
+                    "variableName": "backplate/2",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                }
+              ],
+              "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+              "opacity": 0.5
+            }
+          ]
+        },
+        "3": {
+          "id": "S:209400e63785fad44baf33f3985da7afaa6d9280,",
+          "key": "209400e63785fad44baf33f3985da7afaa6d9280",
+          "type": "color",
+          "fills": [
+            {
+              "type": "linear",
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": "rgba(0, 0, 0, 0.10000000149011612)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4285",
+                    "variableName": "backplate/3",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                },
+                {
+                  "position": 1,
+                  "color": "rgba(0, 0, 0, 0.10000000149011612)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4285",
+                    "variableName": "backplate/3",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                }
+              ],
+              "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+              "opacity": 0.30000001192092896
+            }
+          ],
+          "value": [
+            {
+              "type": "linear",
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": "rgba(0, 0, 0, 0.10000000149011612)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4285",
+                    "variableName": "backplate/3",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                },
+                {
+                  "position": 1,
+                  "color": "rgba(0, 0, 0, 0.10000000149011612)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4285",
+                    "variableName": "backplate/3",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                }
+              ],
+              "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+              "opacity": 0.30000001192092896
+            }
+          ]
+        },
+        "4": {
+          "id": "S:9f04bbfb10f925187299b3718184357a4bebac0e,",
+          "key": "9f04bbfb10f925187299b3718184357a4bebac0e",
+          "type": "color",
+          "fills": [
+            {
+              "type": "linear",
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": "rgba(0, 0, 0, 0.05000000074505806)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4286",
+                    "variableName": "backplate/4",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                },
+                {
+                  "position": 1,
+                  "color": "rgba(0, 0, 0, 0.05000000074505806)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4286",
+                    "variableName": "backplate/4",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                }
+              ],
+              "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+              "opacity": 0.4000000059604645
+            }
+          ],
+          "value": [
+            {
+              "type": "linear",
+              "gradientStops": [
+                {
+                  "position": 0,
+                  "color": "rgba(0, 0, 0, 0.05000000074505806)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4286",
+                    "variableName": "backplate/4",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                },
+                {
+                  "position": 1,
+                  "color": "rgba(0, 0, 0, 0.05000000074505806)",
+                  "boundVariable": {
+                    "type": "variable",
+                    "variableId": "VariableID:3:4286",
+                    "variableName": "backplate/4",
+                    "collectionName": "semantics",
+                    "collectionId": "VariableCollectionId:3:4270"
+                  }
+                }
+              ],
+              "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+              "opacity": 0.4000000059604645
+            }
+          ]
+        }
+      },
+      "semantics": {
+        "shadcn": {
+          "background": {
+            "id": "S:cd154d32031ae6709351a69e42fb521e2fb5a20c,",
+            "key": "cd154d32031ae6709351a69e42fb521e2fb5a20c",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(252, 252, 252, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4307",
+                  "variableName": "shadcn/background",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(252, 252, 252, 1)"
+          },
+          "background-2": {
+            "id": "S:07a88e598215c4839511ecd1af58fa7632356d5f,",
+            "key": "07a88e598215c4839511ecd1af58fa7632356d5f",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(252, 252, 252, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:16850:6574",
+                  "variableName": "shadcn/background-2",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(252, 252, 252, 1)"
+          },
+          "background-3": {
+            "id": "S:84ea60263e2ca682d65b6a32aae12f80d7974052,",
+            "key": "84ea60263e2ca682d65b6a32aae12f80d7974052",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(240, 240, 240, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:16850:6576",
+                  "variableName": "shadcn/background-3",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(240, 240, 240, 1)"
+          },
+          "foreground": {
+            "id": "S:fe9802513d46a575bdb1fe631b4cbeab394aba29,",
+            "key": "fe9802513d46a575bdb1fe631b4cbeab394aba29",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(32, 32, 32, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4308",
+                  "variableName": "shadcn/foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(32, 32, 32, 1)"
+          },
+          "card": {
+            "id": "S:e635afdbfb6c54c0f247ce6f84b665880d47a152,",
+            "key": "e635afdbfb6c54c0f247ce6f84b665880d47a152",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(252, 252, 252, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4309",
+                  "variableName": "shadcn/card",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(252, 252, 252, 1)"
+          },
+          "card-foreground": {
+            "id": "S:047892549ba5943cb52209e2981b2c048aa8df1b,",
+            "key": "047892549ba5943cb52209e2981b2c048aa8df1b",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(32, 32, 32, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4310",
+                  "variableName": "shadcn/card-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(32, 32, 32, 1)"
+          },
+          "muted": {
+            "id": "S:3bc78ed6de2b17bc8a2ae25dc9617cc241628f61,",
+            "key": "3bc78ed6de2b17bc8a2ae25dc9617cc241628f61",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(240, 240, 240, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4317",
+                  "variableName": "shadcn/muted",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(240, 240, 240, 1)"
+          },
+          "muted-foreground": {
+            "id": "S:8f6f3779d33db91e678c7328190087f967d35a01,",
+            "key": "8f6f3779d33db91e678c7328190087f967d35a01",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(100, 100, 100, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4318",
+                      "variableName": "shadcn/muted-foreground",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(100, 100, 100, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4318",
+                      "variableName": "shadcn/muted-foreground",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.8999999761581421
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(100, 100, 100, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4318",
+                      "variableName": "shadcn/muted-foreground",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(100, 100, 100, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4318",
+                      "variableName": "shadcn/muted-foreground",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.8999999761581421
+              }
+            ]
+          },
+          "accent": {
+            "id": "S:a1fe402a35beeed321aeb10d95eea04921183439,",
+            "key": "a1fe402a35beeed321aeb10d95eea04921183439",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(232, 232, 232, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4319",
+                      "variableName": "shadcn/accent",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(232, 232, 232, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4319",
+                      "variableName": "shadcn/accent",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.8999999761581421
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(232, 232, 232, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4319",
+                      "variableName": "shadcn/accent",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(232, 232, 232, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4319",
+                      "variableName": "shadcn/accent",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.8999999761581421
+              }
+            ]
+          },
+          "accent-foreground": {
+            "id": "S:3cf92e3ca2e6596ad4f9090ff5966b6f43831d56,",
+            "key": "3cf92e3ca2e6596ad4f9090ff5966b6f43831d56",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(32, 32, 32, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4320",
+                  "variableName": "shadcn/accent-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(32, 32, 32, 1)"
+          },
+          "popover": {
+            "id": "S:68cd88a530594898d2b1fc1bf15cb917cfc3bdff,",
+            "key": "68cd88a530594898d2b1fc1bf15cb917cfc3bdff",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(252, 252, 252, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4311",
+                  "variableName": "shadcn/popover",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(252, 252, 252, 1)"
+          },
+          "popover-foreground": {
+            "id": "S:17c6cb65a7861b8606f9d040ca36a868e616421a,",
+            "key": "17c6cb65a7861b8606f9d040ca36a868e616421a",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(32, 32, 32, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4312",
+                  "variableName": "shadcn/popover-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(32, 32, 32, 1)"
+          },
+          "primary": {
+            "id": "S:fca2997f631049f11540562fed9b4bf7b9e9ded7,",
+            "key": "fca2997f631049f11540562fed9b4bf7b9e9ded7",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 144, 255, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4313",
+                  "variableName": "shadcn/primary",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 144, 255, 1)"
+          },
+          "primary-10": {
+            "id": "S:295e054a6bbe7d5ee6e17fefa8b2da6bb4b1a23a,",
+            "key": "295e054a6bbe7d5ee6e17fefa8b2da6bb4b1a23a",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 144, 255, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4313",
+                      "variableName": "shadcn/primary",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 144, 255, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4313",
+                      "variableName": "shadcn/primary",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.10000000149011612
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 144, 255, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4313",
+                      "variableName": "shadcn/primary",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 144, 255, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4313",
+                      "variableName": "shadcn/primary",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.10000000149011612
+              }
+            ]
+          },
+          "primary-foreground": {
+            "id": "S:7c78a1967150660e3ac5e89ab72105e2492c9e2e,",
+            "key": "7c78a1967150660e3ac5e89ab72105e2492c9e2e",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(252, 252, 252, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4314",
+                  "variableName": "shadcn/primary-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(252, 252, 252, 1)"
+          },
+          "secondary": {
+            "id": "S:067e2c410b7a2515eab4f657c59e4ef0baa73f0d,",
+            "key": "067e2c410b7a2515eab4f657c59e4ef0baa73f0d",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(240, 240, 240, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4315",
+                  "variableName": "shadcn/secondary",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(240, 240, 240, 1)"
+          },
+          "secondary-foreground": {
+            "id": "S:9d6962cc19df96388e417e74c9de1370e9def098,",
+            "key": "9d6962cc19df96388e417e74c9de1370e9def098",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(32, 32, 32, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4316",
+                  "variableName": "shadcn/secondary-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(32, 32, 32, 1)"
+          },
+          "destructive": {
+            "id": "S:a9c9957f055848a7a8840f7e9a591276ee5daf58,",
+            "key": "a9c9957f055848a7a8840f7e9a591276ee5daf58",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(229, 72, 77, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4321",
+                  "variableName": "shadcn/destructive",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(229, 72, 77, 1)"
+          },
+          "success": {
+            "id": "S:20694cde8844fd0e9af34acbc418dbe0a755812c,",
+            "key": "20694cde8844fd0e9af34acbc418dbe0a755812c",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(48, 164, 108, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4322",
+                  "variableName": "shadcn/success",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(48, 164, 108, 1)"
+          },
+          "warning": {
+            "id": "S:8340879e27ed45c79658b7b072ef0100dd4b55a0,",
+            "key": "8340879e27ed45c79658b7b072ef0100dd4b55a0",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(255, 197, 61, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4323",
+                  "variableName": "shadcn/warning",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(255, 197, 61, 1)"
+          },
+          "info": {
+            "id": "S:ca6bd37d9b196726cda4aae8e50b14c866d40480,",
+            "key": "ca6bd37d9b196726cda4aae8e50b14c866d40480",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(124, 226, 254, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4324",
+                  "variableName": "shadcn/info",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(124, 226, 254, 1)"
+          },
+          "border": {
+            "id": "S:5262edc28f97a5e635c7ab06c75f43388090e255,",
+            "key": "5262edc28f97a5e635c7ab06c75f43388090e255",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 0, 0, 1)",
+                "opacity": 0.14901961386203766,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4325",
+                  "variableName": "shadcn/border",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 0, 0, 1)"
+          },
+          "border-2": {
+            "id": "S:4f97b2f479afb4aa2f386224f71b079a0e7364d2,",
+            "key": "4f97b2f479afb4aa2f386224f71b079a0e7364d2",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.800000011920929
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.800000011920929
+              }
+            ]
+          },
+          "border-3": {
+            "id": "S:9da9bf9dfaef555c7986109a86617f59e823c7f9,",
+            "key": "9da9bf9dfaef555c7986109a86617f59e823c7f9",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.6000000238418579
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.6000000238418579
+              }
+            ]
+          },
+          "border-4": {
+            "id": "S:8cd640d5129202589f8eadc75b834647af1fe781,",
+            "key": "8cd640d5129202589f8eadc75b834647af1fe781",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.4000000059604645
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(0, 0, 0, 0.14901961386203766)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4325",
+                      "variableName": "shadcn/border",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.4000000059604645
+              }
+            ]
+          },
+          "input": {
+            "id": "S:721c5f34f70b9a376549cf4bd1de4defdbec3406,",
+            "key": "721c5f34f70b9a376549cf4bd1de4defdbec3406",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 0, 0, 1)",
+                "opacity": 0.14901961386203766,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4326",
+                  "variableName": "shadcn/input",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 0, 0, 1)"
+          },
+          "ring": {
+            "id": "S:cd0ef131dfc7f790a40a717898d5bcaf3069541a,",
+            "key": "cd0ef131dfc7f790a40a717898d5bcaf3069541a",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(187, 187, 187, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4327",
+                  "variableName": "shadcn/ring",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(187, 187, 187, 1)"
+          },
+          "chart-1": {
+            "id": "S:65e633d8b8e63d07ceb4228d2a4b745b874265d2,",
+            "key": "65e633d8b8e63d07ceb4228d2a4b745b874265d2",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 144, 255, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4328",
+                  "variableName": "shadcn/chart-1",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 144, 255, 1)"
+          },
+          "chart-2": {
+            "id": "S:47ff366e8a4ffeea8bac0e35b2a46b7017492408,",
+            "key": "47ff366e8a4ffeea8bac0e35b2a46b7017492408",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 144, 255, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4329",
+                  "variableName": "shadcn/chart-2",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 144, 255, 1)"
+          },
+          "chart-3": {
+            "id": "S:ba9ed2f97a5bc9ae0ab47ecf11fbade01636a524,",
+            "key": "ba9ed2f97a5bc9ae0ab47ecf11fbade01636a524",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 144, 255, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4330",
+                  "variableName": "shadcn/chart-3",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 144, 255, 1)"
+          },
+          "chart-4": {
+            "id": "S:a903e7174efde8ca78216201373d5fc42e945323,",
+            "key": "a903e7174efde8ca78216201373d5fc42e945323",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 144, 255, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4331",
+                  "variableName": "shadcn/chart-4",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 144, 255, 1)"
+          },
+          "chart-5": {
+            "id": "S:1a2c5a4f15a509d178d6481b7b2af45929d54d16,",
+            "key": "1a2c5a4f15a509d178d6481b7b2af45929d54d16",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 144, 255, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4332",
+                  "variableName": "shadcn/chart-5",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 144, 255, 1)"
+          },
+          "sidebar": {
+            "id": "S:10123d9195d7e7c7f4a9d68d33669ffe53fc5a44,",
+            "key": "10123d9195d7e7c7f4a9d68d33669ffe53fc5a44",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(249, 249, 249, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4333",
+                  "variableName": "shadcn/sidebar",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(249, 249, 249, 1)"
+          },
+          "sidebar-foreground": {
+            "id": "S:f379a2ad8bee692181733c230097cae9308702cc,",
+            "key": "f379a2ad8bee692181733c230097cae9308702cc",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(32, 32, 32, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4334",
+                  "variableName": "shadcn/sidebar-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(32, 32, 32, 1)"
+          },
+          "sidebar-primary": {
+            "id": "S:e71b3440b8abeea0cf3ab98368809bacffd9fa39,",
+            "key": "e71b3440b8abeea0cf3ab98368809bacffd9fa39",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 144, 255, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4335",
+                  "variableName": "shadcn/sidebar-primary",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 144, 255, 1)"
+          },
+          "sidebar-primary-foreground": {
+            "id": "S:8c4a7a737969d526ff9d614bfa0d4608c44ade09,",
+            "key": "8c4a7a737969d526ff9d614bfa0d4608c44ade09",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(252, 252, 252, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4336",
+                  "variableName": "shadcn/sidebar-primary-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(252, 252, 252, 1)"
+          },
+          "sidebar-accent": {
+            "id": "S:5a2c59ef9b46a9e761a9e6bdea42f6886eb84c6d,",
+            "key": "5a2c59ef9b46a9e761a9e6bdea42f6886eb84c6d",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(232, 232, 232, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4337",
+                  "variableName": "shadcn/sidebar-accent",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(232, 232, 232, 1)"
+          },
+          "sidebar-accent-foreground": {
+            "id": "S:e755aca5457a627b31f1eb93299dee8a9be77451,",
+            "key": "e755aca5457a627b31f1eb93299dee8a9be77451",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(32, 32, 32, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4338",
+                  "variableName": "shadcn/sidebar-accent-foreground",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(32, 32, 32, 1)"
+          },
+          "sidebar-border": {
+            "id": "S:9ccb485af1b186b3c1490efb4043d3133f434319,",
+            "key": "9ccb485af1b186b3c1490efb4043d3133f434319",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(0, 0, 0, 1)",
+                "opacity": 0.14901961386203766,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4339",
+                  "variableName": "shadcn/sidebar-border",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(0, 0, 0, 1)"
+          },
+          "sidebar-ring": {
+            "id": "S:e35a62164eb647541a2aa0670a110fcc82c6b3f9,",
+            "key": "e35a62164eb647541a2aa0670a110fcc82c6b3f9",
+            "type": "color",
+            "fills": [
+              {
+                "type": "solid",
+                "color": "rgba(187, 187, 187, 1)",
+                "opacity": 1,
+                "boundVariable": {
+                  "type": "variable",
+                  "variableId": "VariableID:3:4340",
+                  "variableName": "shadcn/sidebar-ring",
+                  "collectionName": "semantics",
+                  "collectionId": "VariableCollectionId:3:4270"
+                }
+              }
+            ],
+            "value": "rgba(187, 187, 187, 1)"
+          },
+          "background-4": {
+            "id": "S:42b5a65e79189ef138aca009a6668694da1642fc,",
+            "key": "42b5a65e79189ef138aca009a6668694da1642fc",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4307",
+                      "variableName": "shadcn/background",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4307",
+                      "variableName": "shadcn/background",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.4000000059604645
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4307",
+                      "variableName": "shadcn/background",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:3:4307",
+                      "variableName": "shadcn/background",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 0.4000000059604645
+              }
+            ]
+          },
+          "light": {
+            "id": "S:f9b11b5d5d78a1bc7a6f36d05ed3316322316e92,",
+            "key": "f9b11b5d5d78a1bc7a6f36d05ed3316322316e92",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1236",
+                      "variableName": "shadcn/light",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1236",
+                      "variableName": "shadcn/light",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 1
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1236",
+                      "variableName": "shadcn/light",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(252, 252, 252, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1236",
+                      "variableName": "shadcn/light",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 1
+              }
+            ]
+          },
+          "dark": {
+            "id": "S:db56b6cab8da9f155b90c27c6bf99f2dc9c4ff99,",
+            "key": "db56b6cab8da9f155b90c27c6bf99f2dc9c4ff99",
+            "type": "color",
+            "fills": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(17, 17, 17, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1237",
+                      "variableName": "shadcn/dark",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(17, 17, 17, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1237",
+                      "variableName": "shadcn/dark",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 1
+              }
+            ],
+            "value": [
+              {
+                "type": "linear",
+                "gradientStops": [
+                  {
+                    "position": 0,
+                    "color": "rgba(17, 17, 17, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1237",
+                      "variableName": "shadcn/dark",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  },
+                  {
+                    "position": 1,
+                    "color": "rgba(17, 17, 17, 1)",
+                    "boundVariable": {
+                      "type": "variable",
+                      "variableId": "VariableID:16910:1237",
+                      "variableName": "shadcn/dark",
+                      "collectionName": "semantics",
+                      "collectionId": "VariableCollectionId:3:4270"
+                    }
+                  }
+                ],
+                "gradientTransform": [[0, 1, 0], [-1, 0, 1]],
+                "opacity": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    "text": {
+      "typography": {
+        "large-title": {
+          "id": "S:f3696c402632d98c281360b3d3c0b2c03566917a,",
+          "key": "f3696c402632d98c281360b3d3c0b2c03566917a",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "36px",
+          "lineHeight": "44px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4342",
+            "variableName": "typography/large-title/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4343",
+            "variableName": "typography/large-title/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "large-title-strong": {
+          "id": "S:493e7f11ee6a95925102c9c458037ba231cb4cc7,",
+          "key": "493e7f11ee6a95925102c9c458037ba231cb4cc7",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "36px",
+          "lineHeight": "44px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4342",
+            "variableName": "typography/large-title/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4343",
+            "variableName": "typography/large-title/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4172",
+            "variableName": "font/weight/strong",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "title-1": {
+          "id": "S:63c160c7d9f89e1f772ccb0d0da4fb86117c64c9,",
+          "key": "63c160c7d9f89e1f772ccb0d0da4fb86117c64c9",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "30px",
+          "lineHeight": "38px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4344",
+            "variableName": "typography/title-1/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4345",
+            "variableName": "typography/title-1/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "title-1-strong": {
+          "id": "S:0ed5823284f49a2b87053de05f646981229f0855,",
+          "key": "0ed5823284f49a2b87053de05f646981229f0855",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "30px",
+          "lineHeight": "38px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4344",
+            "variableName": "typography/title-1/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4345",
+            "variableName": "typography/title-1/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4172",
+            "variableName": "font/weight/strong",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "title-2": {
+          "id": "S:374b91bd91afe828ec23d01c5bb30607e131513d,",
+          "key": "374b91bd91afe828ec23d01c5bb30607e131513d",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "24px",
+          "lineHeight": "32px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4346",
+            "variableName": "typography/title-2/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4347",
+            "variableName": "typography/title-2/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "title-2-strong": {
+          "id": "S:0cbce01cea11c6ff162d668c096a1c171ec5cbc0,",
+          "key": "0cbce01cea11c6ff162d668c096a1c171ec5cbc0",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "24px",
+          "lineHeight": "32px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4346",
+            "variableName": "typography/title-2/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4347",
+            "variableName": "typography/title-2/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4172",
+            "variableName": "font/weight/strong",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "title-3": {
+          "id": "S:6890e64b1e127ab7d73054d2dc49a3ef90e4f29e,",
+          "key": "6890e64b1e127ab7d73054d2dc49a3ef90e4f29e",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "20px",
+          "lineHeight": "26px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4348",
+            "variableName": "typography/title-3/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4349",
+            "variableName": "typography/title-3/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "title-3-strong": {
+          "id": "S:ad007d5801eec29f7d0b159754e85662d47c315a,",
+          "key": "ad007d5801eec29f7d0b159754e85662d47c315a",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "20px",
+          "lineHeight": "26px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4348",
+            "variableName": "typography/title-3/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4349",
+            "variableName": "typography/title-3/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4172",
+            "variableName": "font/weight/strong",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "headline": {
+          "id": "S:ed434f225f999fe52b8426861e47e9e9fec59c20,",
+          "key": "ed434f225f999fe52b8426861e47e9e9fec59c20",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "16px",
+          "lineHeight": "22px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4350",
+            "variableName": "typography/headline/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4351",
+            "variableName": "typography/headline/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "headline-strong": {
+          "id": "S:cbf4e5e0bf07d1f1305e6d353995dc5f93f48d62,",
+          "key": "cbf4e5e0bf07d1f1305e6d353995dc5f93f48d62",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "SemiBold",
+          "fontSize": "16px",
+          "lineHeight": "22px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4350",
+            "variableName": "typography/headline/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4351",
+            "variableName": "typography/headline/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "body": {
+          "id": "S:801b63b426d91a3f1c0c64478b0ab9e3fbf97143,",
+          "key": "801b63b426d91a3f1c0c64478b0ab9e3fbf97143",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4352",
+            "variableName": "typography/body/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4353",
+            "variableName": "typography/body/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "body-strong": {
+          "id": "S:1cb71c722abea0e58731a04c463b69a2e9705f8f,",
+          "key": "1cb71c722abea0e58731a04c463b69a2e9705f8f",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "SemiBold",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4352",
+            "variableName": "typography/body/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4353",
+            "variableName": "typography/body/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "callout": {
+          "id": "S:3c14629f83f354231d8fb9180d9d30856400913b,",
+          "key": "3c14629f83f354231d8fb9180d9d30856400913b",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "16px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4354",
+            "variableName": "typography/callout/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4355",
+            "variableName": "typography/callout/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "callout-strong": {
+          "id": "S:be2fe9b4fe97a3e201d6364ddf68f8c58d4ffbbc,",
+          "key": "be2fe9b4fe97a3e201d6364ddf68f8c58d4ffbbc",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4354",
+            "variableName": "typography/callout/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4355",
+            "variableName": "typography/callout/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4172",
+            "variableName": "font/weight/strong",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "subhead": {
+          "id": "S:4829fb39c5c3c0715e9c5447f55fa9975d406b96,",
+          "key": "4829fb39c5c3c0715e9c5447f55fa9975d406b96",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "13px",
+          "lineHeight": "18px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4356",
+            "variableName": "typography/subhead/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4357",
+            "variableName": "typography/subhead/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "subhead-strong": {
+          "id": "S:74f56784e3d872b40939e59b9cd6fa37171c5f5a,",
+          "key": "74f56784e3d872b40939e59b9cd6fa37171c5f5a",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "SemiBold",
+          "fontSize": "13px",
+          "lineHeight": "18px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4356",
+            "variableName": "typography/subhead/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4357",
+            "variableName": "typography/subhead/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "footnote": {
+          "id": "S:4dd3ef82702fcd57eea290903f28ddd7619ac125,",
+          "key": "4dd3ef82702fcd57eea290903f28ddd7619ac125",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "12px",
+          "lineHeight": "16px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4358",
+            "variableName": "typography/footnote/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4359",
+            "variableName": "typography/footnote/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "footnote-strong": {
+          "id": "S:c97501fe4b66be91865fb47a881671e9a14545f9,",
+          "key": "c97501fe4b66be91865fb47a881671e9a14545f9",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "12px",
+          "lineHeight": "16px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4358",
+            "variableName": "typography/footnote/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4359",
+            "variableName": "typography/footnote/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4172",
+            "variableName": "font/weight/strong",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "caption-1": {
+          "id": "S:98662e02d44e9d6138ba6daa1ae117f3a19f056a,",
+          "key": "98662e02d44e9d6138ba6daa1ae117f3a19f056a",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "11px",
+          "lineHeight": "14px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4360",
+            "variableName": "typography/caption-1/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4361",
+            "variableName": "typography/caption-1/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "caption-1-strong": {
+          "id": "S:2e00fe85632b28d6dfbbbae72a7b9bff0236962c,",
+          "key": "2e00fe85632b28d6dfbbbae72a7b9bff0236962c",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "11px",
+          "lineHeight": "14px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4360",
+            "variableName": "typography/caption-1/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4361",
+            "variableName": "typography/caption-1/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "caption-2": {
+          "id": "S:7a01a06503b617f1955d318a8d320f65cd1f1e6b,",
+          "key": "7a01a06503b617f1955d318a8d320f65cd1f1e6b",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Regular",
+          "fontSize": "10px",
+          "lineHeight": "12px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4362",
+            "variableName": "typography/caption-2/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4363",
+            "variableName": "typography/caption-2/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          },
+          "fontWeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4171",
+            "variableName": "font/weight/default",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        },
+        "caption-2-strong": {
+          "id": "S:c58321618515af1142ffe51fbbefed12506d38c4,",
+          "key": "c58321618515af1142ffe51fbbefed12506d38c4",
+          "type": "text",
+          "fontFamily": "Geist",
+          "fontStyle": "Medium",
+          "fontSize": "10px",
+          "lineHeight": "12px",
+          "letterSpacing": "0%",
+          "paragraphSpacing": "0px",
+          "paragraphIndent": "0px",
+          "textCase": "ORIGINAL",
+          "textDecoration": "NONE",
+          "fontSizeBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4362",
+            "variableName": "typography/caption-2/font-size",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "lineHeightBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4363",
+            "variableName": "typography/caption-2/line-height",
+            "collectionName": "responsive",
+            "collectionId": "VariableCollectionId:3:4341"
+          },
+          "fontFamilyBoundVariable": {
+            "type": "variable",
+            "variableId": "VariableID:3:4168",
+            "variableName": "font/family/primary",
+            "collectionName": "abstractions",
+            "collectionId": "VariableCollectionId:3:4082"
+          }
+        }
+      }
+    },
+    "effect": {
+      "shadow": {
+        "0": {
+          "id": "S:0e6c8ee16fd623fd6f1b103955794218412f971d,",
+          "key": "0e6c8ee16fd623fd6f1b103955794218412f971d",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "0px",
+              "radius": "0px",
+              "spread": "0px",
+              "color": "rgba(0, 0, 0, 0)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4061",
+                "variableName": "effects/blur/200",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ],
+          "description": "No shadow"
+        },
+        "1": {
+          "id": "S:e238c1fdae70b2d07b41e262e95abb2d631a6e07,",
+          "key": "e238c1fdae70b2d07b41e262e95abb2d631a6e07",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "4px",
+              "radius": "4px",
+              "spread": "-2px",
+              "color": "rgba(0, 0, 0, 0.05999999865889549)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true
+            }
+          ],
+          "description": "Subtle"
+        },
+        "2": {
+          "id": "S:801e62561189963e57e484b86e503758ec55ae57,",
+          "key": "801e62561189963e57e484b86e503758ec55ae57",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "6px",
+              "radius": "6px",
+              "spread": "-2px",
+              "color": "rgba(0, 0, 0, 0.05999999865889549)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4061",
+                "variableName": "effects/blur/200",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ],
+          "description": "Small"
+        },
+        "3": {
+          "id": "S:75ce1b77288dbcd196b970e08f321a8befde65ec,",
+          "key": "75ce1b77288dbcd196b970e08f321a8befde65ec",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "8px",
+              "radius": "12px",
+              "spread": "-4px",
+              "color": "rgba(0, 0, 0, 0.07999999821186066)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4061",
+                "variableName": "effects/blur/200",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ],
+          "description": "Medium"
+        },
+        "4": {
+          "id": "S:cc9b00f023b684800215d1db6b7a0c7b53857e80,",
+          "key": "cc9b00f023b684800215d1db6b7a0c7b53857e80",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "12px",
+              "radius": "16px",
+              "spread": "-4px",
+              "color": "rgba(0, 0, 0, 0.05999999865889549)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4061",
+                "variableName": "effects/blur/200",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ],
+          "description": "Large"
+        },
+        "5": {
+          "id": "S:1339110bb3ded605d046c078b5781bbb93e3f511,",
+          "key": "1339110bb3ded605d046c078b5781bbb93e3f511",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "25px",
+              "radius": "50px",
+              "spread": "-12px",
+              "color": "rgba(0, 0, 0, 0.07999999821186066)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4061",
+                "variableName": "effects/blur/200",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ],
+          "description": "Extra large"
+        },
+        "6": {
+          "id": "S:4459aa90e47808e820d551983da89cebccf24be7,",
+          "key": "4459aa90e47808e820d551983da89cebccf24be7",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "30px",
+              "radius": "60px",
+              "spread": "-18px",
+              "color": "rgba(0, 0, 0, 0.11999999731779099)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4061",
+                "variableName": "effects/blur/200",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ],
+          "description": "Maximum"
+        }
+      },
+      "blur": {
+        "1": {
+          "id": "S:0091ae464c5493c8183e24da5bc8abcc5375920d,",
+          "key": "0091ae464c5493c8183e24da5bc8abcc5375920d",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "layer-blur",
+              "radius": "6px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4056",
+                "variableName": "effects/blur/6",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ]
+        },
+        "2": {
+          "id": "S:dfded6b2483883b8441be2b7792eb452acbba3e2,",
+          "key": "dfded6b2483883b8441be2b7792eb452acbba3e2",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "layer-blur",
+              "radius": "12px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4057",
+                "variableName": "effects/blur/12",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ]
+        },
+        "3": {
+          "id": "S:aaf1ee02b5ddb0948ce7f3e80930daacaa9c87fc,",
+          "key": "aaf1ee02b5ddb0948ce7f3e80930daacaa9c87fc",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "layer-blur",
+              "radius": "20px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4058",
+                "variableName": "effects/blur/20",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ]
+        },
+        "4": {
+          "id": "S:54d4299d72f26e64b92fab5f1e54d61638e166f1,",
+          "key": "54d4299d72f26e64b92fab5f1e54d61638e166f1",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "layer-blur",
+              "radius": "40px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4059",
+                "variableName": "effects/blur/40",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            }
+          ]
+        }
+      },
+      "backdrop-blur": {
+        "1": {
+          "id": "S:93bb5aeda0ae06421077beac665b1dd721ff5a66,",
+          "key": "93bb5aeda0ae06421077beac665b1dd721ff5a66",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "background-blur",
+              "radius": "20px",
+              "visible": true
+            }
+          ]
+        }
+      },
+      "components": {
+        "card": {
+          "id": "S:11823ce9698fcbfeb9c5afa8af012c9085317554,",
+          "key": "11823ce9698fcbfeb9c5afa8af012c9085317554",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "1px",
+              "radius": "2px",
+              "spread": "0px",
+              "color": "rgba(0, 0, 0, 0.05000000074505806)",
+              "visible": true
+            },
+            {
+              "type": "background-blur",
+              "radius": "40px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4059",
+                "variableName": "effects/blur/40",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            },
+            {
+              "type": "inner-shadow",
+              "offsetX": "0px",
+              "offsetY": "0px",
+              "radius": "2px",
+              "spread": "0px",
+              "color": "rgba(255, 255, 255, 0.4000000059604645)",
+              "visible": true,
+              "colorBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4299",
+                "variableName": "highlight/primary",
+                "collectionName": "semantics",
+                "collectionId": "VariableCollectionId:3:4270"
+              }
+            }
+          ],
+          "description": "Subtle"
+        },
+        "badge": {
+          "id": "S:5235a3b9c867fc64fe238fd7b69ac768e3d5df69,",
+          "key": "5235a3b9c867fc64fe238fd7b69ac768e3d5df69",
+          "type": "effect",
+          "effects": [
+            {
+              "type": "drop-shadow",
+              "offsetX": "0px",
+              "offsetY": "1px",
+              "radius": "2px",
+              "spread": "0px",
+              "color": "rgba(0, 0, 0, 0.05000000074505806)",
+              "visible": false
+            },
+            {
+              "type": "background-blur",
+              "radius": "200px",
+              "visible": true,
+              "radiusBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4061",
+                "variableName": "effects/blur/200",
+                "collectionName": "primitives",
+                "collectionId": "VariableCollectionId:3:3606"
+              }
+            },
+            {
+              "type": "inner-shadow",
+              "offsetX": "0px",
+              "offsetY": "-1px",
+              "radius": "2px",
+              "spread": "0px",
+              "color": "rgba(255, 255, 255, 0.4000000059604645)",
+              "visible": true,
+              "colorBoundVariable": {
+                "type": "variable",
+                "variableId": "VariableID:3:4299",
+                "variableName": "highlight/primary",
+                "collectionName": "semantics",
+                "collectionId": "VariableCollectionId:3:4270"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "grid": {}
+  }
+}

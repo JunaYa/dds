@@ -51,10 +51,9 @@ impl Task {
         self
     }
 
-    pub fn set_completed(mut self) -> Self {
+    pub fn set_completed(&mut self) {
         self.completed = true;
         self.completed_at = Some(chrono::Utc::now().to_rfc3339());
-        self
     }
 
     pub fn set_duration(mut self, duration: i32) -> Self {

@@ -23,7 +23,6 @@
         "focus": false,
         "hiddenTitle": true,
         "label": "main",
-        "maximizable": false,
         "minimizable": false,
         "resizable": false,
         "shadow": false,

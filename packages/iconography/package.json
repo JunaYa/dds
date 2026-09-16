@@ -1,0 +1,28 @@
+{
+  "name": "@vita/iconography",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared Ancher iconography for brand marks, marketing illustrations, social/tool marks, and product icon aliases.",
+  "type": "module",
+  "exports": {
+    "./ancher": "./src/ancher/index.ts",
+    "./icons": "./src/icons/index.ts",
+    "./line-art": "./src/line-art/index.ts",
+    "./line-graphics": "./src/line-graphics/index.ts",
+    "./social": "./src/social/index.ts",
+    "./tools": "./src/tools/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@iconify/react": "^6.0.2",
+    "@vita/brand": "workspace:*",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.563.0",
+    "tailwind-merge": "^3.5.0"
+  },
+  "peerDependencies": {
+    "react": ">=19"
+  }
+}
