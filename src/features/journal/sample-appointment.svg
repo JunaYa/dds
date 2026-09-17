@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1260" viewBox="0 0 1000 1260">
+  <rect width="1000" height="1260" fill="white"/>
+  <g fill="#202020" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <text x="90" y="100" font-size="28" fill="#666">示例图片 · 非真实预约</text>
+    <text x="90" y="205" font-size="54" font-weight="600">市妇幼保健院</text>
+    <text x="90" y="285" font-size="38">门诊预约凭据</text>
+    <path d="M90 345H910" stroke="#bbb"/>
+    <g font-size="36">
+      <text x="90" y="435">预约项目：产检复诊</text>
+      <text x="90" y="525">就诊日期：2026-09-18</text>
+      <text x="90" y="615">就诊时间：09:30</text>
+      <text x="90" y="705">场所：市妇幼保健院</text>
+      <text x="90" y="795">详细地点：门诊楼 3 层东侧 308 诊室</text>
+      <text x="90" y="905">备注：携带上次超声报告和就诊卡</text>
+    </g>
+    <path d="M90 980H910" stroke="#bbb"/>
+    <text x="90" y="1065" font-size="28" fill="#666">本图片用于体验文字识别与创建事件。</text>
+    <text x="90" y="1120" font-size="28" fill="#666">识别完成后，请核对日期、时间和地点。</text>
+  </g>
+</svg>

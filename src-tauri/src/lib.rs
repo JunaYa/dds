@@ -1,9 +1,11 @@
 use std::sync::Mutex;
 
-use tauri::ActivationPolicy;
+#[cfg(desktop)]
 mod tray;
 mod cmd;
+#[cfg(desktop)]
 mod window;
+#[cfg(desktop)]
 mod constants;
 mod task;
 mod appData;
@@ -12,21 +14,18 @@ use appData::AppState;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_positioner::init())
         .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
-            #[cfg(target_os = "macos")]
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        .setup(|_app| {
+            #[cfg(desktop)]
             {
-                tray::create_tray(app)?;
-                // Make the Dock icon invisible
-                app.set_activation_policy(ActivationPolicy::Accessory);
+                tray::create_tray(_app)?;
             }
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             cmd::greet,
-            cmd::show_main_window,
-            cmd::hide_main_window,
             cmd::add_task,
             cmd::get_current_tasks,
             cmd::remove_task,
@@ -37,4 +36,3 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-

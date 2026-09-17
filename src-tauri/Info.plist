@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSCameraUsageDescription</key>
+  <string>拍摄票据或照片，快速创建事件与生活记录。</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>选择照片作为记录附件，或识别照片中的事件信息。</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>拍摄带声音的视频，保存为记录附件。</string>
+</dict>
+</plist>

@@ -12,25 +12,17 @@
   "app": {
     "windows": [
       {
-        "fullscreen": false,
-        "height": 240,
-        "title": "DDs",
-        "width": 430,
-        "alwaysOnTop": true,
-        "closable": false,
-        "decorations": false,
-        "dragDropEnabled": false,
-        "focus": false,
-        "hiddenTitle": true,
         "label": "main",
-        "minimizable": false,
-        "resizable": false,
-        "shadow": false,
-        "visible": false,
-        "transparent": true
+        "title": "日日记 · DDS",
+        "width": 1200,
+        "height": 820,
+        "minWidth": 360,
+        "minHeight": 540,
+        "resizable": true,
+        "visible": true,
+        "dragDropEnabled": false
       }
     ],
-    "macOSPrivateApi": true,
     "security": {
       "csp": null
     }

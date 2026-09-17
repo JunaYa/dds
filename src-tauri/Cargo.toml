@@ -18,17 +18,15 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["macos-private-api"] }
+tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
+tauri-plugin-dialog = "=2.2.0"
+tauri-plugin-fs = "=2.2.0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tauri-plugin-positioner = { version = "2", features = ["tray-icon"] }
 tracing = "0.1.41"
-strum_macros = "0.26.4"
-strum = "0.25"
 chrono = "0.4.39"
 uuid = { version = "1.11.0", features = ["v4"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-positioner = "2"
-
+tauri = { version = "2", features = ["tray-icon"] }
