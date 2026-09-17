@@ -30,3 +30,6 @@ uuid = { version = "1.11.0", features = ["v4"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri = { version = "2", features = ["tray-icon"] }
+
+[target.'cfg(target_os = "ios")'.dependencies]
+tauri-plugin-native-navigation = { path = "plugins/native-navigation" }

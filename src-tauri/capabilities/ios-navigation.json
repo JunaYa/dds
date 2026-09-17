@@ -1,0 +1,7 @@
+{
+  "identifier": "ios-navigation",
+  "description": "Native Liquid Glass navigation for the iOS main window",
+  "platforms": ["iOS"],
+  "windows": ["main"],
+  "permissions": ["native-navigation:allow-navigation"]
+}

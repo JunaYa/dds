@@ -17,6 +17,7 @@ import { Choice } from './controls';
 import { Dialogs, type Modal } from './dialogs';
 import { useJournal, errorText } from './journal-context';
 import { useViewport } from './use-viewport';
+import { useNativeNavigation, type JournalPage } from './use-native-navigation';
 import {
   formatDate,
   formatTime,
@@ -29,7 +30,7 @@ import {
   type JournalRecord,
 } from './model';
 
-type Page = 'today' | 'board' | 'library' | 'types';
+type Page = JournalPage;
 const views: { id: Page; title: string; description: string }[] = [
   {
     id: 'today',
@@ -54,6 +55,13 @@ export default function App() {
   const [modal, setModal] = useState<Modal | null>(null);
   const [query, setQuery] = useState(''),
     [filter, setFilter] = useState('all');
+  function navigate(next: Page) {
+    setPage(next);
+    setFilter('all');
+    setQuery('');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  const nativeNavigation = useNativeNavigation(page, navigate, modal !== null);
   const pending = pendingTasks(state),
     today = todayRecords(state);
   const current = views.find((view) => view.id === page)!;
@@ -207,7 +215,7 @@ export default function App() {
     </Card>
   );
   return (
-    <div className="journal-shell">
+    <div className="journal-shell" data-native-navigation={nativeNavigation || undefined}>
       <a href="#journal-main" className="journal-skip">
         跳到主要内容
       </a>
@@ -228,11 +236,7 @@ export default function App() {
               variant={page === view.id ? 'secondary' : 'ghost'}
               className="justify-start"
               aria-current={page === view.id ? 'page' : undefined}
-              onClick={() => {
-                setPage(view.id);
-                setFilter('all');
-                setQuery('');
-              }}
+              onClick={() => navigate(view.id)}
             >
               {view.id === 'today' ? (
                 <Icons.sun />

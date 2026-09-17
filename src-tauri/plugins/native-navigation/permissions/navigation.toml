@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-navigation"
+description = "Allows the main journal to attach, synchronize and detach its native navigation."
+commands.allow = ["attach", "update", "detach"]

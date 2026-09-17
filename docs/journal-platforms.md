@@ -29,6 +29,18 @@ pnpm build:ios:sim
 
 `src-tauri/Info.plist` 提供相机、照片和麦克风使用说明；构建时合并进应用。相机由系统选择器打开，模拟器不提供真实摄像头。`gen/apple/project.yml` 是原生工程定义，修改后使用 XcodeGen 重新生成工程。
 
+#### 原生 Liquid Glass 导航
+
+iOS 工程需要 Xcode 26 或更新版本编译；应用最低系统版本仍为 iOS 16.4。
+
+- iOS 26 及以上的窄屏界面使用原生 `UIGlassEffect(.regular)` 底部导航。四项按钮使用 UIKit 和 SF Symbols，支持系统明暗外观、选中状态、辅助功能标签和长按大内容预览。
+- `src-tauri/plugins/native-navigation/` 是本地 Tauri Swift 插件，不依赖修改生成的 Xcode 工程。插件仅在 iOS 编译，权限仅授予本地主窗口的 attach / update / detach 命令。
+- React 页面和数据库继续共用。原生点击通过 Tauri Channel 切换页面；网页搜索等操作也会同步原生选中状态。打开弹窗或系统键盘时隐藏导航，关闭后恢复。
+- 宽度超过 720 px 时使用现有侧栏；iOS 16.4–18、浏览器、Android 和 desktop 保留 Web 导航。仅在原生接入成功后隐藏窄屏 Web 导航，接入失败时保留可操作的页面。
+- 每次挂载分配会话 ID，过期更新和卸载不会移除新会话的导航；卸载时移除视图和键盘监听。
+
+运行 `pnpm build:ios:sim` 后，选择 iOS 26 或更新的模拟器查看材质。旧版 iOS 无法显示系统 Liquid Glass。
+
 ### Android
 
 需要 JDK 17、Android SDK（平台、构建工具、platform-tools）、NDK 和 Rust target。SDK 许可由开发者接受。
@@ -80,8 +92,9 @@ pnpm build:android --debug --target aarch64 --apk
 
 | 平台 | 已验证 | 尚未验证 |
 | --- | --- | --- |
-| 共用前端 | 类型检查、85 项自动测试、正式与演示库隔离、390 px 布局 | 跨设备同步未实现 |
+| 共用前端 | 类型检查、90 项自动测试（含原生导航同步、降级与卸载）、正式与演示库隔离、390 px 布局 | 跨设备同步未实现 |
 | macOS arm64 | 原生 .app 构建与启动、真实 OCR、系统保存器导出及原图字节比对、2 项 Rust 测试 | 摄像头实拍 |
-| iOS 18.1 模拟器 | 无签名 .app 构建、冷启动恢复记录、真实 OCR 创建事件、长详情滚动、系统文件导出 | 真机相机与签名发布 |
+| iOS 26.2 模拟器 | 原生 Liquid Glass 四项导航、双向页面同步、弹窗及键盘显隐、明暗外观、横竖屏安全区 | 真机表现与 VoiceOver 完整流程 |
+| iOS 18.1 模拟器 | 同一安装包降级到 Web 导航、冷启动恢复记录、真实 OCR 创建事件、长详情滚动、系统文件导出 | 真机相机与签名发布 |
 | Android | 共用应用代码、平台配置与初始化脚本 | SDK 许可待确认，NDK 未安装；尚未生成原生工程或 APK |
 | Windows / Linux | 共用桌面配置及平台条件编译 | 本机未构建或运行 |
