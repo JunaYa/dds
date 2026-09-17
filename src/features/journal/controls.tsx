@@ -3,7 +3,7 @@ import { Field, FieldLabel } from '@vita/ui/field';
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from '@vita/ui/select';
 import { Input } from '@vita/ui/input';
 import { Textarea } from '@vita/ui/textarea';
-import { uid, type JournalRecord, type RecordType } from './model';
+import { localDateTime, uid, type JournalRecord, type RecordType } from './model';
 import { Button } from '@vita/ui/button';
 import { DialogFooter } from '@vita/ui/dialog';
 import { Icons } from '@vita/ui/icons';
@@ -79,6 +79,11 @@ export function RecordFields({
         .filter((field) => field.kind !== 'attachment')
         .map((field) => {
           const label = `${field.name}${field.unit ? `（${field.unit}）` : ''}${field.required ? ' *' : ''}`;
+          const value = values[field.id] ?? '';
+          const inputValue =
+            field.kind === 'datetime' && value !== ''
+              ? localDateTime(new Date(String(value)))
+              : value;
           const change = (value: string) => onChange({ ...values, [field.id]: value });
           if (field.kind === 'choice')
             return (
@@ -111,14 +116,14 @@ export function RecordFields({
                   id={`${prefix}-${field.id}`}
                   nativeInput
                   type={
-                    field.kind === 'number'
-                      ? 'number'
-                      : field.kind === 'date'
-                        ? 'date'
+                    field.kind === 'datetime'
+                      ? 'datetime-local'
+                      : field.kind === 'number' || field.kind === 'date'
+                        ? field.kind
                         : 'text'
                   }
                   step={field.kind === 'number' ? 'any' : undefined}
-                  value={values[field.id] ?? ''}
+                  value={inputValue}
                   onChange={(event) => change(event.target.value)}
                   required={field.required}
                 />
@@ -126,6 +131,11 @@ export function RecordFields({
             </FormField>
           );
         })}
+      {type.id === 'feeding' && (
+        <p className="text-sm text-muted-foreground">
+          喂养量填写本次总量，混合喂养填写母乳与奶粉的合计量。
+        </p>
+      )}
     </>
   );
 }

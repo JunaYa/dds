@@ -25,6 +25,7 @@ import {
 } from './controls';
 import {
   formatDate,
+  formatFieldValue,
   formatTime,
   localDateTime,
   newRecord,
@@ -111,7 +112,9 @@ function RecordForm({
   const [typeId, setTypeId] = useState(modal.typeId || 'note');
   const [title, setTitle] = useState(task?.title || '');
   const [occurredAt, setOccurredAt] = useState(localDateTime());
-  const [values, setValues] = useState<JournalRecord['values']>(source?.values || {});
+  const [values, setValues] = useState<JournalRecord['values']>(
+    source?.values || (typeId === 'feeding' ? { startedAt: localDateTime() } : {}),
+  );
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>(source?.attachments || []);
   const [error, setError] = useState('');
@@ -126,7 +129,7 @@ function RecordForm({
           typeId,
           values,
           title.trim() || `${type.name}记录`,
-          new Date(occurredAt),
+          new Date(typeId === 'feeding' ? String(values.startedAt) : occurredAt),
         ),
         attachments: [...attachments, ...files.map((file) => file.attachment)],
       };
@@ -169,7 +172,7 @@ function RecordForm({
               }))}
               onChange={(id) => {
                 setTypeId(id);
-                setValues({});
+                setValues(id === 'feeding' ? { startedAt: localDateTime() } : {});
                 setFiles([]);
                 setAttachments([]);
               }}
@@ -184,16 +187,18 @@ function RecordForm({
               placeholder="给这次记录起个名字"
             />
           </FormField>
-          <FormField label="发生时间" htmlFor="record-time">
-            <Input
-              id="record-time"
-              nativeInput
-              type="datetime-local"
-              required
-              value={occurredAt}
-              onChange={(event) => setOccurredAt(event.target.value)}
-            />
-          </FormField>
+          {typeId !== 'feeding' && (
+            <FormField label="发生时间" htmlFor="record-time">
+              <Input
+                id="record-time"
+                nativeInput
+                type="datetime-local"
+                required
+                value={occurredAt}
+                onChange={(event) => setOccurredAt(event.target.value)}
+              />
+            </FormField>
+          )}
           <RecordFields type={type} values={values} onChange={setValues} />
           {(attachmentFields.length
             ? attachmentFields
@@ -260,6 +265,7 @@ function TypeForm({ onClose }: { onClose: () => void }) {
     longtext: '长文本',
     number: '数值',
     date: '日期',
+    datetime: '日期时间',
     choice: '选项',
     attachment: '附件',
   };
@@ -691,7 +697,7 @@ function RecordDetail({ recordId }: { recordId: string }) {
                 <dt className="mb-1 text-xs text-muted-foreground">{field.name}</dt>
                 <dd className="whitespace-pre-wrap break-words text-sm">
                   {record.values[field.id] || record.values[field.id] === 0
-                    ? `${record.values[field.id]} ${field.unit || ''}`
+                    ? formatFieldValue(field, record.values[field.id])
                     : '未填写'}
                 </dd>
               </div>

@@ -4,7 +4,7 @@ import { appearanceSchema, type TypeAppearance } from './type-appearance';
 const fieldSchema = z.object({
   id: z.string(),
   name: z.string().trim().min(1),
-  kind: z.enum(['text', 'longtext', 'number', 'date', 'choice', 'attachment']),
+  kind: z.enum(['text', 'longtext', 'number', 'date', 'datetime', 'choice', 'attachment']),
   required: z.boolean().optional(),
   unit: z.string().optional(),
   options: z.array(z.string()).optional(),
@@ -104,12 +104,24 @@ export const formatDate = (date: string | number) =>
 export const todayRecords = (state: JournalState, now = new Date()) =>
   state.records.filter(
     (record) =>
-      localDateTime(new Date(record.occurredAt)).slice(0, 10) === localDateTime(now).slice(0, 10),
+      localDateTime(new Date(record.occurredAt)).slice(0, 10) ===
+      localDateTime(now).slice(0, 10),
   );
 export const pendingTasks = (state: JournalState) =>
   state.tasks
     .filter((task) => task.status === 'pending')
     .sort((a, b) => Date.parse(a.due) - Date.parse(b.due));
+export function formatFieldValue(field: RecordField, value: string | number) {
+  if (field.kind === 'datetime')
+    return new Date(String(value)).toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  return `${value}${field.unit ? ` ${field.unit}` : ''}`;
+}
 export const summary = (record: JournalRecord, type?: RecordType) =>
   type?.fields
     .filter(
@@ -118,7 +130,7 @@ export const summary = (record: JournalRecord, type?: RecordType) =>
         record.values[field.id] !== undefined &&
         record.values[field.id] !== '',
     )
-    .map((field) => `${record.values[field.id]}${field.unit ? ` ${field.unit}` : ''}`)
+    .map((field) => formatFieldValue(field, record.values[field.id]))
     .join(' · ') || '';
 export function newRecord(
   typeId: string,
@@ -136,6 +148,31 @@ export function newRecord(
   };
 }
 
+function feedingType(): RecordType {
+  return {
+    id: 'feeding',
+    name: '婴儿哺乳',
+    fields: [
+      {
+        id: 'method',
+        name: '喂养方式',
+        kind: 'choice',
+        options: ['全母乳', '全奶粉', '混合喂养'],
+        required: true,
+      },
+      { id: 'startedAt', name: '开始时间', kind: 'datetime', required: true },
+      { id: 'endedAt', name: '结束时间', kind: 'datetime', required: true },
+      { id: 'amount', name: '喂养量', kind: 'number', unit: 'ml', required: true },
+    ],
+  };
+}
+
+export function ensureBuiltInTypes(state: JournalState): JournalState {
+  return state.types.some((type) => type.id === 'feeding')
+    ? state
+    : { ...state, types: [...state.types, feedingType()] };
+}
+
 export function createInitialState(now = new Date(), withExamples = false): JournalState {
   const at = (hour: number, offset = 0) =>
     new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, hour).toISOString();
@@ -150,7 +187,10 @@ export function createInitialState(now = new Date(), withExamples = false): Jour
       {
         id: 'note',
         name: '随手记',
-        fields: [{ id: 'content', name: '内容', kind: 'longtext', required: true }, attachment],
+        fields: [
+          { id: 'content', name: '内容', kind: 'longtext', required: true },
+          attachment,
+        ],
       },
       {
         id: 'water',
@@ -214,6 +254,7 @@ export function createInitialState(now = new Date(), withExamples = false): Jour
           attachment,
         ],
       },
+      feedingType(),
     ],
     records: withExamples
       ? [
@@ -224,11 +265,18 @@ export function createInitialState(now = new Date(), withExamples = false): Jour
             new Date(at(10)),
           ),
           newRecord('water', { amount: 250 }, '一杯温水', new Date(at(9))),
-          newRecord('movement', { count: 8, duration: 18 }, '早晨的胎动记录', new Date(at(8))),
+          newRecord(
+            'movement',
+            { count: 8, duration: 18 },
+            '早晨的胎动记录',
+            new Date(at(8)),
+          ),
           ...Array.from({ length: 37 }, (_, index) =>
             newRecord(
               index % 2 ? 'water' : 'note',
-              index % 2 ? { amount: 250 } : { content: '提前整理好需要携带的资料和想问的问题。' },
+              index % 2
+                ? { amount: 250 }
+                : { content: '提前整理好需要携带的资料和想问的问题。' },
               index % 2
                 ? '午后补充水分'
                 : '散步时想到的事：下次复诊记得带上上次的超声报告、纸质就诊卡和问题清单',
@@ -276,7 +324,8 @@ export function createInitialState(now = new Date(), withExamples = false): Jour
 export function validateRecord(state: JournalState, record: JournalRecord) {
   const type = state.types.find((type) => type.id === record.typeId);
   if (!type) throw new Error('记录类型不存在');
-  if (!Number.isFinite(Date.parse(record.occurredAt))) throw new Error('请选择有效的发生时间');
+  if (!Number.isFinite(Date.parse(record.occurredAt)))
+    throw new Error('请选择有效的发生时间');
   for (const field of type.fields) {
     const value = record.values[field.id];
     const missing =
@@ -288,10 +337,23 @@ export function validateRecord(state: JournalState, record: JournalRecord) {
       throw new Error(`「${field.name}」需要有效数字`);
     if (!missing && field.kind === 'choice' && !field.options?.includes(String(value)))
       throw new Error(`请选择「${field.name}」的有效选项`);
+    if (!missing && field.kind === 'datetime' && !Number.isFinite(Date.parse(String(value))))
+      throw new Error(`「${field.name}」需要有效日期时间`);
+  }
+  if (record.typeId === 'feeding') {
+    if (
+      Date.parse(String(record.values.endedAt)) < Date.parse(String(record.values.startedAt))
+    )
+      throw new Error('结束时间不能早于开始时间');
+    if (Number(record.values.amount) <= 0) throw new Error('喂养量必须大于 0 ml');
   }
 }
 
-export function applyAction(state: JournalState, action: Action, now = new Date()): JournalState {
+export function applyAction(
+  state: JournalState,
+  action: Action,
+  now = new Date(),
+): JournalState {
   const next = structuredClone(state);
   switch (action.kind) {
     case 'record': {
@@ -301,7 +363,14 @@ export function applyAction(state: JournalState, action: Action, now = new Date(
         : undefined;
       if (action.completeTaskId && (!task || task.status === 'done')) return state;
       validateRecord(next, action.record);
-      const record = { ...action.record };
+      const record = { ...action.record, values: { ...action.record.values } };
+      const type = next.types.find((type) => type.id === record.typeId)!;
+      for (const field of type.fields) {
+        const value = record.values[field.id];
+        if (field.kind === 'datetime' && value !== undefined && String(value).trim() !== '')
+          record.values[field.id] = new Date(String(value)).toISOString();
+      }
+      if (record.typeId === 'feeding') record.occurredAt = String(record.values.startedAt);
       if (action.event) {
         if (!record.title.trim() || !Number.isFinite(Date.parse(action.event.due)))
           throw new Error('请补全事件名称和有效时间');
@@ -356,7 +425,9 @@ export function applyAction(state: JournalState, action: Action, now = new Date(
         field.kind === 'choice'
           ? {
               ...field,
-              options: [...new Set(field.options?.map((option) => option.trim()).filter(Boolean))],
+              options: [
+                ...new Set(field.options?.map((option) => option.trim()).filter(Boolean)),
+              ],
             }
           : field,
       );
@@ -398,7 +469,10 @@ export function applyAction(state: JournalState, action: Action, now = new Date(
             'movement',
             {
               count: next.session.events.length,
-              duration: Math.max(0.1, Math.round((now.getTime() - next.session.start) / 6000) / 10),
+              duration: Math.max(
+                0.1,
+                Math.round((now.getTime() - next.session.start) / 6000) / 10,
+              ),
             },
             '胎动计数',
             new Date(next.session.start),

@@ -1,8 +1,70 @@
 import { describe, expect, it } from 'vitest';
-import { applyAction, createInitialState, newRecord, stateSchema } from './model';
+import {
+  applyAction,
+  createInitialState,
+  newRecord,
+  stateSchema,
+  todayRecords,
+} from './model';
 
 const now = new Date('2026-09-16T09:00:00+08:00');
 describe('journal workflows', () => {
+  it.each(['全母乳', '全奶粉', '混合喂养'])(
+    'records %s feeding across midnight on its starting day',
+    (method) => {
+      const state = createInitialState(now);
+      const values = {
+        method,
+        startedAt: '2026-09-16T23:50',
+        endedAt: '2026-09-17T00:15',
+        amount: 120.5,
+      };
+      const next = applyAction(state, {
+        kind: 'record',
+        record: newRecord('feeding', values, '夜间喂养', now),
+      });
+      expect(next.records[0].values).toEqual({
+        ...values,
+        startedAt: new Date(values.startedAt).toISOString(),
+        endedAt: new Date(values.endedAt).toISOString(),
+      });
+      expect(next.records[0].occurredAt).toBe(new Date(values.startedAt).toISOString());
+      expect(todayRecords(next, new Date('2026-09-16T12:00'))).toHaveLength(1);
+      expect(todayRecords(next, new Date('2026-09-17T12:00'))).toHaveLength(0);
+    },
+  );
+  it.each([
+    [{ method: '' }, '喂养方式'],
+    [{ method: '未知方式' }, '有效选项'],
+    [{ startedAt: '' }, '开始时间'],
+    [{ endedAt: '' }, '结束时间'],
+    [{ startedAt: 'invalid' }, '有效日期时间'],
+    [{ endedAt: 'invalid' }, '有效日期时间'],
+    [{ endedAt: '2026-09-16T08:30' }, '结束时间不能早于开始时间'],
+    [{ amount: '' }, '喂养量'],
+    [{ amount: 0 }, '喂养量必须大于 0'],
+    [{ amount: -10 }, '喂养量必须大于 0'],
+    [{ amount: 'NaN' }, '有效数字'],
+  ])('rejects invalid feeding values %j', (patch, message) => {
+    const state = createInitialState(now);
+    expect(() =>
+      applyAction(state, {
+        kind: 'record',
+        record: newRecord(
+          'feeding',
+          {
+            method: '全奶粉',
+            startedAt: '2026-09-16T09:00',
+            endedAt: '2026-09-16T09:20',
+            amount: 120,
+            ...patch,
+          },
+          '喂养',
+        ),
+      }),
+    ).toThrow(message);
+    expect(state.records).toEqual([]);
+  });
   it('updates and resets type appearance without changing existing fields or records', () => {
     const state = createInitialState(now, true);
     const appearance = {

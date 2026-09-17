@@ -1,8 +1,8 @@
 // @vitest-environment node
 import 'fake-indexeddb/auto';
 import { describe, expect, it } from 'vitest';
-import { newRecord } from './model';
-import { persistAction, readFile, readState } from './storage';
+import { createInitialState, newRecord } from './model';
+import { openDatabase, persistAction, readFile, readState } from './storage';
 
 describe('journal persistence', () => {
   it('persists a type image and removes it without touching historical records', async () => {
@@ -113,4 +113,47 @@ describe('journal persistence', () => {
     expect((await readState()).records).toEqual(production.records);
     expect((await readState('example')).records[0].id).toBe(record.id);
   });
+  it.each([
+    ['app', 'read'],
+    ['app', 'write'],
+    ['example', 'read'],
+    ['example', 'write'],
+  ] as const)(
+    'adds feeding to existing %s data on %s once and preserves customization',
+    async (mode, entry) => {
+      const legacy = createInitialState(new Date(), true);
+      legacy.types = legacy.types.filter((type) => type.id !== 'feeding');
+      legacy.types[0].appearance = { icon: 'moon' };
+      const db = await openDatabase(mode);
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('state', 'readwrite');
+        tx.objectStore('state').put(legacy, 'journal');
+        tx.oncomplete = () => resolve();
+        tx.onabort = () => reject(tx.error);
+      });
+      db.close();
+      if (entry === 'write')
+        await persistAction(
+          { kind: 'typeAppearance', typeId: 'note', appearance: { icon: 'moon' } },
+          [],
+          mode,
+        );
+      const upgraded = await readState(mode);
+      expect(upgraded.types.filter((type) => type.id === 'feeding')).toHaveLength(1);
+      expect({
+        ...upgraded,
+        types: upgraded.types.filter((type) => type.id !== 'feeding'),
+      }).toEqual(legacy);
+      await persistAction(
+        { kind: 'typeAppearance', typeId: 'feeding', appearance: { icon: 'sun' } },
+        [],
+        mode,
+      );
+      const reloaded = await readState(mode);
+      expect(reloaded.types.find((type) => type.id === 'feeding')?.appearance).toEqual({
+        icon: 'sun',
+      });
+      expect(await readState(mode)).toEqual(reloaded);
+    },
+  );
 });

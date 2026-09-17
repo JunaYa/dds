@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../../App';
@@ -19,6 +19,50 @@ beforeEach(async () => {
 });
 const app = () => render(<App />);
 describe('journal application integration', () => {
+  it('saves feeding times and quantity, keeps invalid drafts, and displays the record after reload', async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(null, '', '/?view=library');
+    const first = app();
+    await user.click(await screen.findByRole('button', { name: '记一笔', exact: true }));
+    fireEvent.change(screen.getByLabelText('发生时间'), { target: { value: '' } });
+    await user.click(screen.getByRole('combobox', { name: '记录类型' }));
+    await user.click(await screen.findByRole('option', { name: '婴儿哺乳', exact: true }));
+    expect(screen.queryByLabelText('发生时间')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('combobox', { name: '喂养方式 *' }));
+    await screen.findByRole('option', { name: '混合喂养', exact: true });
+    for (const name of ['全母乳', '全奶粉', '混合喂养'])
+      expect(screen.getByRole('option', { name, exact: true })).toBeInTheDocument();
+    await user.click(screen.getByRole('option', { name: '混合喂养', exact: true }));
+    await user.type(screen.getByRole('textbox', { name: '标题（可选）' }), '夜间哺乳');
+    fireEvent.change(screen.getByLabelText('开始时间 *'), {
+      target: { value: '2026-09-16T23:50' },
+    });
+    fireEvent.change(screen.getByLabelText('结束时间 *'), {
+      target: { value: '2026-09-16T23:40' },
+    });
+    await user.type(screen.getByRole('spinbutton', { name: '喂养量（ml） *' }), '120');
+    await user.click(screen.getByRole('button', { name: '保存记录', exact: true }));
+    expect(await screen.findByText('结束时间不能早于开始时间')).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton', { name: '喂养量（ml） *' })).toHaveValue(120);
+    fireEvent.change(screen.getByLabelText('结束时间 *'), {
+      target: { value: '2026-09-17T00:15' },
+    });
+    await user.click(screen.getByRole('button', { name: '保存记录', exact: true }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    first.unmount();
+    app();
+    await user.click(
+      await screen.findByRole('button', { name: /夜间哺乳.*混合喂养.*120 ml/ }),
+    );
+    const detail = within(screen.getByRole('dialog'));
+    expect(detail.getByText('混合喂养')).toBeInTheDocument();
+    expect(detail.getByText(/2026.*23:50/)).toBeInTheDocument();
+    expect(detail.getByText(/2026.*00:15/)).toBeInTheDocument();
+    expect(detail.getByText('120 ml')).toBeInTheDocument();
+    const state = await storage.readState();
+    expect(state.records).toHaveLength(1);
+    expect(state.records[0].occurredAt).toBe(new Date('2026-09-16T23:50').toISOString());
+  });
   it('edits type appearance, keeps a failed draft, reloads and restores defaults', async () => {
     const user = userEvent.setup();
     window.history.replaceState(null, '', '/?view=types');

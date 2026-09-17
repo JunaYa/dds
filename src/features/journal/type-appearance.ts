@@ -34,6 +34,7 @@ export type TypeAppearance = z.infer<typeof appearanceSchema>;
 export function defaultTypeIcon(id: string): TypeAppearance['icon'] {
   switch (id) {
     case 'movement':
+    case 'feeding':
       return 'heart';
     case 'water':
       return 'sun';

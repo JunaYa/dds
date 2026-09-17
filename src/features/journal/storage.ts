@@ -1,6 +1,7 @@
 import {
   applyAction,
   createInitialState,
+  ensureBuiltInTypes,
   stateSchema,
   type Action,
   type Attachment,
@@ -36,11 +37,13 @@ export async function readState(mode: JournalDatabase = 'app'): Promise<JournalS
     let state: JournalState, error: unknown;
     request.onsuccess = () => {
       try {
-        state =
+        const stored =
           request.result === undefined
             ? createInitialState(new Date(), mode === 'example')
             : stateSchema.parse(request.result);
-        if (request.result === undefined) tx.objectStore('state').put(state, 'journal');
+        state = ensureBuiltInTypes(stored);
+        if (request.result === undefined || state !== stored)
+          tx.objectStore('state').put(state, 'journal');
       } catch (cause) {
         error = cause;
         tx.abort();
@@ -69,9 +72,13 @@ export async function persistAction(
     let next: JournalState, error: unknown;
     request.onsuccess = () => {
       try {
-        const current = stateSchema.parse(request.result);
+        const stored = stateSchema.parse(request.result);
+        const current = ensureBuiltInTypes(stored);
         next = applyAction(current, action);
-        if (next === current) return;
+        if (next === current) {
+          if (current !== stored) tx.objectStore('state').put(current, 'journal');
+          return;
+        }
         for (const { attachment, blob } of files) {
           if (blob.size > 20 * 1024 * 1024) throw new Error('单个附件不能超过 20 MB');
           tx.objectStore('files').put(blob, attachment.id);

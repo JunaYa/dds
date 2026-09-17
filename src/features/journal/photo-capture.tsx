@@ -52,7 +52,9 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
     [reminder, setReminder] = useState('30');
   const [title, setTitle] = useState(''),
     [occurredAt, setOccurredAt] = useState(localDateTime());
-  const [valuesByType, setValuesByType] = useState<Record<string, JournalRecord['values']>>({});
+  const [valuesByType, setValuesByType] = useState<Record<string, JournalRecord['values']>>(
+    {},
+  );
   const [ocr, setOCR] = useState<OcrState>(initialOCR),
     [error, setError] = useState('');
   const [cameraOpen, setCameraOpen] = useState(false),
@@ -304,11 +306,15 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
     if (!image || busy) return;
     setError('');
     try {
-      const target = mode === 'event' ? state.types.find((type) => type.id === 'event')! : type;
+      const target =
+        mode === 'event' ? state.types.find((type) => type.id === 'event')! : type;
       const field =
         target.fields.find((field) => field.kind === 'attachment' && field.required) ||
         target.fields.find((field) => field.kind === 'attachment');
-      if (target.fields.filter((field) => field.kind === 'attachment' && field.required).length > 1)
+      if (
+        target.fields.filter((field) => field.kind === 'attachment' && field.required)
+          .length > 1
+      )
         throw new Error(
           '这个类型需要多个附件，请先选择「图片记录」保存，再通过「记一笔」录入完整表单',
         );
@@ -321,8 +327,12 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
           mode === 'event'
             ? { place: event.place, address: event.address, note: event.note }
             : values,
-          mode === 'event' ? event.title.trim() : title.trim() || `图片记录 · ${image.file.name}`,
-          mode === 'event' ? new Date() : new Date(occurredAt),
+          mode === 'event'
+            ? event.title.trim()
+            : title.trim() || `图片记录 · ${image.file.name}`,
+          mode === 'event'
+            ? new Date()
+            : new Date(typeId === 'feeding' ? String(values.startedAt) : occurredAt),
         ),
         attachments: [file.attachment],
         source: image.source,
@@ -649,16 +659,18 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
                           }}
                         />
                       </FormField>
-                      <FormField label="发生时间" htmlFor="photo-occurred">
-                        <Input
-                          nativeInput
-                          id="photo-occurred"
-                          type="datetime-local"
-                          required
-                          value={occurredAt}
-                          onChange={(e) => setOccurredAt(e.target.value)}
-                        />
-                      </FormField>
+                      {typeId !== 'feeding' && (
+                        <FormField label="发生时间" htmlFor="photo-occurred">
+                          <Input
+                            nativeInput
+                            id="photo-occurred"
+                            type="datetime-local"
+                            required
+                            value={occurredAt}
+                            onChange={(e) => setOccurredAt(e.target.value)}
+                          />
+                        </FormField>
+                      )}
                       <RecordFields
                         type={type}
                         values={values}
