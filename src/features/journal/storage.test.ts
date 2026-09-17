@@ -5,6 +5,19 @@ import { newRecord } from './model';
 import { persistAction, readFile, readState } from './storage';
 
 describe('journal persistence', () => {
+  it('persists a type image and removes it without touching historical records', async () => {
+    const before = await readState();
+    const appearance = {
+      icon: 'image' as const,
+      background: { kind: 'image' as const, value: 'data:image/jpeg;base64,AQID' },
+    };
+    await persistAction({ kind: 'typeAppearance', typeId: 'note', appearance });
+    const after = await readState();
+    expect(after.types[0].appearance).toEqual(appearance);
+    expect(after.records).toEqual(before.records);
+    await persistAction({ kind: 'typeAppearance', typeId: 'note' });
+    expect((await readState()).types[0].appearance).toBeUndefined();
+  });
   it('stores the image and its record together and reloads them', async () => {
     await readState();
     const record = newRecord('photo', {}, '本地图片');
@@ -42,9 +55,9 @@ describe('journal persistence', () => {
     ];
     await Promise.all(records.map((record) => persistAction({ kind: 'record', record })));
     const after = await readState();
-    expect(records.every((record) => after.records.some((saved) => saved.id === record.id))).toBe(
-      true,
-    );
+    expect(
+      records.every((record) => after.records.some((saved) => saved.id === record.id)),
+    ).toBe(true);
   });
   it('does not retain attachments from a task already completed in another tab', async () => {
     await persistAction({
@@ -72,7 +85,9 @@ describe('journal persistence', () => {
     await persistAction({ kind: 'record', record: duplicate, completeTaskId: task.id }, [
       { attachment, blob: new Blob(['x']) },
     ]);
-    expect((await readState()).records.some((record) => record.id === duplicate.id)).toBe(false);
+    expect((await readState()).records.some((record) => record.id === duplicate.id)).toBe(
+      false,
+    );
     await expect(readFile(attachment.id)).rejects.toThrow('附件不可用');
   });
   it('isolates example records and attachments from the real application', async () => {

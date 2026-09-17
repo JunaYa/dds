@@ -89,6 +89,55 @@ body {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: calc(var(--spacing) * 6);
 }
+.journal-type-cover {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  min-height: 136px;
+  overflow: hidden;
+  padding: calc(var(--spacing) * 6);
+  background: var(--muted);
+  color: var(--foreground);
+}
+.journal-type-glyph {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  color: var(--foreground);
+}
+.journal-type-image,
+.journal-type-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.journal-type-scrim {
+  background: rgb(0 0 0 / 60%);
+}
+.journal-icon-options {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 2);
+}
+.journal-icon-options > button {
+  width: 100%;
+  min-height: 44px;
+}
+.journal-icon-options > button[aria-pressed='true'] {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 .journal-toast {
   position: fixed;
   z-index: calc(var(--z-layer-modal) + 5);
@@ -293,8 +342,9 @@ body {
     gap: calc(var(--spacing) * 2);
   }
   .journal-dialog {
-    height: calc(var(--journal-viewport-height, 100dvh) - env(safe-area-inset-top) - 24px);
-    max-height: calc(var(--journal-viewport-height, 100dvh) - env(safe-area-inset-top) - 24px);
+    grid-row: 1;
+    height: 100%;
+    max-height: 100%;
     padding-bottom: env(safe-area-inset-bottom);
   }
   .journal-dialog-form {
@@ -304,6 +354,8 @@ body {
     top: var(--journal-viewport-top, 0px);
     height: var(--journal-viewport-height, 100dvh);
     bottom: auto;
+    grid-template-rows: minmax(0, 1fr);
+    padding: max(env(safe-area-inset-top), 24px) 0 0;
   }
   .journal-view-tabs {
     display: none;

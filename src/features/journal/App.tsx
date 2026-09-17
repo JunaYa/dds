@@ -12,12 +12,20 @@ import { Badge } from '@vita/ui/badge';
 import { Input } from '@vita/ui/input';
 import { Icons } from '@vita/ui/icons';
 import { Tabs, TabsList, TabsTab, TabsPanel } from '@vita/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@vita/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@vita/ui/table';
 import { Choice } from './controls';
 import { Dialogs, type Modal } from './dialogs';
 import { useJournal, errorText } from './journal-context';
 import { useViewport } from './use-viewport';
 import { useNativeNavigation, type JournalPage } from './use-native-navigation';
+import { TypeCover, TypeGlyph } from './type-appearance-editor';
 import {
   formatDate,
   formatTime,
@@ -160,14 +168,11 @@ export default function App() {
     </Card>
   );
   const water = (
-    <Card>
-      <CardHeader>
-        <CardTitle>饮水记录</CardTitle>
-        <CardDescription>今天</CardDescription>
-        <CardAction>
-          <Icons.plus className="size-5 text-primary" />
-        </CardAction>
-      </CardHeader>
+    <Card className="pt-0">
+      <TypeCover
+        type={{ ...state.types.find((type) => type.id === 'water')!, name: '饮水记录' }}
+        description="今天"
+      />
       <CardContent className="space-y-5">
         <div>
           <strong className="text-5xl font-medium tabular-nums">
@@ -207,7 +212,11 @@ export default function App() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <Button className="w-full" variant="outline" onClick={() => setModal({ kind: 'capture' })}>
+        <Button
+          className="w-full"
+          variant="outline"
+          onClick={() => setModal({ kind: 'capture' })}
+        >
           <Icons.image />
           上传图片 / 拍照
         </Button>
@@ -282,7 +291,7 @@ export default function App() {
                 setQuery('');
               }}
             >
-              <span className="size-1.5 rounded-full bg-primary/60" />
+              <TypeGlyph type={type} />
               <span className="min-w-0 flex-1 truncate text-left">{type.name}</span>
               <span className="text-xs tabular-nums text-muted-foreground">
                 {state.records.filter((record) => record.typeId === type.id).length}
@@ -351,13 +360,19 @@ export default function App() {
             </div>
             <Button
               variant="primary"
-              onClick={() => setModal(page === 'types' ? { kind: 'type' } : { kind: 'record' })}
+              onClick={() =>
+                setModal(page === 'types' ? { kind: 'type' } : { kind: 'record' })
+              }
             >
               <Icons.plus />
               {page === 'types' ? '新建类型' : '记一笔'}
             </Button>
           </div>
-          <Tabs value={page} onValueChange={(value) => setPage(value as Page)} className="gap-0">
+          <Tabs
+            value={page}
+            onValueChange={(value) => setPage(value as Page)}
+            className="gap-0"
+          >
             {page !== 'types' && (
               <TabsList aria-label="记录视图" className="journal-view-tabs mb-6">
                 <TabsTab value="today">今天</TabsTab>
@@ -392,7 +407,11 @@ export default function App() {
             {page === 'board' && (
               <TabsPanel value="board">
                 <div className="mb-5 flex justify-end">
-                  <Button variant="outline" size="sm" onClick={() => setModal({ kind: 'board' })}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setModal({ kind: 'board' })}
+                  >
                     <Icons.settings2 />
                     管理卡片
                   </Button>
@@ -461,14 +480,11 @@ export default function App() {
           {page === 'types' && (
             <div className="journal-type-grid">
               {state.types.map((type) => (
-                <Card key={type.id}>
-                  <CardHeader>
-                    <CardTitle>{type.name}</CardTitle>
-                    <CardDescription>
-                      {type.fields.length} 个字段 ·{' '}
-                      {state.records.filter((record) => record.typeId === type.id).length} 条记录
-                    </CardDescription>
-                  </CardHeader>
+                <Card key={type.id} className="pt-0">
+                  <TypeCover
+                    type={type}
+                    description={`${type.fields.length} 个字段 · ${state.records.filter((record) => record.typeId === type.id).length} 条记录`}
+                  />
                   <CardContent className="space-y-5">
                     <div className="flex flex-wrap gap-2">
                       {type.fields.map((field) => (
@@ -479,13 +495,21 @@ export default function App() {
                         </Badge>
                       ))}
                     </div>
-                    <Button
-                      variant="outline"
-                      onClick={() => setModal({ kind: 'record', typeId: type.id })}
-                    >
-                      使用这个类型
-                      <Icons.arrowRight />
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setModal({ kind: 'record', typeId: type.id })}
+                      >
+                        使用这个类型 <Icons.arrowRight />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        aria-label={`编辑${type.name}外观`}
+                        onClick={() => setModal({ kind: 'appearance', typeId: type.id })}
+                      >
+                        <Icons.palette /> 编辑外观
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -501,7 +525,11 @@ export default function App() {
 function Empty({ text }: { text: string }) {
   return <p className="py-10 text-center text-sm text-muted-foreground">{text}</p>;
 }
-function Counter({ onAction }: { onAction: (action: Action, message?: string) => Promise<void> }) {
+function Counter({
+  onAction,
+}: {
+  onAction: (action: Action, message?: string) => Promise<void>;
+}) {
   const { state, busy } = useJournal();
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -509,16 +537,15 @@ function Counter({ onAction }: { onAction: (action: Action, message?: string) =>
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, [state.session?.start]);
-  const seconds = state.session ? Math.max(0, Math.floor((now - state.session.start) / 1000)) : 0;
+  const seconds = state.session
+    ? Math.max(0, Math.floor((now - state.session.start) / 1000))
+    : 0;
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>胎动计数</CardTitle>
-        <CardDescription>{state.session ? '本次正在记录' : '随时开始一段记录'}</CardDescription>
-        <CardAction>
-          <Icons.heart className="size-5 text-primary" />
-        </CardAction>
-      </CardHeader>
+    <Card className="pt-0">
+      <TypeCover
+        type={{ ...state.types.find((type) => type.id === 'movement')!, name: '胎动计数' }}
+        description={state.session ? '本次正在记录' : '随时开始一段记录'}
+      />
       <CardContent className="space-y-5">
         <div className="flex items-end justify-between">
           <div>
@@ -568,7 +595,9 @@ function Counter({ onAction }: { onAction: (action: Action, message?: string) =>
             </Button>
           </div>
         )}
-        <p className="text-xs leading-6 text-muted-foreground">每次点击，都留下一次时间记录。</p>
+        <p className="text-xs leading-6 text-muted-foreground">
+          每次点击，都留下一次时间记录。
+        </p>
       </CardContent>
     </Card>
   );
@@ -582,11 +611,11 @@ function MetricCard({ card, onRecord }: { card: BoardCard; onRecord: () => void 
     ? records.reduce((sum, record) => sum + Number(record.values[field.id] || 0), 0)
     : records.length;
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{type.name}</CardTitle>
-        <CardDescription>今日{field ? `${field.name}合计` : '记录条数'}</CardDescription>
-      </CardHeader>
+    <Card className="pt-0">
+      <TypeCover
+        type={type}
+        description={`今日${field ? `${field.name}合计` : '记录条数'}`}
+      />
       <CardContent className="space-y-5">
         <div>
           <strong className="text-5xl font-medium tabular-nums">{value}</strong>
@@ -625,10 +654,14 @@ function RecordList({
   );
   const pages = Math.max(1, Math.ceil(filtered.length / 10)),
     current = Math.min(page, pages - 1);
-  const visible = compact ? filtered.slice(0, 4) : filtered.slice(current * 10, current * 10 + 10);
+  const visible = compact
+    ? filtered.slice(0, 4)
+    : filtered.slice(current * 10, current * 10 + 10);
   if (!visible.length)
     return (
-      <Empty text={query ? '没有找到匹配记录，试试别的关键词。' : '还没有记录，从第一笔开始。'} />
+      <Empty
+        text={query ? '没有找到匹配记录，试试别的关键词。' : '还没有记录，从第一笔开始。'}
+      />
     );
   return (
     <>
@@ -649,6 +682,7 @@ function RecordList({
                   variant="ghost"
                   onClick={() => onOpen(record)}
                 >
+                  <TypeGlyph type={state.types.find((type) => type.id === record.typeId)} />
                   <span className="min-w-0">
                     <span className="line-clamp-2 break-words text-sm">{record.title}</span>
                     <span className="mt-1 line-clamp-1 break-all text-xs font-normal text-muted-foreground">

@@ -88,7 +88,10 @@ export function RecordFields({
                 value={String(values[field.id] ?? '')}
                 options={[
                   { value: '', label: '请选择' },
-                  ...(field.options || []).map((option) => ({ value: option, label: option })),
+                  ...(field.options || []).map((option) => ({
+                    value: option,
+                    label: option,
+                  })),
                 ]}
                 onChange={change}
               />
@@ -108,7 +111,11 @@ export function RecordFields({
                   id={`${prefix}-${field.id}`}
                   nativeInput
                   type={
-                    field.kind === 'number' ? 'number' : field.kind === 'date' ? 'date' : 'text'
+                    field.kind === 'number'
+                      ? 'number'
+                      : field.kind === 'date'
+                        ? 'date'
+                        : 'text'
                   }
                   step={field.kind === 'number' ? 'any' : undefined}
                   value={values[field.id] ?? ''}
@@ -130,12 +137,20 @@ export function FormError({ message }: { message: string }) {
     </Alert>
   ) : null;
 }
-export function SubmitFooter({ label = '保存记录', hint }: { label?: string; hint?: string }) {
+export function SubmitFooter({
+  label = '保存记录',
+  hint,
+  disabled,
+}: {
+  label?: string;
+  hint?: string;
+  disabled?: boolean;
+}) {
   const { busy } = useJournal();
   return (
     <DialogFooter className="items-center">
       <p className="mr-auto text-xs text-muted-foreground">{hint || '保存在此设备'}</p>
-      <Button type="submit" variant="primary" loading={busy}>
+      <Button type="submit" variant="primary" loading={busy} disabled={disabled}>
         {label}
         <Icons.check />
       </Button>

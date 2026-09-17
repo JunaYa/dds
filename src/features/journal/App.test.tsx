@@ -19,6 +19,60 @@ beforeEach(async () => {
 });
 const app = () => render(<App />);
 describe('journal application integration', () => {
+  it('edits type appearance, keeps a failed draft, reloads and restores defaults', async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(null, '', '/?view=types');
+    const first = app();
+    await user.click(await screen.findByRole('button', { name: '编辑随手记外观' }));
+    await user.click(screen.getByRole('button', { name: '爱心图标' }));
+    await user.click(screen.getByRole('button', { name: '深林背景' }));
+    vi.spyOn(storage, 'persistAction').mockRejectedValueOnce(new Error('存储已满'));
+    await user.click(screen.getByRole('button', { name: '保存外观' }));
+    expect(await screen.findByText('存储已满')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '爱心图标' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await user.click(screen.getByRole('button', { name: '保存外观' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    first.unmount();
+    app();
+    await user.click(await screen.findByRole('button', { name: '编辑随手记外观' }));
+    expect(screen.getByRole('button', { name: '爱心图标' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: '深林背景' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await user.click(screen.getByRole('button', { name: '恢复默认外观' }));
+    await user.click(screen.getByRole('button', { name: '保存外观' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect((await storage.readState()).types[0].appearance).toBeUndefined();
+  });
+  it('saves a new type with appearance and discards cancelled appearance edits', async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(null, '', '/?view=types');
+    app();
+    await user.click(await screen.findByRole('button', { name: '新建记录类型' }));
+    await user.type(screen.getByRole('textbox', { name: '类型名称' }), '阅读');
+    await user.click(screen.getByRole('button', { name: '月亮图标' }));
+    await user.click(screen.getByRole('button', { name: '晴空背景' }));
+    await user.click(screen.getByRole('button', { name: '创建记录类型' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    const saved = (await storage.readState()).types.find((type) => type.name === '阅读')!;
+    expect(saved.appearance).toEqual({
+      icon: 'moon',
+      background: { kind: 'color', value: '#DBE8F4' },
+    });
+    await user.click(screen.getByRole('button', { name: '编辑阅读外观' }));
+    await user.click(screen.getByRole('button', { name: '爱心图标' }));
+    await user.click(screen.getByRole('button', { name: '关闭弹窗' }));
+    expect((await storage.readState()).types.find((type) => type.id === saved.id)).toEqual(
+      saved,
+    );
+  });
   it('starts with useful types and no demonstration records or reminders', async () => {
     app();
     await screen.findByRole('button', { name: '记一笔', exact: true });
@@ -54,7 +108,9 @@ describe('journal application integration', () => {
     vi.spyOn(storage, 'persistAction').mockRejectedValueOnce(new Error('存储已满'));
     await user.click(screen.getByRole('button', { name: '保存记录', exact: true }));
     expect(await screen.findByText('存储已满')).toBeInTheDocument();
-    expect(screen.getByRole('textbox', { name: '内容 *' })).toHaveValue('存储失败也不要丢失。');
+    expect(screen.getByRole('textbox', { name: '内容 *' })).toHaveValue(
+      '存储失败也不要丢失。',
+    );
     await user.click(screen.getByRole('button', { name: '保存记录', exact: true }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(

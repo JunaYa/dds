@@ -1,8 +1,44 @@
 import { describe, expect, it } from 'vitest';
-import { applyAction, createInitialState, newRecord } from './model';
+import { applyAction, createInitialState, newRecord, stateSchema } from './model';
 
 const now = new Date('2026-09-16T09:00:00+08:00');
 describe('journal workflows', () => {
+  it('updates and resets type appearance without changing existing fields or records', () => {
+    const state = createInitialState(now, true);
+    const appearance = {
+      icon: 'heart' as const,
+      background: { kind: 'color' as const, value: '#245A46' },
+    };
+    const next = applyAction(state, { kind: 'typeAppearance', typeId: 'note', appearance });
+    expect(next.types[0].appearance).toEqual(appearance);
+    expect(next.types[0].fields).toEqual(state.types[0].fields);
+    expect(next.records).toEqual(state.records);
+    expect(stateSchema.parse(next).types[0].appearance).toEqual(appearance);
+    expect(
+      applyAction(next, { kind: 'typeAppearance', typeId: 'note' }).types[0].appearance,
+    ).toBeUndefined();
+    expect(stateSchema.parse(state)).toEqual(state);
+  });
+  it('rejects unsafe backgrounds and missing type IDs', () => {
+    const state = createInitialState(now);
+    expect(() => applyAction(state, { kind: 'typeAppearance', typeId: 'missing' })).toThrow(
+      '类型不存在',
+    );
+    expect(() =>
+      stateSchema.parse({
+        ...state,
+        types: [
+          {
+            ...state.types[0],
+            appearance: {
+              icon: 'book',
+              background: { kind: 'image', value: 'https://example.com/image.png' },
+            },
+          },
+        ],
+      }),
+    ).toThrow();
+  });
   it('completes a recurring task once and skips missed fixed intervals', () => {
     const state = createInitialState(now, true);
     const task = state.tasks.find((task) => task.planId)!;
@@ -13,7 +49,9 @@ describe('journal workflows', () => {
       completeTaskId: task.id,
     };
     const next = applyAction(state, action, at);
-    expect(next.tasks.filter((task) => task.planId && task.status === 'pending')).toHaveLength(1);
+    expect(
+      next.tasks.filter((task) => task.planId && task.status === 'pending'),
+    ).toHaveLength(1);
     expect(new Date(next.tasks.at(-1)!.due).getTime()).toBe(
       new Date(task.due).getTime() + 9 * 3600000,
     );
@@ -61,7 +99,11 @@ describe('journal workflows', () => {
     ).toThrow();
   });
   it('records count timestamps, undoes once, then saves one session', () => {
-    let state = applyAction(createInitialState(now), { kind: 'session', operation: 'start' }, now);
+    let state = applyAction(
+      createInitialState(now),
+      { kind: 'session', operation: 'start' },
+      now,
+    );
     for (const operation of ['count', 'count', 'undo', 'finish'] as const)
       state = applyAction(state, { kind: 'session', operation }, now);
     expect(state.session).toBeNull();

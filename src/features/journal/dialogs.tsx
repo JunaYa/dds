@@ -15,7 +15,14 @@ import { Icons } from '@vita/ui/icons';
 import { Alert, AlertDescription } from '@vita/ui/alert';
 import { Label } from '@vita/ui/label';
 import { useJournal, errorText } from './journal-context';
-import { Choice, FormField, RecordFields, FormError, SubmitFooter, pendingFile } from './controls';
+import {
+  Choice,
+  FormField,
+  RecordFields,
+  FormError,
+  SubmitFooter,
+  pendingFile,
+} from './controls';
 import {
   formatDate,
   formatTime,
@@ -30,14 +37,18 @@ import {
 import { type PendingFile } from './storage';
 import { PhotoCapture } from './photo-capture';
 import { FileDownload } from './file-download';
+import { TypeAppearanceEditor, TypeCover } from './type-appearance-editor';
+import type { TypeAppearance } from './type-appearance';
 
 export type Modal =
   | { kind: 'capture' | 'type' | 'plan' | 'board' | 'reminders' }
   | { kind: 'record'; typeId?: string; taskId?: string }
+  | { kind: 'appearance'; typeId: string }
   | { kind: 'detail'; recordId: string };
 const titles = {
   capture: '图片速记',
   type: '组装一种记录',
+  appearance: '编辑类型外观',
   plan: '循环计划',
   board: '管理看板卡片',
   reminders: '提醒与安排',
@@ -67,10 +78,17 @@ export function Dialogs({ modal, onClose }: { modal: Modal | null; onClose: () =
           </DialogDescription>
         </DialogHeader>
         {modal?.kind === 'record' && (
-          <RecordForm key={`${modal.typeId}-${modal.taskId}`} modal={modal} onClose={onClose} />
+          <RecordForm
+            key={`${modal.typeId}-${modal.taskId}`}
+            modal={modal}
+            onClose={onClose}
+          />
         )}
         {modal?.kind === 'capture' && <PhotoCapture onClose={onClose} />}
         {modal?.kind === 'type' && <TypeForm onClose={onClose} />}
+        {modal?.kind === 'appearance' && (
+          <AppearanceForm key={modal.typeId} typeId={modal.typeId} onClose={onClose} />
+        )}
         {modal?.kind === 'plan' && <PlanForm onClose={onClose} />}
         {modal?.kind === 'board' && <BoardForm onClose={onClose} />}
         {modal?.kind === 'reminders' && <Reminders />}
@@ -104,7 +122,12 @@ function RecordForm({
     setError('');
     try {
       const record = {
-        ...newRecord(typeId, values, title.trim() || `${type.name}记录`, new Date(occurredAt)),
+        ...newRecord(
+          typeId,
+          values,
+          title.trim() || `${type.name}记录`,
+          new Date(occurredAt),
+        ),
         attachments: [...attachments, ...files.map((file) => file.attachment)],
       };
       await save({ kind: 'record', record, completeTaskId: task?.id }, files);
@@ -224,6 +247,8 @@ function TypeForm({ onClose }: { onClose: () => void }) {
   const { save, busy, notify } = useJournal();
   const [name, setName] = useState(''),
     [error, setError] = useState('');
+  const [appearance, setAppearance] = useState<TypeAppearance>();
+  const [processing, setProcessing] = useState(false);
   const [fields, setFields] = useState<RecordField[]>([
     { id: uid(), name: '内容', kind: 'text', required: true },
   ]);
@@ -240,12 +265,14 @@ function TypeForm({ onClose }: { onClose: () => void }) {
   };
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (processing) return;
     try {
       await save({
         kind: 'type',
         type: {
           id: uid(),
           name: name.trim(),
+          appearance,
           fields: fields.map((field) => ({
             ...field,
             name: field.name.trim(),
@@ -273,6 +300,12 @@ function TypeForm({ onClose }: { onClose: () => void }) {
                 placeholder="例如：植物养护"
               />
             </FormField>
+            <TypeAppearanceEditor
+              typeId=""
+              value={appearance}
+              onChange={setAppearance}
+              onProcessingChange={setProcessing}
+            />
             {fields.map((field, index) => (
               <div className="space-y-4 rounded-xl border p-4" key={field.id}>
                 <div className="flex items-center justify-between">
@@ -350,7 +383,7 @@ function TypeForm({ onClose }: { onClose: () => void }) {
           </div>
           <aside className="h-fit space-y-5 rounded-xl bg-muted p-5">
             <p className="text-xs text-muted-foreground">表单预览</p>
-            <h3 className="text-xl font-medium">{name || '你的记录类型'}</h3>
+            <TypeCover type={{ id: '', name: name || '你的记录类型', appearance }} />
             {fields.map((field) => (
               <div className="space-y-2" key={field.id}>
                 <p className="text-sm">
@@ -366,7 +399,52 @@ function TypeForm({ onClose }: { onClose: () => void }) {
           </aside>
         </fieldset>
       </DialogPanel>
-      <SubmitFooter label="创建记录类型" hint="字段组成类型，类型定义你的记录" />
+      <SubmitFooter
+        label="创建记录类型"
+        hint="字段组成类型，类型定义你的记录"
+        disabled={processing}
+      />
+    </form>
+  );
+}
+
+function AppearanceForm({ typeId, onClose }: { typeId: string; onClose: () => void }) {
+  const { state, save, busy, notify } = useJournal();
+  const type = state.types.find((type) => type.id === typeId)!;
+  const [appearance, setAppearance] = useState(type.appearance);
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState('');
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    if (processing) return;
+    setError('');
+    try {
+      await save({ kind: 'typeAppearance', typeId, appearance });
+      notify(`已更新「${type.name}」的外观`);
+      onClose();
+    } catch (cause) {
+      setError(errorText(cause));
+    }
+  }
+  return (
+    <form className="journal-dialog-form" onSubmit={submit}>
+      <DialogPanel>
+        <fieldset disabled={busy} className="min-w-0 space-y-5">
+          <TypeCover type={{ ...type, appearance }} description="外观预览" />
+          <TypeAppearanceEditor
+            typeId={typeId}
+            value={appearance}
+            onChange={setAppearance}
+            onProcessingChange={setProcessing}
+          />
+          <FormError message={error} />
+        </fieldset>
+      </DialogPanel>
+      <SubmitFooter
+        label="保存外观"
+        hint="应用到此类型，已有记录一同更新"
+        disabled={processing}
+      />
     </form>
   );
 }
@@ -503,7 +581,9 @@ function BoardForm({ onClose }: { onClose: () => void }) {
               variant="outline"
               onClick={() => {
                 if (
-                  cards.some((card) => card.typeId === typeId && (card.fieldId || '') === fieldId)
+                  cards.some(
+                    (card) => card.typeId === typeId && (card.fieldId || '') === fieldId,
+                  )
                 ) {
                   setError('这张统计卡片已经添加');
                   return;
@@ -548,11 +628,15 @@ function Reminders() {
           <AlertDescription>以下为应用内安排，不发送系统通知。</AlertDescription>
         </Alert>
         {pendingTasks(state).map((task) => (
-          <div className="flex items-center justify-between gap-3 border-b pb-4" key={task.id}>
+          <div
+            className="flex items-center justify-between gap-3 border-b pb-4"
+            key={task.id}
+          >
             <div className="min-w-0">
               <h3 className="break-words font-medium">{task.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                {formatDate(task.remindAt || task.due)} {formatTime(task.remindAt || task.due)}
+                {formatDate(task.remindAt || task.due)}{' '}
+                {formatTime(task.remindAt || task.due)}
                 {task.reminderDisabled ? ' · 不提醒' : ''}
               </p>
             </div>
@@ -587,6 +671,7 @@ function RecordDetail({ recordId }: { recordId: string }) {
   return (
     <DialogPanel>
       <div className="space-y-5">
+        <TypeCover type={type} />
         <h3 className="break-words text-xl font-medium">{record.title}</h3>
         <p className="text-sm text-muted-foreground">
           {formatDate(record.occurredAt)} {formatTime(record.occurredAt)} · {type.name}
@@ -612,7 +697,9 @@ function RecordDetail({ recordId }: { recordId: string }) {
               </div>
             ))}
         </dl>
-        {record.source && <p className="text-xs text-muted-foreground">来源：{record.source}</p>}
+        {record.source && (
+          <p className="text-xs text-muted-foreground">来源：{record.source}</p>
+        )}
         {record.ocrText && (
           <details>
             <summary className="cursor-pointer text-sm">图片识别原文</summary>

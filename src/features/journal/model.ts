@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { appearanceSchema, type TypeAppearance } from './type-appearance';
 
 const fieldSchema = z.object({
   id: z.string(),
@@ -12,6 +13,7 @@ const typeSchema = z.object({
   id: z.string(),
   name: z.string().trim().min(1),
   fields: z.array(fieldSchema).min(1),
+  appearance: appearanceSchema.optional(),
 });
 const attachmentSchema = z.object({
   id: z.string(),
@@ -80,6 +82,7 @@ export type Action =
       event?: { due: string; reminder: number | null };
     }
   | { kind: 'type'; type: RecordType }
+  | { kind: 'typeAppearance'; typeId: string; appearance?: TypeAppearance }
   | { kind: 'plan'; plan: Plan }
   | { kind: 'session'; operation: 'start' | 'count' | 'undo' | 'finish' }
   | { kind: 'board'; hiddenCards: string[]; cards: BoardCard[] }
@@ -339,6 +342,12 @@ export function applyAction(state: JournalState, action: Action, now = new Date(
           });
         }
       }
+      break;
+    }
+    case 'typeAppearance': {
+      const type = next.types.find((type) => type.id === action.typeId);
+      if (!type) throw new Error('记录类型不存在');
+      type.appearance = appearanceSchema.optional().parse(action.appearance);
       break;
     }
     case 'type': {
