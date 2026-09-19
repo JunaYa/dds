@@ -1,39 +1,52 @@
-# DDS · 日日记
+# Little days
 
-A local journal for desktop, iOS and Android, built with Tauri 2, React 19 and the project's shared `@vita/ui` components and styles.
+A local-first care journal for children aged 0–6, built with React, TypeScript, Tauri 2, and the shared Vita design system. Desktop, iOS, and Android use the same application entry at `/`.
 
-The main application supports configurable record types, recurring tasks, dashboard counters, media attachments and on-device image recognition for creating events. Records and attachments persist locally. The example at `/examples/journal/` shares the implementation and uses a separate database with demonstration data.
+Create a child profile, record feeding, diaper changes, sleep, bathing, vaccinations, growth, and vitamins. Build custom record types from timers, counters, measurements, choices, notes, and dates. Track family supplies with refill thresholds. Search history, edit records, delete with Undo, and resume active timers after reopening the app.
 
-## Run
+## Development
 
 ```sh
 pnpm install
-pnpm dev                 # Main application in a browser
-pnpm dev:journal         # Example with demonstration data
-pnpm dev:desktop         # Native desktop app
-pnpm init:ios
-pnpm dev:ios
-pnpm init:android
+pnpm dev                 # Browser: http://localhost:1420
+pnpm dev:desktop         # Tauri desktop
+pnpm init:ios            # Once, with Xcode installed
+pnpm dev:ios             # Select a simulator/device
+pnpm init:android        # Once, with Android SDK/NDK installed
 pnpm dev:android
 ```
 
-Native mobile development requires the platform SDKs. See [platform setup, build commands and limitations](docs/journal-platforms.md) and [the journal workflows](examples/journal/README.md).
+To select the simulator directly: `pnpm dev:ios 'iPhone 17 Pro'`. Close another development process using port 1420 before launching. No example URL or configuration override is required.
 
-## Verify
+## Verification and builds
 
 ```sh
 pnpm typecheck
 pnpm test
 pnpm build
-cargo test --manifest-path src-tauri/Cargo.toml --lib
+pnpm build:desktop
+pnpm build:ios:sim
+pnpm build:android
 ```
+
+Native builds require the corresponding SDK. Device signing and store distribution require platform-specific setup.
+
+For SDK paths, standalone APK builds, and USB installation, see [Android physical-device development](docs/android-device.md).
 
 ## Structure
 
-- `src/features/journal/`: shared domain model, persistence, OCR and application UI.
-- `src/App.tsx`: production entry; starts with an empty journal.
-- `examples/journal/`: thin demo entry; preserves the existing example database.
-- `packages/`: local UI components, tokens and styles. [Design system notes](docs/design-system-migration.md).
-- `src-tauri/`: native host and mobile platform configuration.
+- `src/main.tsx`, `src/App.tsx`: single application entry.
+- `src/features/little-days/model.ts`: validated, versioned domain schema and date/timer helpers.
+- `src/features/little-days/storage.ts`: local persistence boundary.
+- `src/features/little-days/store.tsx`: record, profile, type, stock, and timer actions.
+- `src/features/little-days/`: responsive Focus interface and typed forms.
+- `packages/`: shared UI, typography, tokens, and styles.
+- `src-tauri/`: desktop, iOS, and Android hosts.
 
-Data stays on each device; there is no cloud sync. Reminders currently appear inside the app and do not run as background system notifications. OCR downloads its engine and language packs on first use; images are processed locally. Store signing, real-device camera validation and distribution are separate from local builds.
+`examples/` has been removed. Earlier Journal and Collage modules and unrelated prototypes remain as historical work, disconnected from the shipped entry. Their tests remain intact. The Little days prototype has been promoted and removed.
+
+## Data and current boundaries
+
+New installations start empty; no fictional children or medical records are inserted. Data uses the versioned `little-days.workspace.v1` local-storage key. Writes validate the full workspace; failed saves preserve the form, and unreadable data is never silently reset. Timers persist their start timestamps and paused duration; elapsed time is recalculated after reopening. Each browser origin and each native installation has its own storage. This is not encrypted storage or a backup service; uninstalling or clearing app data removes records. Old Journal/Collage storage is not imported or deleted.
+
+LocalStorage is the first persistence adapter. Cloud sync, backup/export/import, profile editing, notifications, widgets, Live Activities, and store release setup are not implemented. Timers do not require a continuously running WebView, but there are no background notifications. Vaccination and vitamin entries record caregiver input; the app does not prescribe schedules or dosage.

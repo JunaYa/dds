@@ -1,37 +1,27 @@
-# DDS · 日日记
+# Little days
 
-面向 desktop、iOS 和 Android 的本地记事应用，使用 Tauri 2、React 19、TypeScript，以及项目现有的 `@vita/ui` 组件和共享样式。
+面向 0–6 岁儿童的本地日常照护记录应用，使用 Tauri 2、React、TypeScript 和 Vita 设计系统。桌面、iOS、Android 共用 `/` 正式入口。
 
-正式主入口已经接入记事工作台：自定义记录类型、循环任务、图片识别创建事件、文本与媒体附件、胎动计数、饮水与自定义统计看板。记录和附件保存在设备本地，重启后保留。
-
-## 开发
+支持儿童档案、喂养、排便/换尿布、睡眠、洗澡、疫苗、成长、维生素记录；自定义记录可组合计时、计数、测量、选项、文本、日期字段；支持家庭用品库存与补货阈值。
 
 ```sh
 pnpm install
-pnpm dev                  # 浏览器正式应用
-pnpm dev:journal          # 带演示数据的 example
-pnpm dev:desktop          # 桌面原生应用
-pnpm init:ios
-pnpm dev:ios
-pnpm init:android
+pnpm dev
+pnpm dev:desktop
+pnpm dev:ios 'iPhone 17 Pro'
 pnpm dev:android
 ```
 
-iOS 和 Android 需要对应 SDK、工具链和真机签名配置。详细说明见[三端开发与构建](docs/journal-platforms.md)。
+首次使用原生平台需要安装 SDK 并执行 `pnpm init:ios` 或 `pnpm init:android`。所有平台直接打开正式入口，不再使用 examples 或原型 URL。
 
-## 检查
+Android 真机所需的 SDK 路径、独立 APK 构建与 USB 安装步骤见 [Android 真机开发](docs/android-device.md)。
 
 ```sh
 pnpm typecheck
 pnpm test
 pnpm build
-cargo test --manifest-path src-tauri/Cargo.toml --lib
 ```
 
-## 代码结构
+正式代码位于 `src/features/little-days/`。新安装从空档案开始，记录、类型、库存和计时状态保存在设备本地，重启可恢复。没有云同步；清除应用数据或卸载会丢失记录。旧 Journal/Collage 数据不会自动迁移或删除。
 
-功能实现在 `src/features/journal/`；`src/App.tsx` 使用空白正式数据库，`examples/journal/main.tsx` 使用独立的演示数据库。两者复用同一套功能和样式，原有 example 数据继续保留。
-
-[示例说明](examples/journal/README.md)包含组合模型和操作流程。[设计系统迁移说明](docs/design-system-migration.md)记录共享组件来源。旧任务面板保留在 `src/TaskApp.tsx`；`proto/` 中的独立原型不参与应用构建。
-
-当前没有云同步或完整备份恢复；提醒只在应用内展示，尚未接入关闭应用后的系统通知。OCR 首次使用需要下载引擎和语言包，图片在本机处理。应用商店发布签名、真机拍照和后台生命周期需要另行验收。
+examples 已移除；旧功能源码与无关原型保留历史开发内容，不接入正式构建入口。小组件、Live Activities、后台通知、数据导入导出和商店发布配置尚未实现。完整结构与边界见 [README](README.md)。
