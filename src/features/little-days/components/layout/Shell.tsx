@@ -1,7 +1,8 @@
 import { type ReactNode } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
-import { type Page } from "../../state/workspace-types";
+import { PageNavigation } from "./PageNavigation";
+import { MobileNavigation } from "./MobileNavigation";
 import { Icon } from "../common/Icon";
 import { NursingTimer } from "../nursing/NursingTimer";
 import { NursingMiniBar } from "../nursing/NursingMiniBar";
@@ -10,7 +11,6 @@ import { SaveError } from "../common/SaveError";
 import { SessionBanner } from "../timers/SessionBanner";
 import { WorkspaceModal } from "../dialogs/WorkspaceModal";
 
-const pages: Page[] = ["Today", "Supplies", "Record types", "Settings"];
 
 export function Shell({ children }: { children: ReactNode }) {
   const a = useApp();
@@ -26,19 +26,7 @@ export function Shell({ children }: { children: ReactNode }) {
             </strong>
           </div>
           <ChildPicker />
-          <nav aria-label="Main navigation">
-            {pages.map((page, i) => (
-              <button
-                key={page}
-                className={a.page === page ? "active" : ""}
-                aria-current={a.page === page ? "page" : undefined}
-                onClick={() => a.setPage(page)}
-              >
-                <Icon name={["book", "box", "spark", "settings"][i]} />
-                {page}
-              </button>
-            ))}
-          </nav>
+          <PageNavigation />
           <div className="side-note">
             <span className="tiny-title">THE LITTLE THINGS ADD UP</span>
             <p>
@@ -50,20 +38,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
         </aside>
         <main>
-          <div className="mobile-profile">
-            <ChildPicker />
-          </div>
-          <nav className="mobile-nav" aria-label="Mobile navigation">
-            {pages.map((page) => (
-              <button
-                key={page}
-                aria-pressed={a.page === page}
-                onClick={() => a.setPage(page)}
-              >
-                {page}
-              </button>
-            ))}
-          </nav>
+          <MobileNavigation />
           <header className="page-heading">
             <div>
               <div className="eyebrow">

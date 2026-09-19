@@ -1,0 +1,57 @@
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow-y: auto;
+  padding-top: max(34px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding-left: max(20px, env(safe-area-inset-left));
+}
+.app-frame { overflow: clip; }
+.page-navigation button {
+  min-height: 44px;
+  width: 100%;
+  font-weight: 500;
+  color: var(--foreground);
+  transition: background-color 150ms ease-out, color 150ms ease-out, transform 150ms ease-out;
+}
+.page-navigation button:active { transform: scale(.96); }
+.page-navigation svg, .navigation-toggle svg { pointer-events: none; }
+.mobile-toolbar { display: none; }
+.navigation-toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--foreground);
+  background: var(--card);
+}
+.navigation-drawer[data-slot="sheet-popup"] {
+  width: min(310px, calc(100vw - 48px));
+  max-width: none;
+  height: 100dvh;
+  overflow-y: auto;
+  padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  background: var(--sidebar);
+  transition-property: opacity, translate;
+  transition-timing-function: ease-out;
+}
+.navigation-drawer-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.navigation-description { margin: 8px 0 28px; }
+.navigation-device-note { margin-top: auto; padding-top: 40px; color: var(--muted-foreground); font-size: 12px; }
+@media (hover: hover) and (pointer: fine) {
+  .page-navigation button:hover { background: var(--sidebar-accent); }
+}
+@media (max-width: 760px) {
+  .mobile-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .mobile-profile { flex: 1; min-width: 0; }
+  .mobile-profile .child-picker { margin: 0; padding: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-navigation button, .navigation-drawer[data-slot="sheet-popup"] { transition: none; }
+  .page-navigation button:active { transform: none; }
+}

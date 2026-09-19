@@ -143,12 +143,6 @@
 .onboarding-settings-link {
   float: right;
 }
-.mobile-nav {
-  flex-wrap: wrap;
-}
-.mobile-nav button {
-  flex: 1 0 auto;
-}
 @media (hover: hover) and (pointer: fine) {
   .theme-option:hover {
     box-shadow: 0 0 0 2px var(--foreground);

@@ -160,11 +160,11 @@ h3 {
   min-height: 44px;
   font-size: 16px !important;
 }
-.sidebar nav {
+.page-navigation {
   display: grid;
   gap: 6px;
 }
-.sidebar nav button {
+.page-navigation button {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -175,12 +175,12 @@ h3 {
   text-align: left;
   font-size: 14px;
 }
-.sidebar nav button.active {
+.page-navigation button.active {
   background: var(--card);
   color: var(--primary);
   box-shadow: 0 1px 3px #00000005;
 }
-.sidebar nav small {
+.page-navigation small {
   margin-left: auto;
   background: var(--secondary);
   padding: 2px 7px;
@@ -745,35 +745,6 @@ main {
   border-radius: 8px;
   font-size: 13px;
 }
-.mobile-profile,
-.mobile-nav {
-  display: none;
-}
-.mobile-profile .child-picker {
-  margin: 0 0 20px;
-  width: 100%;
-}
-.mobile-profile .child-picker select {
-  max-width: none;
-}
-.mobile-nav {
-  gap: 6px;
-  padding: 4px;
-  background: var(--background);
-  border-radius: 10px;
-  margin-bottom: 28px;
-}
-.mobile-nav button {
-  flex: 1;
-  font-size: 12px;
-  border: 0;
-  border-radius: 7px;
-  background: none;
-}
-.mobile-nav button[aria-pressed="true"] {
-  background: var(--card);
-  color: var(--primary);
-}
 @media (hover: hover) and (pointer: fine) {
   .record-content:hover strong {
     text-decoration: underline;
@@ -809,10 +780,6 @@ main {
   }
   main {
     padding: 20px;
-  }
-  .mobile-profile,
-  .mobile-nav {
-    display: flex;
   }
   .page-heading {
     display: block;
