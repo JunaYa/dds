@@ -5,7 +5,7 @@ use tauri::{
 use crate::window;
 
 pub fn create_tray(app: &mut tauri::App) -> Result<(), tauri::Error> {
-    let open = MenuItem::with_id(app, "open", "打开日日记", true, None::<&str>)?;
+    let open = MenuItem::with_id(app, "open", "打开 Little days", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&open, &quit])?;
     let mut tray = TrayIconBuilder::with_id("main-tray")

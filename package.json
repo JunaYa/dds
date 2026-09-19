@@ -10,7 +10,6 @@
     "tauri": "tauri",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
     "test": "vitest run",
-    "dev:journal": "vite --open /examples/journal/",
     "dev:desktop": "tauri dev",
     "build:desktop": "tauri build",
     "init:ios": "tauri ios init --ci",

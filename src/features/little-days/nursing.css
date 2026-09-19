@@ -1,0 +1,702 @@
+.nursing-symbol {
+  --nursing-ink: color-mix(in srgb, currentColor 26%, var(--background));
+  --nursing-shade: color-mix(in srgb, currentColor 42%, var(--background));
+  color: var(--primary);
+  flex: none;
+  width: 42px;
+  height: 59px;
+}
+.nursing-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.nursing-entry > svg {
+  width: 28px;
+  height: 40px;
+}
+.nursing-entry > div {
+  flex: 1;
+  min-width: 0;
+}
+.nursing-entry strong,
+.nursing-entry span {
+  display: block;
+}
+.nursing-entry strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.nursing-entry span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+.nursing-entry [data-slot="button"] {
+  font-size: 14px;
+}
+.nursing-viewport {
+  display: block;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: transparent;
+  color: var(--foreground);
+}
+.nursing-viewport.dark,
+.nursing-confirm.dark {
+  color-scheme: dark;
+}
+.nursing-viewport.light,
+.nursing-confirm.light {
+  color-scheme: light;
+  --background: var(--surface-light-2);
+  --foreground: var(--surface-light-12);
+  --card: var(--surface-light-1);
+  --popover: var(--surface-light-1);
+  --popover-foreground: var(--surface-light-12);
+  --primary: var(--color-b1-500);
+  --primary-foreground: var(--surface-light-1);
+  --secondary: var(--surface-light-3);
+  --secondary-foreground: var(--surface-light-11);
+  --muted: var(--surface-light-3);
+  --muted-foreground: var(--surface-light-10);
+  --accent: color-mix(in srgb, var(--surface-light-4), transparent 60%);
+  --accent-foreground: var(--surface-light-12);
+  --border: var(--surface-light-4);
+  --input: var(--surface-light-5);
+  --ring: var(--surface-light-6);
+}
+.nursing-screen {
+  width: 100%;
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  outline: none;
+  transform-origin: center bottom;
+  transition:
+    transform 320ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nursing-screen[data-starting-style] {
+  transform: translateY(100%);
+}
+.nursing-screen[data-ending-style] {
+  transform: translateY(24px) scale(0.96);
+  opacity: 0;
+  transition-duration: 200ms;
+  pointer-events: none;
+}
+.nursing-backdrop {
+  backdrop-filter: none;
+  transition: opacity 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nursing-backdrop[data-ending-style] {
+  transition-duration: 200ms;
+}
+.nursing-frame {
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+  min-height: 620px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+}
+.nursing-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex: none;
+  padding: max(58px, calc(env(safe-area-inset-top) + 14px)) 12px 0;
+}
+.nursing-toolbar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.nursing-circle[data-slot="button"] {
+  width: 60px;
+  height: 60px;
+  min-width: 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: color-mix(in srgb, var(--foreground) 8%, var(--background));
+  color: var(--foreground);
+  box-shadow: none;
+}
+.nursing-circle[data-slot="button"] > svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.8;
+}
+.nursing-toolbar .nursing-circle {
+  width: 44px;
+  height: 44px;
+}
+.nursing-toolbar .nursing-circle > svg {
+  width: 21px;
+  height: 21px;
+}
+.nursing-toolbar > .nursing-circle > svg {
+  width: 27px;
+  height: 27px;
+}
+.nursing-toolbar .nursing-delete {
+  color: var(--destructive);
+}
+.nursing-stage {
+  flex: 1;
+  min-height: 150px;
+  position: relative;
+  display: grid;
+  place-content: center;
+  padding-bottom: 44px;
+}
+.nursing-status {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+.nursing-title[data-slot="dialog-title"] {
+  font: inherit;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.nursing-error {
+  position: absolute;
+  bottom: 12px;
+  inset-inline: 24px;
+  font-size: 13px;
+  text-align: center;
+  color: var(--destructive);
+  overflow-wrap: anywhere;
+}
+.nursing-controls {
+  flex: none;
+  padding: 0 24px max(27px, env(safe-area-inset-bottom));
+}
+.nursing-timer-row,
+.nursing-actions {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr) 60px;
+  gap: 14px;
+  align-items: center;
+}
+.nursing-timer-row {
+  min-height: 62px;
+}
+.nursing-side[data-slot="button"] {
+  color: var(--muted-foreground);
+}
+.nursing-side[data-slot="button"] > .nursing-symbol {
+  width: 19px;
+  height: 26px;
+  color: inherit;
+}
+.nursing-side[data-slot="button"]::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 2px solid var(--primary);
+  box-shadow:
+    0 0 0 1px var(--primary),
+    0 0 28px color-mix(in srgb, var(--primary) 15%, transparent);
+  background: color-mix(in srgb, var(--primary) 26%, var(--background));
+  opacity: 0;
+  transform: scale(0.93);
+  transition:
+    opacity 220ms ease-out,
+    transform 260ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nursing-side[data-slot="button"][aria-pressed="true"]::before {
+  opacity: 1;
+  transform: scale(1);
+}
+.nursing-side[data-slot="button"] > svg {
+  position: relative;
+}
+.nursing-side[data-slot="button"][aria-pressed="true"] {
+  color: var(--primary);
+}
+.nursing-digits {
+  display: block;
+  text-align: center;
+  white-space: nowrap;
+  font-size: clamp(40px, 14.93vw, 60px);
+  line-height: 1.1;
+  font-weight: 650;
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+}
+.nursing-digits[data-long] {
+  font-size: 38px;
+  letter-spacing: -1px;
+}
+.nursing-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  margin-top: 22px;
+  margin-bottom: 12px;
+}
+.nursing-stat,
+.nursing-stat[data-slot="button"] {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  align-items: center;
+  background: transparent;
+  color: var(--muted-foreground);
+}
+.nursing-stat > svg,
+.nursing-stat[data-slot="button"] > svg {
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+}
+.nursing-stat-value {
+  position: relative;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.nursing-start .nursing-stat-value > svg {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  color: var(--muted-foreground);
+}
+.nursing-stat-label {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+}
+.nursing-pause[data-slot="button"] {
+  height: 60px;
+  border-radius: 999px;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: 1px;
+}
+.nursing-confirm {
+  color: var(--foreground);
+  background: var(--card);
+}
+.nursing-confirm [data-slot="dialog-description"],
+.nursing-confirm [data-slot="alert-dialog-description"] {
+  line-height: 1.6;
+}
+.nursing-dialog-error {
+  padding: 0 24px 16px;
+  color: var(--destructive);
+  font-size: 14px;
+}
+.nursing-record-details {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  margin: 0 0 20px;
+  border-radius: 12px;
+  background: var(--muted);
+  font-size: 13px;
+}
+.nursing-record-details > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.nursing-record-details dt {
+  color: var(--muted-foreground);
+}
+.nursing-record-details dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+@media (hover: hover) and (pointer: fine) {
+  .nursing-circle[data-slot="button"]:hover {
+    background: color-mix(in srgb, var(--foreground) 14%, var(--background));
+  }
+  .nursing-side[data-slot="button"][aria-pressed="true"]:hover {
+    background: color-mix(in srgb, var(--primary) 32%, var(--background));
+  }
+  .nursing-start[data-slot="button"]:hover {
+    background: var(--muted);
+  }
+}
+@media (max-width: 350px) {
+  .nursing-controls {
+    padding-inline: 16px;
+  }
+  .nursing-timer-row,
+  .nursing-actions {
+    gap: 10px;
+  }
+  .nursing-entry {
+    flex-wrap: wrap;
+  }
+  .nursing-entry > [data-slot="button"] {
+    width: 100%;
+  }
+}
+@media (max-height: 650px) {
+  .nursing-frame {
+    min-height: 520px;
+  }
+  .nursing-toolbar {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+  .nursing-stage {
+    padding-bottom: 12px;
+  }
+}
+
+.nursing-screen [data-slot="button"],
+.nursing-minibar [data-slot="button"] {
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.nursing-screen [data-slot="button"]:active:not(:disabled),
+.nursing-minibar [data-slot="button"]:active:not(:disabled) {
+  transform: scale(0.96);
+  translate: none;
+}
+.nursing-portrait {
+  width: 42px;
+  height: 59px;
+  transform: perspective(400px) rotateY(0deg);
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nursing-portrait[data-side="right"] {
+  transform: perspective(400px) rotateY(180deg);
+}
+.nursing-status-text,
+.nursing-action-text {
+  display: block;
+  animation: nursing-label-in 160ms ease-out both;
+}
+@keyframes nursing-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.nursing-rolling-time {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: bottom;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.nursing-digit {
+  position: relative;
+  display: inline-block;
+  width: 0.6em;
+  height: 1.15em;
+  line-height: 1.15;
+  overflow: hidden;
+  text-align: center;
+  -webkit-mask-image: linear-gradient(
+    transparent,
+    black 16%,
+    black 84%,
+    transparent
+  );
+  mask-image: linear-gradient(transparent, black 16%, black 84%, transparent);
+}
+.nursing-colon {
+  width: 0.25em;
+}
+.nursing-digit > span {
+  display: block;
+}
+.nursing-digit-in {
+  animation: nursing-digit-in 300ms cubic-bezier(0.25, 0.6, 0.2, 1) both;
+}
+.nursing-digit-out {
+  position: absolute;
+  inset: 0;
+  animation: nursing-digit-out 300ms cubic-bezier(0.25, 0.6, 0.2, 1) both;
+  pointer-events: none;
+}
+@keyframes nursing-digit-in {
+  from {
+    transform: translateY(85%);
+    opacity: 0;
+    filter: blur(0.045em);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes nursing-digit-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    transform: translateY(-85%);
+    opacity: 0;
+    filter: blur(0.045em);
+  }
+}
+.nursing-minibar {
+  position: fixed;
+  z-index: var(--z-layer-sticky, 100);
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: 50%;
+  width: min(430px, calc(100% - 32px));
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--primary) 7%, var(--card));
+  color: var(--primary);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--foreground) 8%, transparent);
+  transform: translateX(-50%);
+  transition:
+    opacity 180ms ease-out,
+    transform 220ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nursing-minibar[data-expanded] {
+  opacity: 0;
+  transform: translate(-50%, 16px);
+  pointer-events: none;
+}
+.nursing-mini-open[data-slot="button"] {
+  flex: 1;
+  justify-content: flex-start;
+  min-width: 0;
+  height: auto;
+  padding: 3px 6px;
+  gap: 10px;
+  color: var(--primary);
+  text-align: left;
+}
+.nursing-mini-open[data-slot="button"] > svg {
+  width: 18px;
+  height: 26px;
+}
+.nursing-mini-copy {
+  min-width: 0;
+}
+.nursing-mini-copy output {
+  display: block;
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 24px;
+}
+.nursing-mini-copy > span {
+  display: block;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.nursing-mini-side {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  padding: 0 6px;
+  white-space: nowrap;
+}
+.nursing-playback-icon {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+.nursing-playback-icon > svg {
+  position: absolute;
+  inset: 0;
+  width: 18px;
+  height: 18px;
+  transition:
+    transform 180ms ease-out,
+    opacity 180ms ease-out;
+}
+.nursing-playback-icon > svg:last-child {
+  opacity: 0;
+  transform: scale(0.65);
+}
+.nursing-playback-icon[data-paused] > svg:first-child {
+  opacity: 0;
+  transform: scale(0.65);
+}
+.nursing-playback-icon[data-paused] > svg:last-child {
+  opacity: 1;
+  transform: scale(1);
+}
+.app-frame:has(~ .nursing-minibar) main {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+}
+.nursing-time-backdrop {
+  backdrop-filter: none;
+  background: color-mix(in srgb, black 45%, transparent);
+  transition: opacity 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nursing-time-viewport {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0;
+}
+.nursing-time-sheet {
+  width: min(100%, 430px);
+  max-height: calc(100dvh - env(safe-area-inset-top) - 16px);
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  border-radius: 20px 20px 0 0;
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  overflow: auto;
+  outline: none;
+  transition: transform 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nursing-time-sheet[data-starting-style],
+.nursing-time-sheet[data-ending-style] {
+  transform: translateY(100%);
+}
+.nursing-time-sheet[data-ending-style],
+.nursing-time-backdrop[data-ending-style] {
+  transition-duration: 200ms;
+}
+.nursing-sheet-handle {
+  width: 34px;
+  height: 4px;
+  margin: 7px auto 0;
+  border-radius: 99px;
+  background: var(--muted-foreground);
+  opacity: 0.45;
+}
+.nursing-time-heading {
+  display: grid;
+  grid-template-columns: 70px 1fr 70px;
+  align-items: center;
+  text-align: center;
+  padding: 0 8px;
+}
+.nursing-time-heading [data-slot="dialog-title"] {
+  font: inherit;
+  font-weight: 600;
+  font-size: 16px;
+}
+.nursing-time-heading button {
+  font-size: 15px;
+}
+.nursing-time-wheels {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  margin: 18px 28px 0;
+}
+.nursing-time-wheels::before {
+  content: "";
+  position: absolute;
+  top: 96px;
+  inset-inline: 0;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--muted);
+  pointer-events: none;
+}
+.nursing-time-wheel {
+  position: relative;
+  height: 224px;
+  padding-block: 96px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  font-size: 19px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  -webkit-mask-image: linear-gradient(
+    transparent,
+    black 40%,
+    black 60%,
+    transparent
+  );
+  mask-image: linear-gradient(transparent, black 40%, black 60%, transparent);
+}
+.nursing-time-wheel:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.nursing-time-wheel::-webkit-scrollbar {
+  display: none;
+}
+.nursing-wheel-option {
+  height: 32px;
+  line-height: 32px;
+  scroll-snap-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.nursing-manual-toggle[data-slot="button"] {
+  display: flex;
+  margin: 10px auto 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.nursing-manual-time {
+  padding: 32px 24px;
+  margin: 0;
+}
+.nursing-screen[data-instant],
+.nursing-screen[data-instant] *,
+.nursing-screen[data-instant] *::before,
+.nursing-backdrop[data-instant] {
+  animation: none !important;
+  transition: none !important;
+}
+.nursing-screen[data-instant] .nursing-digit-out {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nursing-screen,
+  .nursing-screen *,
+  .nursing-screen *::before,
+  .nursing-backdrop,
+  .nursing-minibar,
+  .nursing-minibar *,
+  .nursing-time-sheet,
+  .nursing-time-sheet *,
+  .nursing-time-backdrop {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .nursing-digit-out {
+    display: none;
+  }
+}

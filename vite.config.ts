@@ -8,15 +8,6 @@ const host = process.env.TAURI_DEV_HOST;
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [react(), tailwindcss()],
-  optimizeDeps: {
-    entries: ["index.html", "examples/journal/index.html"],
-  },
-  build: {
-    rollupOptions: {
-      input: { app: "index.html", journal: "examples/journal/index.html" },
-    },
-  },
-
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "src"),
