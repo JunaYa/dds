@@ -2,12 +2,13 @@ import { spawnSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { androidEnv } from './android-env.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const result = spawnSync(
   process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
   ['exec', 'tauri', 'android', 'init', '--ci'],
-  { cwd: root, stdio: 'inherit', shell: process.platform === 'win32' },
+  { cwd: root, env: androidEnv(), stdio: 'inherit', shell: process.platform === 'win32' },
 );
 if (result.error) throw result.error;
 if (result.status !== 0) process.exit(result.status ?? 1);

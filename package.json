@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
-    "test": "vitest run",
+    "test": "node --test scripts/android-env.test.mjs && vitest run",
     "dev:desktop": "tauri dev",
     "build:desktop": "tauri build",
     "init:ios": "tauri ios init --ci",
@@ -17,8 +17,8 @@
     "build:ios": "tauri ios build",
     "build:ios:sim": "node scripts/build-ios-simulator.mjs",
     "init:android": "node scripts/init-android.mjs",
-    "dev:android": "tauri android dev",
-    "build:android": "tauri android build"
+    "dev:android": "node scripts/android.mjs dev",
+    "build:android": "node scripts/android.mjs build"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

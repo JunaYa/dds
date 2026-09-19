@@ -2,6 +2,12 @@
 
 Little days uses the root application entry. Android packages contain the built frontend and do not need a Vite server when built with `tauri android build`.
 
+## Toolchain detection
+
+`pnpm init:android`, `pnpm dev:android`, and `pnpm build:android` detect installed SDK/NDK paths for each invocation. Explicit `ANDROID_HOME` (or `ANDROID_SDK_ROOT`), `NDK_HOME`, and `JAVA_HOME` values take priority. With no explicit SDK, detection searches the standard user SDK location and, on macOS, Homebrew locations for an installed NDK. Incomplete NDK installation directories are ignored. On macOS, Homebrew Java 17 is selected when `JAVA_HOME` is unset.
+
+No shell configuration is modified. On this Mac, the commands work without the manual exports below; those remain useful for direct Tauri or ADB commands and custom installations.
+
 ## This Mac's toolchain
 
 Homebrew provides Java 17, Android command-line tools, and platform-tools. The Android SDK license was accepted by the developer during setup.
