@@ -2,11 +2,14 @@ import 'fake-indexeddb/auto';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../../App';
+import App from './test-app';
 import * as storage from './storage';
 import { newRecord } from './model';
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
 
 beforeEach(async () => {
   vi.restoreAllMocks();
@@ -19,6 +22,76 @@ beforeEach(async () => {
 });
 const app = () => render(<App />);
 describe('journal application integration', () => {
+  it('restores a running timer after remount, stops it, and retries saving without losing its times', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    const start = new Date('2026-09-18T23:59:30+08:00');
+    vi.setSystemTime(start);
+    const user = userEvent.setup();
+    const first = app();
+    await user.click(await screen.findByRole('button', { name: '记一笔', exact: true }));
+    await user.click(screen.getByRole('combobox', { name: '记录类型' }));
+    await user.click(await screen.findByRole('option', { name: '婴儿哺乳', exact: true }));
+    await user.type(screen.getByRole('textbox', { name: '标题（可选）' }), '计时哺乳');
+    await user.click(screen.getByRole('combobox', { name: '喂养方式 *' }));
+    await user.click(await screen.findByRole('option', { name: '全奶粉', exact: true }));
+    await user.click(screen.getByRole('button', { name: '开始计时', exact: true }));
+    await screen.findByRole('button', { name: '结束计时', exact: true });
+    expect(screen.getByLabelText('开始时间 *')).toBeDisabled();
+    expect(screen.getByRole('button', { name: '保存记录', exact: true })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: '关闭弹窗' }));
+    expect(await screen.findByRole('button', { name: '继续计时记录' })).toBeInTheDocument();
+    const timer = (await storage.readState()).feedingTimer!;
+    expect(timer.startedAt).toBe(start.toISOString());
+    first.unmount();
+    const end = new Date(start.getTime() + 95_000);
+    vi.setSystemTime(end);
+    app();
+    await user.click(await screen.findByRole('button', { name: '继续计时记录' }));
+    expect(screen.getByRole('textbox', { name: '标题（可选）' })).toHaveValue('计时哺乳');
+    expect(screen.getByRole('combobox', { name: '喂养方式 *' })).toHaveTextContent('全奶粉');
+    expect(within(screen.getByRole('dialog')).getByRole('timer')).toHaveTextContent(
+      '00:01:35',
+    );
+    await user.click(screen.getByRole('button', { name: '结束计时' }));
+    await waitFor(() => expect(screen.getByLabelText('结束时间 *')).toBeEnabled());
+    expect((await storage.readState()).feedingTimer?.endedAt).toBe(end.toISOString());
+    await user.type(screen.getByRole('spinbutton', { name: '喂养量（ml） *' }), '90');
+    vi.spyOn(storage, 'persistAction').mockRejectedValueOnce(new Error('存储已满'));
+    await user.click(screen.getByRole('button', { name: '保存记录', exact: true }));
+    expect(await screen.findByText('存储已满')).toBeInTheDocument();
+    expect((await storage.readState()).feedingTimer?.id).toBe(timer.id);
+    vi.setSystemTime(new Date(end.getTime() + 60_000));
+    expect(within(screen.getByRole('dialog')).getByRole('timer')).toHaveTextContent(
+      '00:01:35',
+    );
+    await user.click(screen.getByRole('button', { name: '保存记录', exact: true }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    const saved = await storage.readState();
+    expect(saved.feedingTimer).toBeNull();
+    expect(saved.records).toHaveLength(1);
+    expect(saved.records[0]).toMatchObject({
+      id: timer.id,
+      values: { startedAt: start.toISOString(), endedAt: end.toISOString(), amount: '90' },
+    });
+    expect(screen.queryByRole('region', { name: '哺乳计时' })).not.toBeInTheDocument();
+  });
+
+  it('requires confirmation to discard timing and leaves no record', async () => {
+    await storage.readState();
+    const running = await storage.persistAction({ kind: 'feedingTimer', operation: 'start' });
+    const user = userEvent.setup();
+    app();
+    await user.click(await screen.findByRole('button', { name: '继续计时记录' }));
+    await user.click(screen.getByRole('button', { name: '放弃本次计时' }));
+    await user.click(screen.getByRole('button', { name: '保留计时' }));
+    expect((await storage.readState()).feedingTimer?.id).toBe(running.feedingTimer?.id);
+    await user.click(screen.getByRole('button', { name: '放弃本次计时' }));
+    await user.click(screen.getByRole('button', { name: '确认放弃' }));
+    await screen.findByRole('button', { name: '开始计时', exact: true });
+    const saved = await storage.readState();
+    expect(saved.feedingTimer).toBeNull();
+    expect(saved.records).toEqual([]);
+  });
   it('saves feeding times and quantity, keeps invalid drafts, and displays the record after reload', async () => {
     const user = userEvent.setup();
     window.history.replaceState(null, '', '/?view=library');

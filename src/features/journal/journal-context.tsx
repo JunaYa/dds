@@ -17,7 +17,7 @@ type JournalContextValue = {
   readAttachment: (id: string) => Promise<Blob>;
   state: JournalState;
   busy: boolean;
-  save: (action: Action, files?: PendingFile[]) => Promise<void>;
+  save: (action: Action, files?: PendingFile[]) => Promise<JournalState>;
   message: string;
   notify: (message: string) => void;
 };
@@ -63,8 +63,10 @@ export function JournalProvider({
     saving.current = true;
     setBusy(true);
     try {
-      setState(await persistAction(action, files, mode));
+      const next = await persistAction(action, files, mode);
+      setState(next);
       channel.current?.postMessage('changed');
+      return next;
     } finally {
       saving.current = false;
       setBusy(false);

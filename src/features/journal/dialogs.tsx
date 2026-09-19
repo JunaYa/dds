@@ -34,12 +34,14 @@ import {
   type Attachment,
   type JournalRecord,
   type RecordField,
+  type FeedingTimer,
 } from './model';
 import { type PendingFile } from './storage';
 import { PhotoCapture } from './photo-capture';
 import { FileDownload } from './file-download';
 import { TypeAppearanceEditor, TypeCover } from './type-appearance-editor';
 import type { TypeAppearance } from './type-appearance';
+import { FeedingTimerControl, formatDuration } from './feeding-timer';
 
 export type Modal =
   | { kind: 'capture' | 'type' | 'plan' | 'board' | 'reminders' }
@@ -110,20 +112,62 @@ function RecordForm({
   const task = state.tasks.find((task) => task.id === modal.taskId);
   const source = state.records.find((record) => record.id === task?.sourceRecordId);
   const [typeId, setTypeId] = useState(modal.typeId || 'note');
-  const [title, setTitle] = useState(task?.title || '');
+  const initialTimer = typeId === 'feeding' ? state.feedingTimer : null;
+  const [timerId, setTimerId] = useState(initialTimer?.id);
+  const timer = state.feedingTimer?.id === timerId ? state.feedingTimer : null;
+  const running = !!timer && !timer.endedAt;
+  const staleTimer = !!timerId && !timer;
+  const [title, setTitle] = useState(task?.title || initialTimer?.title || '');
   const [occurredAt, setOccurredAt] = useState(localDateTime());
   const [values, setValues] = useState<JournalRecord['values']>(
-    source?.values || (typeId === 'feeding' ? { startedAt: localDateTime() } : {}),
+    source?.values ||
+      (initialTimer
+        ? {
+            ...initialTimer.values,
+            startedAt: initialTimer.startedAt,
+            endedAt: initialTimer.endedAt || '',
+          }
+        : typeId === 'feeding'
+          ? { startedAt: localDateTime() }
+          : {}),
   );
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>(source?.attachments || []);
   const [error, setError] = useState('');
   const type = state.types.find((type) => type.id === typeId)!;
   const attachmentFields = type.fields.filter((field) => field.kind === 'attachment');
+  useEffect(() => {
+    if (timer)
+      setValues((previous) => ({
+        ...previous,
+        startedAt: timer.startedAt,
+        endedAt: timer.endedAt || '',
+      }));
+  }, [timer?.id, timer?.startedAt, timer?.endedAt]);
+
+  function resumeTimer(next: FeedingTimer) {
+    setTimerId(next.id);
+    setTitle(next.title);
+    setValues({ ...next.values, startedAt: next.startedAt, endedAt: next.endedAt || '' });
+  }
+  async function changeTimer(operation: 'start' | 'stop' | 'discard') {
+    setError('');
+    try {
+      const next = await save({ kind: 'feedingTimer', operation, timerId, title, values });
+      if (operation === 'start' && next.feedingTimer) resumeTimer(next.feedingTimer);
+      if (operation === 'discard') {
+        setTimerId(undefined);
+        setValues((previous) => ({ ...previous, startedAt: localDateTime(), endedAt: '' }));
+      }
+    } catch (cause) {
+      setError(errorText(cause));
+    }
+  }
   async function submit(event: FormEvent) {
     event.preventDefault();
     setError('');
     try {
+      if (running) throw new Error('请先结束计时，再保存记录');
       const record = {
         ...newRecord(
           typeId,
@@ -133,7 +177,11 @@ function RecordForm({
         ),
         attachments: [...attachments, ...files.map((file) => file.attachment)],
       };
-      await save({ kind: 'record', record, completeTaskId: task?.id }, files);
+      if (timerId) record.id = timerId;
+      await save(
+        { kind: 'record', record, completeTaskId: task?.id, feedingTimerId: timerId },
+        files,
+      );
       notify(task ? '已完成，并留下本次记录' : '记录已保存');
       onClose();
     } catch (cause) {
@@ -172,7 +220,9 @@ function RecordForm({
               }))}
               onChange={(id) => {
                 setTypeId(id);
+                setTimerId(undefined);
                 setValues(id === 'feeding' ? { startedAt: localDateTime() } : {});
+                if (id === 'feeding' && state.feedingTimer) resumeTimer(state.feedingTimer);
                 setFiles([]);
                 setAttachments([]);
               }}
@@ -199,7 +249,24 @@ function RecordForm({
               />
             </FormField>
           )}
-          <RecordFields type={type} values={values} onChange={setValues} />
+          {typeId === 'feeding' && (
+            <FeedingTimerControl
+              key={timerId || 'manual'}
+              timer={timer}
+              values={values}
+              stale={staleTimer}
+              hasExisting={!!state.feedingTimer}
+              onStart={() => void changeTimer('start')}
+              onStop={() => void changeTimer('stop')}
+              onDiscard={() => void changeTimer('discard')}
+            />
+          )}
+          <RecordFields
+            type={type}
+            values={values}
+            onChange={setValues}
+            lockTimes={running}
+          />
           {(attachmentFields.length
             ? attachmentFields
             : [{ id: undefined, name: '补充附件', required: false }]
@@ -243,7 +310,11 @@ function RecordForm({
           <FormError message={error} />
         </fieldset>
       </DialogPanel>
-      <SubmitFooter label={task ? '完成并保存记录' : '保存记录'} />
+      <SubmitFooter
+        label={task ? '完成并保存记录' : '保存记录'}
+        disabled={running || staleTimer}
+        hint={running ? '结束计时后即可保存' : undefined}
+      />
     </form>
   );
 }
@@ -690,6 +761,17 @@ function RecordDetail({ recordId }: { recordId: string }) {
           </Alert>
         )}
         <dl className="space-y-4">
+          {type.id === 'feeding' && (
+            <div>
+              <dt className="mb-1 text-xs text-muted-foreground">持续时间</dt>
+              <dd className="font-mono text-sm tabular-nums">
+                {formatDuration(
+                  Date.parse(String(record.values.endedAt)) -
+                    Date.parse(String(record.values.startedAt)),
+                )}
+              </dd>
+            </div>
+          )}
           {type.fields
             .filter((field) => field.kind !== 'attachment')
             .map((field) => (

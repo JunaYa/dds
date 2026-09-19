@@ -28,6 +28,7 @@ private struct AttachOptions: Decodable {
     let session: String
     let page: JournalPage
     let onSelect: Channel
+    let onAction: Channel?
 }
 
 private struct UpdateOptions: Decodable {
@@ -38,6 +39,104 @@ private struct UpdateOptions: Decodable {
 
 private struct DetachOptions: Decodable {
     let session: String
+}
+
+@available(iOS 26.0, *)
+private final class GlassHeader: UIVisualEffectView {
+    private let titleLabel = UILabel()
+    private let createButton = UIButton(type: .system)
+    var onAction: ((String) -> Void)?
+
+    init(page: JournalPage) {
+        let glass = UIGlassEffect(style: .regular)
+        glass.isInteractive = true
+        super.init(effect: glass)
+        cornerConfiguration = .capsule()
+        accessibilityIdentifier = "journal.native-header"
+        isHidden = true
+
+        titleLabel.font = UIFontMetrics(forTextStyle: .headline).scaledFont(
+            for: .systemFont(ofSize: 17, weight: .semibold), maximumPointSize: 24)
+        titleLabel.adjustsFontForContentSizeCategory = true
+        titleLabel.textColor = .label
+        titleLabel.accessibilityTraits = .header
+        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        let searchButton = button(symbol: "magnifyingglass", label: "搜索记录", action: "search")
+        let moreButton = button(symbol: "ellipsis", label: "更多操作")
+        moreButton.showsMenuAsPrimaryAction = true
+        moreButton.menu = UIMenu(children: [
+            menuAction(title: "图片速记", symbol: "doc.viewfinder", action: "capture"),
+            menuAction(title: "提醒与安排", symbol: "bell", action: "reminders"),
+            menuAction(title: "循环计划", symbol: "repeat", action: "plan"),
+        ])
+
+        var configuration = UIButton.Configuration.filled()
+        configuration.image = UIImage(systemName: "plus")
+        configuration.baseForegroundColor = .white
+        configuration.baseBackgroundColor = .systemBlue
+        configuration.cornerStyle = .capsule
+        createButton.configuration = configuration
+        createButton.accessibilityIdentifier = "journal.header.create"
+        createButton.addAction(UIAction { [weak self] _ in self?.onAction?("create") },
+            for: .touchUpInside)
+
+        let stack = UIStackView(arrangedSubviews: [titleLabel, searchButton, moreButton, createButton])
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -6),
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+        ])
+        for control in [searchButton, moreButton, createButton] {
+            NSLayoutConstraint.activate([
+                control.widthAnchor.constraint(equalToConstant: 44),
+                control.heightAnchor.constraint(equalToConstant: 44),
+            ])
+            control.showsLargeContentViewer = true
+            control.largeContentImage = control.configuration?.image
+            control.addInteraction(UILargeContentViewerInteraction())
+        }
+        contentView.accessibilityElements = [titleLabel, searchButton, moreButton, createButton]
+        update(page: page, visible: false)
+    }
+
+    required init?(coder: NSCoder) { fatalError("Use init(page:)") }
+
+    func update(page: JournalPage, visible: Bool) {
+        titleLabel.text = page.title
+        createButton.accessibilityLabel = page == .types ? "新建类型" : "记一笔"
+        createButton.largeContentTitle = createButton.accessibilityLabel
+        isHidden = !visible
+    }
+
+    private func button(symbol: String, label: String, action: String? = nil) -> UIButton {
+        let button = UIButton(type: .system)
+        var configuration = UIButton.Configuration.plain()
+        configuration.image = UIImage(systemName: symbol)
+        configuration.baseForegroundColor = .label
+        configuration.preferredSymbolConfigurationForImage = .init(pointSize: 19, weight: .medium)
+        button.configuration = configuration
+        button.accessibilityLabel = label
+        button.largeContentTitle = label
+        button.accessibilityIdentifier = "journal.header.\(action ?? "more")"
+        if let action = action {
+            button.addAction(UIAction { [weak self] _ in self?.onAction?(action) },
+                for: .touchUpInside)
+        }
+        return button
+    }
+
+    private func menuAction(title: String, symbol: String, action: String) -> UIAction {
+        UIAction(title: title, image: UIImage(systemName: symbol)) { [weak self] _ in
+            self?.onAction?(action)
+        }
+    }
 }
 
 @available(iOS 26.0, *)
@@ -146,6 +245,7 @@ private final class GlassNavigation: UIVisualEffectView {
 class NavigationPlugin: Plugin {
     private weak var webview: WKWebView?
     private var navigation: UIView?
+    private var header: UIView?
     private var session: String?
 
     @objc override func load(webview: WKWebView) {
@@ -164,6 +264,8 @@ class NavigationPlugin: Plugin {
                 return
             }
             self.navigation?.removeFromSuperview()
+            self.header?.removeFromSuperview()
+            self.header = nil
             let bar = GlassNavigation(page: args.page)
             bar.onSelect = { page in args.onSelect.send(["page": page.rawValue] as JsonObject) }
             bar.translatesAutoresizingMaskIntoConstraints = false
@@ -178,8 +280,25 @@ class NavigationPlugin: Plugin {
                 width,
             ])
             self.navigation = bar
+            if let onAction = args.onAction {
+                let header = GlassHeader(page: args.page)
+                header.onAction = { action in onAction.send(["action": action] as JsonObject) }
+                header.translatesAutoresizingMaskIntoConstraints = false
+                host.addSubview(header)
+                let headerWidth = header.widthAnchor.constraint(
+                    equalTo: host.safeAreaLayoutGuide.widthAnchor, constant: -24)
+                headerWidth.priority = .defaultHigh
+                NSLayoutConstraint.activate([
+                    header.centerXAnchor.constraint(equalTo: host.safeAreaLayoutGuide.centerXAnchor),
+                    header.topAnchor.constraint(equalTo: host.safeAreaLayoutGuide.topAnchor, constant: 8),
+                    header.heightAnchor.constraint(equalToConstant: 56),
+                    header.widthAnchor.constraint(lessThanOrEqualToConstant: 560),
+                    headerWidth,
+                ])
+                self.header = header
+            }
             self.session = args.session
-            invoke.resolve(["supported": true])
+            invoke.resolve(["supported": true, "headerSupported": self.header != nil])
         }
     }
 
@@ -189,6 +308,7 @@ class NavigationPlugin: Plugin {
             if #available(iOS 26.0, *), self.session == args.session,
                let bar = self.navigation as? GlassNavigation {
                 bar.update(page: args.page, visible: args.visible)
+                (self.header as? GlassHeader)?.update(page: args.page, visible: args.visible)
             }
             invoke.resolve()
         }
@@ -200,6 +320,8 @@ class NavigationPlugin: Plugin {
             if self.session == args.session {
                 self.navigation?.removeFromSuperview()
                 self.navigation = nil
+                self.header?.removeFromSuperview()
+                self.header = nil
                 self.session = nil
             }
             invoke.resolve()

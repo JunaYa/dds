@@ -22,12 +22,20 @@ const attachmentSchema = z.object({
   size: z.number(),
   fieldId: z.string().optional(),
 });
+const recordValuesSchema = z.record(z.string(), z.union([z.string(), z.number()]));
+const feedingTimerSchema = z.object({
+  id: z.string(),
+  startedAt: z.iso.datetime(),
+  endedAt: z.iso.datetime().optional(),
+  title: z.string(),
+  values: recordValuesSchema,
+});
 const recordSchema = z.object({
   id: z.string(),
   typeId: z.string(),
   title: z.string(),
   occurredAt: z.string(),
-  values: z.record(z.string(), z.union([z.string(), z.number()])),
+  values: recordValuesSchema,
   attachments: z.array(attachmentSchema),
   source: z.string().optional(),
   ocrText: z.string().optional(),
@@ -63,6 +71,7 @@ export const stateSchema = z.object({
   tasks: z.array(taskSchema),
   plan: planSchema,
   session: z.object({ start: z.number(), events: z.array(z.number()) }).nullable(),
+  feedingTimer: feedingTimerSchema.nullable().default(null),
   hiddenCards: z.array(z.string()),
   cards: z.array(boardCardSchema),
 });
@@ -74,23 +83,34 @@ export type JournalTask = z.infer<typeof taskSchema>;
 export type Plan = z.infer<typeof planSchema>;
 export type JournalState = z.infer<typeof stateSchema>;
 export type BoardCard = z.infer<typeof boardCardSchema>;
+export type FeedingTimer = z.infer<typeof feedingTimerSchema>;
 export type Action =
   | {
       kind: 'record';
       record: JournalRecord;
       completeTaskId?: string;
+      feedingTimerId?: string;
       event?: { due: string; reminder: number | null };
     }
   | { kind: 'type'; type: RecordType }
   | { kind: 'typeAppearance'; typeId: string; appearance?: TypeAppearance }
   | { kind: 'plan'; plan: Plan }
   | { kind: 'session'; operation: 'start' | 'count' | 'undo' | 'finish' }
+  | {
+      kind: 'feedingTimer';
+      operation: 'start' | 'stop' | 'discard';
+      timerId?: string;
+      title?: string;
+      values?: JournalRecord['values'];
+    }
   | { kind: 'board'; hiddenCards: string[]; cards: BoardCard[] }
   | { kind: 'postpone'; taskId: string };
 
 export const uid = () => crypto.randomUUID();
-export const localDateTime = (date = new Date()) =>
-  new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+export const localDateTime = (date = new Date(), seconds = false) =>
+  new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, seconds ? 19 : 16);
 export const formatTime = (date: string | number) =>
   new Date(date).toLocaleTimeString('zh-CN', {
     hour: '2-digit',
@@ -119,6 +139,7 @@ export function formatFieldValue(field: RecordField, value: string | number) {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
+      second: '2-digit',
     });
   return `${value}${field.unit ? ` ${field.unit}` : ''}`;
 }
@@ -316,6 +337,7 @@ export function createInitialState(now = new Date(), withExamples = false): Jour
       : [],
     plan: { interval: 3, mode: 'fixed', paused: !withExamples },
     session: null,
+    feedingTimer: null,
     hiddenCards: [],
     cards: [],
   };
@@ -362,6 +384,13 @@ export function applyAction(
         ? next.tasks.find((task) => task.id === action.completeTaskId)
         : undefined;
       if (action.completeTaskId && (!task || task.status === 'done')) return state;
+      if (action.feedingTimerId) {
+        if (next.feedingTimer?.id !== action.feedingTimerId)
+          throw new Error('计时状态已改变，请关闭表单后重新打开');
+        if (!next.feedingTimer.endedAt) throw new Error('请先结束计时，再保存记录');
+        if (action.record.id !== action.feedingTimerId || action.record.typeId !== 'feeding')
+          throw new Error('计时与记录不匹配');
+      }
       validateRecord(next, action.record);
       const record = { ...action.record, values: { ...action.record.values } };
       const type = next.types.find((type) => type.id === record.typeId)!;
@@ -397,6 +426,7 @@ export function applyAction(
         });
       }
       next.records.unshift(record);
+      if (action.feedingTimerId) next.feedingTimer = null;
       if (task) {
         task.status = 'done';
         if (task.planId && !next.plan.paused) {
@@ -411,6 +441,35 @@ export function applyAction(
           });
         }
       }
+      break;
+    }
+    case 'feedingTimer': {
+      if (action.operation === 'start') {
+        if (next.feedingTimer) return state;
+        next.feedingTimer = feedingTimerSchema.parse({
+          id: uid(),
+          startedAt: now.toISOString(),
+          title: action.title || '',
+          values: action.values || {},
+        });
+        break;
+      }
+      const timer = next.feedingTimer;
+      if (!timer || timer.id !== action.timerId)
+        throw new Error('计时状态已改变，请关闭表单后重新打开');
+      if (action.operation === 'discard') {
+        next.feedingTimer = null;
+        break;
+      }
+      if (timer.endedAt) return state;
+      if (now.getTime() < Date.parse(timer.startedAt))
+        throw new Error('结束时间不能早于开始时间，请检查设备时间');
+      next.feedingTimer = feedingTimerSchema.parse({
+        ...timer,
+        endedAt: now.toISOString(),
+        title: action.title ?? timer.title,
+        values: action.values ?? timer.values,
+      });
       break;
     }
     case 'typeAppearance': {

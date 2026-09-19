@@ -10,6 +10,7 @@ vi.mock('@tauri-apps/api/core', () => ({
 
 const command = vi.mocked(invoke);
 let select: (message: { page: string }) => void;
+let headerAction: (message: { action: string }) => void;
 let compact = true;
 let resize: () => void;
 
@@ -25,6 +26,7 @@ beforeEach(() => {
   command.mockImplementation(async (name, args) => {
     if (name.endsWith('|attach')) {
       select = (args as { onSelect: { onmessage: typeof select } }).onSelect.onmessage;
+      headerAction = (args as { onAction: { onmessage: typeof headerAction } }).onAction.onmessage;
       return { supported: true };
     }
     return undefined;
@@ -40,7 +42,7 @@ describe('native journal navigation', () => {
   it('keeps browser navigation without invoking native commands', () => {
     vi.stubGlobal('__DDS_NATIVE_NAVIGATION__', undefined);
     const { result } = renderHook(() => useNativeNavigation('today', vi.fn(), false));
-    expect(result.current).toBe(false);
+    expect(result.current).toEqual({ active: false, headerActive: false });
     expect(command).not.toHaveBeenCalled();
   });
 
@@ -48,7 +50,7 @@ describe('native journal navigation', () => {
     command.mockResolvedValue({ supported: false });
     const { result } = renderHook(() => useNativeNavigation('today', vi.fn(), false));
     await waitFor(() => expect(command).toHaveBeenCalledOnce());
-    expect(result.current).toBe(false);
+    expect(result.current).toEqual({ active: false, headerActive: false });
   });
 
   it('synchronizes selection, ignores invalid events and hides for modals or wide layouts', async () => {
@@ -58,7 +60,8 @@ describe('native journal navigation', () => {
         useNativeNavigation(page, navigate, blocked),
       { initialProps: { page: 'today', blocked: false } },
     );
-    await waitFor(() => expect(result.current).toBe(true));
+    await waitFor(() => expect(result.current.active).toBe(true));
+    expect(result.current.headerActive).toBe(false);
     act(() => select({ page: 'library' }));
     expect(navigate).toHaveBeenCalledWith('library');
     act(() => select({ page: 'invalid' }));
@@ -104,6 +107,34 @@ describe('native journal navigation', () => {
     await waitFor(() => expect(command).toHaveBeenCalledWith(
       'plugin:native-navigation|detach', expect.any(Object),
     ));
-    expect(result.current).toBe(false);
+    expect(result.current).toEqual({ active: false, headerActive: false });
+  });
+
+  it('negotiates header support and sends actions to the latest handler only while usable', async () => {
+    const attach = command.getMockImplementation()!;
+    command.mockImplementation(async (name, args) => {
+      await attach(name, args);
+      return name.endsWith('|attach') ? { supported: true, headerSupported: true } : undefined;
+    });
+    const firstAction = vi.fn(), latestAction = vi.fn();
+    const { result, rerender, unmount } = renderHook(
+      ({ blocked, onAction }) => useNativeNavigation('types', vi.fn(), blocked, onAction),
+      { initialProps: { blocked: false, onAction: firstAction } },
+    );
+    await waitFor(() => expect(result.current.headerActive).toBe(true));
+    act(() => headerAction({ action: 'create' }));
+    expect(firstAction).toHaveBeenCalledWith('create');
+    rerender({ blocked: false, onAction: latestAction });
+    act(() => headerAction({ action: 'search' }));
+    expect(latestAction).toHaveBeenCalledWith('search');
+    act(() => headerAction({ action: 'unknown' }));
+    rerender({ blocked: true, onAction: latestAction });
+    act(() => headerAction({ action: 'create' }));
+    rerender({ blocked: false, onAction: latestAction });
+    act(() => { compact = false; resize(); headerAction({ action: 'capture' }); });
+    expect(latestAction).toHaveBeenCalledOnce();
+    unmount();
+    act(() => headerAction({ action: 'create' }));
+    expect(latestAction).toHaveBeenCalledOnce();
   });
 });

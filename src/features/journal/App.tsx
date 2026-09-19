@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@vita/ui/button';
 import {
   Card,
@@ -24,8 +24,14 @@ import { Choice } from './controls';
 import { Dialogs, type Modal } from './dialogs';
 import { useJournal, errorText } from './journal-context';
 import { useViewport } from './use-viewport';
-import { useNativeNavigation, type JournalPage } from './use-native-navigation';
+import {
+  useNativeNavigation,
+  type JournalPage,
+  type NativeHeaderAction,
+} from './use-native-navigation';
 import { TypeCover, TypeGlyph } from './type-appearance-editor';
+import { FeedingTimerBanner } from './feeding-timer';
+import { BoardCalendar } from './board-calendar';
 import {
   formatDate,
   formatTime,
@@ -61,23 +67,45 @@ export default function App() {
     return views.find((item) => item.id === view)?.id || 'today';
   });
   const [modal, setModal] = useState<Modal | null>(null);
+  const [nativeSearch, setNativeSearch] = useState(false);
+  const searchInput = useRef<HTMLInputElement>(null);
+  const [boardView, setBoardView] = useState(() =>
+    new URLSearchParams(location.search).get('boardView') === 'calendar' ? 'calendar' : 'cards',
+  );
   const [query, setQuery] = useState(''),
     [filter, setFilter] = useState('all');
   function navigate(next: Page) {
     setPage(next);
+    setNativeSearch(false);
     setFilter('all');
     setQuery('');
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
-  const nativeNavigation = useNativeNavigation(page, navigate, modal !== null);
+  function headerAction(action: NativeHeaderAction) {
+    if (action === 'search') {
+      navigate('library');
+      setNativeSearch(true);
+    } else if (action === 'create') {
+      setModal(page === 'types' ? { kind: 'type' } : { kind: 'record' });
+    } else {
+      setModal({ kind: action });
+    }
+  }
+  const nativeNavigation = useNativeNavigation(page, navigate, modal !== null, headerAction);
+  useEffect(() => {
+    if (nativeSearch) searchInput.current?.focus();
+  }, [nativeSearch]);
   const pending = pendingTasks(state),
     today = todayRecords(state);
   const current = views.find((view) => view.id === page)!;
   useEffect(() => {
     const url = new URL(location.href);
     url.searchParams.set('view', page);
+    if (page === 'board' && boardView === 'calendar')
+      url.searchParams.set('boardView', 'calendar');
+    else url.searchParams.delete('boardView');
     history.replaceState(null, '', url);
-  }, [page]);
+  }, [page, boardView]);
   async function act(action: Action, message?: string) {
     try {
       await save(action);
@@ -224,7 +252,12 @@ export default function App() {
     </Card>
   );
   return (
-    <div className="journal-shell" data-native-navigation={nativeNavigation || undefined}>
+    <div
+      className="journal-shell"
+      data-native-navigation={nativeNavigation.active || undefined}
+      data-native-header={nativeNavigation.headerActive || undefined}
+      data-native-search={nativeSearch || undefined}
+    >
       <a href="#journal-main" className="journal-skip">
         跳到主要内容
       </a>
@@ -314,6 +347,7 @@ export default function App() {
               搜索记录
             </label>
             <Input
+              ref={searchInput}
               id="journal-search"
               type="search"
               placeholder="搜索生活里的记录"
@@ -324,7 +358,21 @@ export default function App() {
               }}
             />
           </div>
+          {nativeSearch && (
+            <Button
+              className="journal-search-close"
+              variant="ghost"
+              onClick={() => {
+                setNativeSearch(false);
+                setQuery('');
+                searchInput.current?.blur();
+              }}
+            >
+              取消搜索
+            </Button>
+          )}
           <Button
+            className="journal-header-action"
             variant="outline"
             aria-label="图片速记"
             onClick={() => setModal({ kind: 'capture' })}
@@ -333,6 +381,7 @@ export default function App() {
             <span className="hidden sm:inline">图片速记</span>
           </Button>
           <Button
+            className="journal-header-action"
             size="icon"
             variant="ghost"
             aria-label="提醒与安排"
@@ -368,6 +417,7 @@ export default function App() {
               {page === 'types' ? '新建类型' : '记一笔'}
             </Button>
           </div>
+          <FeedingTimerBanner onOpen={() => setModal({ kind: 'record', typeId: 'feeding' })} />
           <Tabs
             value={page}
             onValueChange={(value) => setPage(value as Page)}
@@ -406,47 +456,67 @@ export default function App() {
             )}
             {page === 'board' && (
               <TabsPanel value="board">
-                <div className="mb-5 flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setModal({ kind: 'board' })}
-                  >
-                    <Icons.settings2 />
-                    管理卡片
-                  </Button>
-                </div>
-                <div className="journal-board">
-                  {!state.hiddenCards.includes('tasks') && (
-                    <div className="journal-board-tasks">{tasks}</div>
-                  )}
-                  {!state.hiddenCards.includes('counter') && <Counter onAction={act} />}
-                  {!state.hiddenCards.includes('water') && water}
-                  {!state.hiddenCards.includes('capture') && capture}
-                  {state.cards.map((card) => (
-                    <MetricCard
-                      key={card.id}
-                      card={card}
-                      onRecord={() => setModal({ kind: 'record', typeId: card.typeId })}
+                <Tabs value={boardView} onValueChange={(value) => setBoardView(String(value))}>
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                    <TabsList aria-label="看板视图">
+                      <TabsTab value="cards">卡片</TabsTab>
+                      <TabsTab value="calendar">日历</TabsTab>
+                    </TabsList>
+                    {boardView === 'cards' && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setModal({ kind: 'board' })}
+                      >
+                        <Icons.settings2 />
+                        管理卡片
+                      </Button>
+                    )}
+                  </div>
+                  <TabsPanel value="calendar">
+                    <BoardCalendar
+                      onOpenRecord={(record) =>
+                        setModal({ kind: 'detail', recordId: record.id })
+                      }
+                      onOpenTask={(task) =>
+                        setModal({ kind: 'record', taskId: task.id, typeId: task.typeId })
+                      }
                     />
-                  ))}
-                  {!state.hiddenCards.includes('recent') && (
-                    <Card className="journal-board-recent">
-                      <CardHeader>
-                        <CardTitle>最近记录</CardTitle>
-                      </CardHeader>
-                      <CardContent>{records(true)}</CardContent>
-                    </Card>
-                  )}
-                  <Button
-                    variant="outline"
-                    className="min-h-32 border-dashed"
-                    onClick={() => setModal({ kind: 'board' })}
-                  >
-                    <Icons.plus />
-                    添加记录卡片
-                  </Button>
-                </div>
+                  </TabsPanel>
+                  <TabsPanel value="cards">
+                    <div className="journal-board">
+                      {!state.hiddenCards.includes('tasks') && (
+                        <div className="journal-board-tasks">{tasks}</div>
+                      )}
+                      {!state.hiddenCards.includes('counter') && <Counter onAction={act} />}
+                      {!state.hiddenCards.includes('water') && water}
+                      {!state.hiddenCards.includes('capture') && capture}
+                      {state.cards.map((card) => (
+                        <MetricCard
+                          key={card.id}
+                          card={card}
+                          onRecord={() => setModal({ kind: 'record', typeId: card.typeId })}
+                        />
+                      ))}
+                      {!state.hiddenCards.includes('recent') && (
+                        <Card className="journal-board-recent">
+                          <CardHeader>
+                            <CardTitle>最近记录</CardTitle>
+                          </CardHeader>
+                          <CardContent>{records(true)}</CardContent>
+                        </Card>
+                      )}
+                      <Button
+                        variant="outline"
+                        className="min-h-32 border-dashed"
+                        onClick={() => setModal({ kind: 'board' })}
+                      >
+                        <Icons.plus />
+                        添加记录卡片
+                      </Button>
+                    </div>
+                  </TabsPanel>
+                </Tabs>
               </TabsPanel>
             )}
             {page === 'library' && (

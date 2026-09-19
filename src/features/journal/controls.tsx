@@ -67,10 +67,12 @@ export function RecordFields({
   type,
   values,
   onChange,
+  lockTimes = false,
 }: {
   type: RecordType;
   values: JournalRecord['values'];
   onChange: (values: JournalRecord['values']) => void;
+  lockTimes?: boolean;
 }) {
   const prefix = useId();
   return (
@@ -82,7 +84,7 @@ export function RecordFields({
           const value = values[field.id] ?? '';
           const inputValue =
             field.kind === 'datetime' && value !== ''
-              ? localDateTime(new Date(String(value)))
+              ? localDateTime(new Date(String(value)), true)
               : value;
           const change = (value: string) => onChange({ ...values, [field.id]: value });
           if (field.kind === 'choice')
@@ -122,7 +124,14 @@ export function RecordFields({
                         ? field.kind
                         : 'text'
                   }
-                  step={field.kind === 'number' ? 'any' : undefined}
+                  step={
+                    field.kind === 'number'
+                      ? 'any'
+                      : field.kind === 'datetime'
+                        ? 1
+                        : undefined
+                  }
+                  disabled={lockTimes && field.kind === 'datetime'}
                   value={inputValue}
                   onChange={(event) => change(event.target.value)}
                   required={field.required}

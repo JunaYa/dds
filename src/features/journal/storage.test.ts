@@ -5,6 +5,45 @@ import { createInitialState, newRecord } from './model';
 import { openDatabase, persistAction, readFile, readState } from './storage';
 
 describe('journal persistence', () => {
+  it('serializes timer starts and consumes a stopped timer and record in one transaction', async () => {
+    await readState();
+    const starts = await Promise.all([
+      persistAction({ kind: 'feedingTimer', operation: 'start' }),
+      persistAction({ kind: 'feedingTimer', operation: 'start' }),
+    ]);
+    const timer = starts[0].feedingTimer!;
+    expect(starts[1].feedingTimer?.id).toBe(timer.id);
+    const stopped = await persistAction({
+      kind: 'feedingTimer',
+      operation: 'stop',
+      timerId: timer.id,
+    });
+    const record = {
+      ...newRecord(
+        'feeding',
+        {
+          method: '全奶粉',
+          startedAt: timer.startedAt,
+          endedAt: stopped.feedingTimer!.endedAt!,
+        },
+        '计时存储',
+      ),
+      id: timer.id,
+    };
+    await expect(
+      persistAction({ kind: 'record', record, feedingTimerId: timer.id }),
+    ).rejects.toThrow('喂养量');
+    expect((await readState()).feedingTimer).toEqual(stopped.feedingTimer);
+    const action = {
+      kind: 'record' as const,
+      record: { ...record, values: { ...record.values, amount: 60 } },
+      feedingTimerId: timer.id,
+    };
+    await Promise.all([persistAction(action), persistAction(action)]);
+    const saved = await readState();
+    expect(saved.feedingTimer).toBeNull();
+    expect(saved.records.filter((record) => record.id === timer.id)).toHaveLength(1);
+  });
   it('persists a type image and removes it without touching historical records', async () => {
     const before = await readState();
     const appearance = {

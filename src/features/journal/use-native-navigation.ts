@@ -2,22 +2,26 @@ import { useEffect, useRef, useState } from 'react';
 import { Channel, invoke } from '@tauri-apps/api/core';
 
 export type JournalPage = 'today' | 'board' | 'library' | 'types';
+export type NativeHeaderAction = 'search' | 'create' | 'capture' | 'reminders' | 'plan';
 
 declare global {
   interface Window { __DDS_NATIVE_NAVIGATION__?: boolean }
 }
 
 const pages: readonly string[] = ['today', 'board', 'library', 'types'];
+const headerActions: readonly string[] = ['search', 'create', 'capture', 'reminders', 'plan'];
 const command = 'plugin:native-navigation|';
 
 export function useNativeNavigation(
   page: JournalPage,
   onNavigate: (page: JournalPage) => void,
   blocked: boolean,
+  onHeaderAction?: (action: NativeHeaderAction) => void,
 ) {
   const [active, setActive] = useState(false);
-  const latest = useRef({ page, onNavigate, blocked });
-  latest.current = { page, onNavigate, blocked };
+  const [headerSupported, setHeaderSupported] = useState(false);
+  const latest = useRef({ page, onNavigate, blocked, onHeaderAction });
+  latest.current = { page, onNavigate, blocked, onHeaderAction };
   const sync = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -49,16 +53,23 @@ export function useNativeNavigation(
     sync.current = update;
     compact.addEventListener('change', update);
     const onSelect = new Channel<{ page: string }>();
+    const onAction = new Channel<{ action: string }>();
     onSelect.onmessage = (message) => {
       if (!disposed && compact.matches && !latest.current.blocked && pages.includes(message.page)) {
         latest.current.onNavigate(message.page as JournalPage);
       }
     };
-    queue = invoke<{ supported: boolean }>(`${command}attach`, {
-      session, page: latest.current.page, onSelect,
-    }).then(({ supported }) => {
+    onAction.onmessage = (message) => {
+      if (attached && !disposed && compact.matches && !latest.current.blocked && headerActions.includes(message.action)) {
+        latest.current.onHeaderAction?.(message.action as NativeHeaderAction);
+      }
+    };
+    queue = invoke<{ supported: boolean; headerSupported?: boolean }>(`${command}attach`, {
+      session, page: latest.current.page, onSelect, onAction,
+    }).then(({ supported, headerSupported }) => {
       if (disposed || !supported) return;
       attached = true;
+      setHeaderSupported(headerSupported === true);
       setActive(true);
       update();
     }).catch((error: unknown) => {
@@ -67,6 +78,7 @@ export function useNativeNavigation(
     return () => {
       disposed = true;
       onSelect.onmessage = () => {};
+      onAction.onmessage = () => {};
       sync.current = null;
       compact.removeEventListener('change', update);
       void queue.then(detach);
@@ -74,5 +86,5 @@ export function useNativeNavigation(
   }, []);
 
   useEffect(() => { sync.current?.(); }, [page, blocked]);
-  return active;
+  return { active, headerActive: active && headerSupported };
 }
