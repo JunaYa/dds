@@ -1,10 +1,21 @@
-import Focus from "./Focus";
-import { WorkspaceProvider, useApp } from "./store";
-import { ChildForm } from "./forms";
-import { SaveError } from "./shared";
-import { Icon } from "./icon";
+import { ThemeProvider } from "./state/ThemeProvider";
+import { Settings } from "./pages/Settings";
+import Focus from "./pages/Focus";
+import { WorkspaceProvider } from "./state/WorkspaceProvider";
+import { useApp } from "./hooks/useApp";
+import { ChildForm } from "./components/children/ChildForm";
+import { SaveError } from "./components/common/SaveError";
+import { Icon } from "./components/common/Icon";
+
 function Workspace() {
-  const { data, activeChild } = useApp();
+  const { data, activeChild, page, setPage } = useApp();
+  if (!activeChild && page === "Settings") return (
+    <main className="onboarding onboarding-settings">
+      <button className="settings-back" onClick={() => setPage("Today")}>← Back</button>
+      <h1>Settings</h1>
+      <Settings />
+    </main>
+  );
   if (!data)
     return (
       <main className="onboarding">
@@ -16,6 +27,7 @@ function Workspace() {
   if (!activeChild)
     return (
       <main className="onboarding">
+        <button className="onboarding-settings-link" onClick={() => setPage("Settings")}>Settings</button>
         <Icon name="leaf" size={36} />
         <p className="eyebrow">LITTLE DAYS</p>
         <h1>A little less to remember.</h1>
@@ -34,8 +46,10 @@ function Workspace() {
 }
 export default function LittleDays() {
   return (
-    <WorkspaceProvider>
-      <Workspace />
-    </WorkspaceProvider>
+    <ThemeProvider>
+      <WorkspaceProvider>
+        <Workspace />
+      </WorkspaceProvider>
+    </ThemeProvider>
   );
 }

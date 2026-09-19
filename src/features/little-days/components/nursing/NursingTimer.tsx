@@ -1,3 +1,4 @@
+import { useTheme } from "../../hooks/useTheme";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { Icons } from "@vita/ui/icons";
@@ -19,16 +20,19 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "@vita/ui/alert-dialog";
-import { useApp } from "./store";
-import type { Session } from "./model";
+import { useApp } from "../../hooks/useApp";
+import { type Session } from "../../domain/model";
 import { NursingSymbol } from "./NursingSymbol";
-import { RollingTime, useNursingClock } from "./nursing-motion";
+import { RollingTime } from "./RollingTime";
+import { useNursingClock } from "../../hooks/useNursingClock";
 import { NursingStartTime } from "./NursingStartTime";
-import { nursingSeconds, type NursingSide } from "./nursing";
+import { nursingSeconds, type NursingSide } from "../../domain/nursing";
 
 export function NursingTimer() {
   const a = useApp();
-  const [dark, setDark] = useState(true);
+  const { resolved } = useTheme();
+  const [nightMode, setNightMode] = useState<boolean | null>(null);
+  const dark = nightMode ?? (resolved === "dark");
   const [discardOpen, setDiscardOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [instant, setInstant] = useState(false);
@@ -102,7 +106,7 @@ export function NursingTimer() {
                     className="nursing-circle"
                     aria-label="夜间模式"
                     aria-pressed={dark}
-                    onClick={() => setDark((value) => !value)}
+                    onClick={() => setNightMode(!dark)}
                   >
                     {dark ? (
                       <Icons.sun aria-hidden="true" />

@@ -1,6 +1,6 @@
 import { beforeEach, expect, it } from "vitest";
-import { emptyWorkspace, elapsedSeconds, localDateTime } from "./model";
-import { loadWorkspace, saveWorkspace, STORAGE_KEY } from "./storage";
+import { emptyWorkspace, elapsedSeconds, localDateTime } from "../domain/model";
+import { loadWorkspace, saveWorkspace, STORAGE_KEY } from "./workspace";
 
 beforeEach(() => localStorage.clear());
 it("starts with an empty family and no fictional records", () => {

@@ -4,6 +4,8 @@ A local-first care journal for children aged 0–6, built with React, TypeScript
 
 Create a child profile, record feeding, diaper changes, sleep, bathing, vaccinations, growth, and vitamins. Build custom record types from timers, counters, measurements, choices, notes, and dates. Track family supplies with refill thresholds. Search history, edit records, delete with Undo, and resume active timers after reopening the app.
 
+Settings offers System, Light, and Dark appearances, remembered on each device. Appearance settings are also available before creating a child profile.
+
 ## Development
 
 ```sh
@@ -36,10 +38,12 @@ For SDK paths, standalone APK builds, and USB installation, see [Android physica
 ## Structure
 
 - `src/main.tsx`, `src/App.tsx`: single application entry.
-- `src/features/little-days/model.ts`: validated, versioned domain schema and date/timer helpers.
-- `src/features/little-days/storage.ts`: local persistence boundary.
-- `src/features/little-days/store.tsx`: record, profile, type, stock, and timer actions.
-- `src/features/little-days/`: responsive Focus interface and typed forms.
+- `src/features/little-days/domain/`: validated domain schemas and date/timer calculations.
+- `src/features/little-days/storage/`: local persistence boundary.
+- `src/features/little-days/hooks/`: workspace actions, context consumption, and nursing clock lifecycle.
+- `src/features/little-days/state/`: workspace context, provider, and navigation/dialog types.
+- `src/features/little-days/components/`: components grouped by responsibility; forms live with their feature.
+- `src/features/little-days/pages/`: page composition. See the [feature structure](src/features/little-days/README.md).
 - `packages/`: shared UI, typography, tokens, and styles.
 - `src-tauri/`: desktop, iOS, and Android hosts.
 

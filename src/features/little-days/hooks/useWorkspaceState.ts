@@ -1,11 +1,5 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import type { Page, Modal } from "../state/workspace-types";
+import { useEffect, useRef, useState } from "react";
 import {
   age,
   elapsedSeconds,
@@ -16,27 +10,16 @@ import {
   type RecordType,
   type Supply,
   type Workspace,
-} from "./model";
-import { loadWorkspace, saveWorkspace } from "./storage";
+} from "../domain/model";
+import { loadWorkspace, saveWorkspace } from "../storage/workspace";
 import {
   nursingSeconds,
   pauseOrResumeSession,
   switchNursingSide,
   type NursingSide,
-} from "./nursing";
+} from "../domain/nursing";
 
-export type Page = "Today" | "Supplies" | "Record types";
-type Modal =
-  | {
-      kind: "record";
-      type: RecordType;
-      record: CareRecord | null;
-      child: string;
-    }
-  | { kind: "type" | "supply" | "child" }
-  | { kind: "restock"; supply: Supply }
-  | null;
-function useWorkspaceState() {
+export function useWorkspaceState() {
   const [loaded] = useState(() => {
     try {
       return { ...loadWorkspace(), error: "" };
@@ -357,14 +340,4 @@ function useWorkspaceState() {
     addSupply,
     undo: removed ? undo : null,
   };
-}
-const Store = createContext<ReturnType<typeof useWorkspaceState> | null>(null);
-export function useApp() {
-  const state = useContext(Store);
-  if (!state) throw new Error("Little days requires WorkspaceProvider");
-  return state;
-}
-export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const state = useWorkspaceState();
-  return <Store.Provider value={state}>{children}</Store.Provider>;
 }

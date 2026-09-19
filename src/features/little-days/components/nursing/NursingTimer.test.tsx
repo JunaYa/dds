@@ -1,11 +1,13 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import App from "./App";
-import { emptyWorkspace } from "./model";
-import { loadWorkspace, saveWorkspace } from "./storage";
+import App from "../../App";
+import { emptyWorkspace } from "../../domain/model";
+import { loadWorkspace, saveWorkspace } from "../../storage/workspace";
 
 const start = new Date("2026-09-19T10:28:00.000Z").getTime();
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(start);
   localStorage.clear();
   const data = emptyWorkspace();
   data.children = [{ id: "baby", name: "Baby", birthday: "2026-01-01" }];
@@ -21,7 +23,10 @@ beforeEach(() => {
   });
   vi.spyOn(Date, "now").mockReturnValue(start);
 });
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.useRealTimers();
+});
 
 function startNursing() {
   fireEvent.click(screen.getByRole("button", { name: "开始亲喂" }));

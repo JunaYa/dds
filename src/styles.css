@@ -1,4 +1,5 @@
 @import "@vita/styles/base.css";
-@import "./features/little-days/styles.css";
-@import "./features/little-days/nursing.css";
+@import "./features/little-days/styles/app.css";
+@import "./features/little-days/components/nursing/nursing.css";
+@import "./features/little-days/styles/settings.css";
 @source "./**/*.{ts,tsx}";

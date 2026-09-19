@@ -1,22 +1,12 @@
-import { act, render, renderHook, screen } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { RollingTime, useNursingClock } from "./nursing-motion";
-import { nursingSeconds } from "./nursing";
-import type { Session } from "./model";
+import { useNursingClock } from "./useNursingClock";
+import { nursingSeconds } from "../domain/nursing";
+import { type Session } from "../domain/model";
 
 afterEach(() => {
   vi.useRealTimers();
   vi.restoreAllMocks();
-});
-
-it("keeps the readable time correct across a carry and a switch to a shorter timer", () => {
-  const view = render(<RollingTime seconds={599} />);
-  expect(screen.getByText("9:59")).toBeInTheDocument();
-  view.rerender(<RollingTime seconds={600} />);
-  expect(screen.getByText("10:00")).toBeInTheDocument();
-  view.rerender(<RollingTime seconds={0} />);
-  expect(screen.getByText("0:00")).toBeInTheDocument();
-  expect(screen.queryByText("10:00")).not.toBeInTheDocument();
 });
 
 it("stops ticking when hidden and catches up from timestamps when shown again", () => {

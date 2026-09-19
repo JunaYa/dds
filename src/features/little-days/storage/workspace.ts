@@ -1,4 +1,4 @@
-import { emptyWorkspace, workspaceSchema, type Workspace } from "./model";
+import { emptyWorkspace, workspaceSchema, type Workspace } from "../domain/model";
 
 export const STORAGE_KEY = "little-days.workspace.v1";
 export function loadWorkspace() {

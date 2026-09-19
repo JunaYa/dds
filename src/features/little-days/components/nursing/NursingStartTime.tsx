@@ -10,8 +10,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@vita/ui/dialog";
-import { localDateTime } from "./model";
-import { useApp } from "./store";
+import { localDateTime } from "../../domain/model";
+import { useApp } from "../../hooks/useApp";
 
 type WheelOption = { value: string; label: string };
 const hours = Array.from({ length: 24 }, (_, value) => ({

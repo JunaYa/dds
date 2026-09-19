@@ -8,6 +8,17 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <meta name="theme-color" content="#fafafa" />
+    <script>
+      (() => {
+        let preference = "system";
+        try { preference = localStorage.getItem("little-days.theme") || "system"; } catch {}
+        const dark = preference === "dark" || (preference !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", dark);
+        document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        document.querySelector('meta[name="theme-color"]').content = dark ? "#111111" : "#fafafa";
+      })();
+    </script>
+    <style>html { background: #fafafa; } html.dark { background: #111111; }</style>
     <title>Little days</title>
   </head>
 

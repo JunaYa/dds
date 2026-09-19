@@ -1,3 +1,5 @@
+
+
 export function NursingSymbol({
   className = "",
   mirrored = false,

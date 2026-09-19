@@ -1,9 +1,10 @@
 import { Button } from "@vita/ui/button";
 import { Icons } from "@vita/ui/icons";
-import { useApp } from "./store";
+import { useApp } from "../../hooks/useApp";
 import { NursingSymbol } from "./NursingSymbol";
-import { RollingTime, useNursingClock } from "./nursing-motion";
-import { nursingSeconds } from "./nursing";
+import { RollingTime } from "./RollingTime";
+import { useNursingClock } from "../../hooks/useNursingClock";
+import { nursingSeconds } from "../../domain/nursing";
 
 export function NursingMiniBar() {
   const a = useApp();

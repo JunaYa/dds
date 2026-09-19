@@ -1,28 +1,5 @@
-import { useEffect, useState } from "react";
-import type { Session } from "./model";
-import { formatNursingTime } from "./nursing";
-
-export function useNursingClock(session: Session | null, visible = true) {
-  const [now, setNow] = useState(Date.now);
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | undefined;
-    const refresh = () => {
-      clearInterval(interval);
-      setNow(Date.now());
-      if (visible && !document.hidden && session?.started != null)
-        interval = setInterval(() => setNow(Date.now()), 1000);
-    };
-    refresh();
-    document.addEventListener("visibilitychange", refresh);
-    window.addEventListener("pageshow", refresh);
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("visibilitychange", refresh);
-      window.removeEventListener("pageshow", refresh);
-    };
-  }, [session, visible]);
-  return now;
-}
+import { useState } from "react";
+import { formatNursingTime } from "../../domain/nursing";
 
 export function RollingTime({ seconds }: { seconds: number }) {
   const value = formatNursingTime(seconds);

@@ -1,4 +1,7 @@
+
+
 const paths: Record<string, string> = {
+  settings: "M4 6h16M4 12h16M4 18h16M8 3v6m8 0v6m-7 0v6",
   bottle: "M9 3h6v4l2 3v10H7V10l2-3V3m0 4h6M7 13h10",
   drop: "M12 3S5 11 5 15a7 7 0 0 0 14 0c0-4-7-12-7-12Z",
   moon: "M20 14A8 8 0 0 1 10 4a8.5 8.5 0 1 0 10 10Z",
