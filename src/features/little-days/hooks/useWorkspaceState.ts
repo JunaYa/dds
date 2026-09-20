@@ -37,7 +37,7 @@ export function useWorkspaceState() {
   const raw = useRef(loaded.raw);
   const [error, setError] = useState(loaded.error);
   const [page, setPage] = useState<Page>("Today");
-  const [range, setRange] = useState("today");
+  const [range, setRange] = useState("all");
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState<Modal>(null);
   const [nursingOpen, setNursingOpen] = useState(false);

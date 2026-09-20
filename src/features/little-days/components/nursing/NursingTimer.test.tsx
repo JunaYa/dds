@@ -29,6 +29,7 @@ afterEach(() => {
 });
 
 function startNursing() {
+  fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   fireEvent.click(screen.getByRole("button", { name: "开始亲喂" }));
   expect(
     screen.getByRole("dialog", { name: "左侧亲喂中" }),

@@ -10,7 +10,6 @@ export function RecordRow({ record }: { record: CareRecord }) {
     <article className="record">
       <time dateTime={record.time}>
         {record.time.slice(11, 16)}
-        {a.range === "all" && <small>{record.time.slice(0, 10)}</small>}
       </time>
       <span className={`record-dot ${type.id}`}>
         <Icon name={type.icon} size={19} />

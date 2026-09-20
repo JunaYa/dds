@@ -2,7 +2,8 @@ import { beforeEach, expect, it, vi } from "vitest";
 import { render, screen, within, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
-import { loadWorkspace, STORAGE_KEY } from "./storage/workspace";
+import { emptyWorkspace } from "./domain/model";
+import { loadWorkspace, saveWorkspace, STORAGE_KEY } from "./storage/workspace";
 
 beforeEach(() => {
   localStorage.clear();
@@ -28,6 +29,7 @@ it("creates a real family and preserves a saved record across remount", async ()
   const app = render(<App />);
   expect(screen.queryByText(/Milo/)).not.toBeInTheDocument();
   await createChild();
+  fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   fireEvent.change(screen.getByLabelText(/Amount/), {
     target: { value: "120" },
   });
@@ -43,6 +45,7 @@ it("creates a real family and preserves a saved record across remount", async ()
 it("restores a running timer and finishes it only once", async () => {
   const app = render(<App />);
   await createChild();
+  fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   fireEvent.click(
     screen.getByRole("button", { name: "Start live feeding timer" }),
   );
@@ -64,11 +67,12 @@ it("keeps input and reports a failed storage write", async () => {
     .mockImplementation(() => {
       throw new DOMException("full", "QuotaExceededError");
     });
+  fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   fireEvent.change(screen.getByLabelText(/Amount/), {
     target: { value: "90" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Save record" }));
-  expect(screen.getByRole("alert")).toHaveTextContent("Could not save");
+  expect(screen.getAllByRole("alert")[0]).toHaveTextContent("Could not save");
   expect(screen.getByLabelText(/Amount/)).toHaveValue(90);
   expect(loadWorkspace().data.records).toHaveLength(0);
   write.mockRestore();
@@ -104,7 +108,7 @@ it("adds custom fields and supplies through the real forms", async () => {
 it("does not overwrite unreadable stored data on startup", () => {
   localStorage.setItem(STORAGE_KEY, "{broken");
   render(<App />);
-  expect(screen.getByRole("alert")).toHaveTextContent("could not be opened");
+  expect(screen.getAllByRole("alert")[0]).toHaveTextContent("could not be opened");
   expect(localStorage.getItem(STORAGE_KEY)).toBe("{broken");
 });
 
@@ -113,6 +117,7 @@ it("keeps a timer with its original child and supports delete with Undo", async 
   render(<App />);
   await createChild();
   const firstChild = loadWorkspace().data.child;
+  await user.click(screen.getByRole("button", { name: "＋ Add a record" }));
   await user.click(
     screen.getByRole("button", { name: "Start live feeding timer" }),
   );
@@ -136,4 +141,26 @@ it("keeps a timer with its original child and supports delete with Undo", async 
   expect(loadWorkspace().data.records).toHaveLength(0);
   await user.click(screen.getByRole("button", { name: "Undo" }));
   expect(loadWorkspace().data.records).toHaveLength(1);
+});
+
+
+it("shows all records in date order and opens forms only after a click", async () => {
+  const data = emptyWorkspace();
+  data.children = [{ id: "baby", name: "Baby", birthday: "2026-01-01" }];
+  data.child = "baby";
+  data.records = [
+    { id: "older", child: "baby", type: "feed", time: "2026-08-01T09:00", values: { amount: 80 }, note: "" },
+    { id: "newer", child: "baby", type: "feed", time: "2026-08-02T10:30", values: { amount: 120 }, note: "" },
+  ];
+  saveWorkspace(data, null);
+  const { container } = render(<App />);
+  expect(screen.queryByLabelText("When")).not.toBeInTheDocument();
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(Array.from(container.querySelectorAll(".timeline-day"), (day) => day.getAttribute("aria-label"))).toEqual(["2026-08-02", "2026-08-01"]);
+  expect(screen.getByText("80 mL")).toBeInTheDocument();
+  const user = userEvent.setup();
+  await user.click(screen.getByRole("button", { name: "Sleep", exact: true }));
+  expect(within(screen.getByRole("dialog")).getByLabelText("Record type")).toHaveValue("sleep");
+  await user.click(screen.getByRole("button", { name: "Cancel", exact: true }));
+  expect(loadWorkspace().data.records).toHaveLength(2);
 });

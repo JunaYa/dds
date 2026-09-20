@@ -1,0 +1,37 @@
+.journal { max-width: 960px; margin-inline: auto; }
+.quick-records { margin-bottom: 24px; }
+.quick-records .section-heading { margin-bottom: 8px; }
+.quick-records .focus-types { gap: 10px; }
+.quick-records .focus-types button { min-width: 88px; min-height: 76px; }
+.journal .log-tools { margin-bottom: 28px; }
+.timeline-day { margin-bottom: 28px; }
+.timeline-date { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 24px 0 20px; font-size: 14px; }
+.timeline-date > span { color: var(--care-text); font-size: 12px; font-weight: 400; }
+.record-timeline .record { position: relative; border: 0; gap: 16px; padding: 0 0 18px; align-items: center; isolation: isolate; }
+.record-timeline .record::before { content: ""; position: absolute; left: 72px; top: 0; bottom: 0; border-left: 1px dashed var(--care-line); z-index: -1; pointer-events: none; }
+.record-timeline .record:last-child::before { bottom: 50%; }
+.record-timeline .record time { width: 40px; padding: 0; }
+.record-timeline .record-dot { border: 4px solid var(--card); width: 34px; height: 34px; }
+.record-timeline .record-content { padding: 18px; min-height: 88px; border: 1px solid var(--care-line); border-radius: 16px; background: var(--background); transition: background-color 150ms ease-out, transform 150ms ease-out; }
+.record-timeline .record-content strong { padding: 0; font-size: 16px; }
+.record-timeline .record-edit { position: absolute; right: 6px; top: 8px; }
+.record-timeline .record-content { padding-right: 48px; }
+.record-timeline .record-content:active, .quick-records button:active { transform: scale(.96); }
+.record-timeline .record-content > span, .timeline-date > span { font-variant-numeric: tabular-nums; }
+.journal .empty { min-height: 280px; }
+@media (hover: hover) and (pointer: fine) {
+  .record-timeline .record-content:hover, .quick-records button:hover { background: var(--care-soft); }
+}
+@media (max-width: 760px) {
+  .quick-records .section-heading > span { display: none; }
+  .record-timeline .record { gap: 8px; }
+  .record-timeline .record::before { left: 60px; }
+  .record-timeline .record-dot { width: 26px; height: 26px; border-width: 2px; }
+  .record-timeline .record-dot svg { width: 16px; height: 16px; }
+  .record-timeline .record-content { padding: 16px 42px 16px 14px; }
+  .timeline-date { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .record-timeline .record-content { transition: none; }
+  .record-timeline .record-content:active, .quick-records button:active { transform: none; }
+}

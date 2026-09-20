@@ -3,4 +3,5 @@
 @import "./features/little-days/components/nursing/nursing.css";
 @import "./features/little-days/styles/settings.css";
 @import "./features/little-days/styles/navigation.css";
+@import "./features/little-days/styles/timeline.css";
 @source "./**/*.{ts,tsx}";
