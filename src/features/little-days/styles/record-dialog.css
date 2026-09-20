@@ -1,0 +1,40 @@
+.record-dialog-motion[data-slot="dialog-popup"],
+.record-dialog-backdrop[data-slot="dialog-backdrop"] {
+  transition-duration: 240ms;
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.record-dialog-motion[data-slot="dialog-popup"] {
+  transition-property: opacity, scale, translate;
+  scale: 1;
+  translate: 0 0;
+}
+
+.record-dialog-backdrop[data-slot="dialog-backdrop"] {
+  transition-property: opacity;
+}
+
+.record-dialog-motion[data-starting-style] {
+  opacity: 0;
+  scale: 0.97;
+  translate: 0 12px;
+}
+
+.record-dialog-motion[data-ending-style],
+.record-dialog-backdrop[data-ending-style] {
+  transition-duration: 180ms;
+}
+
+.record-dialog-motion[data-ending-style] {
+  opacity: 0;
+  scale: 0.98;
+  translate: 0 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .record-dialog-motion[data-slot="dialog-popup"],
+  .record-dialog-backdrop[data-slot="dialog-backdrop"] {
+    transition: none;
+    animation: none;
+  }
+}

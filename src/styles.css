@@ -4,4 +4,5 @@
 @import "./features/little-days/styles/settings.css";
 @import "./features/little-days/styles/navigation.css";
 @import "./features/little-days/styles/timeline.css";
+@import "./features/little-days/styles/record-dialog.css";
 @source "./**/*.{ts,tsx}";

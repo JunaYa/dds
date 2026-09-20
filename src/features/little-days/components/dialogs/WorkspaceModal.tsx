@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogPopup,
@@ -13,8 +14,10 @@ import { ChildForm } from "../children/ChildForm";
 import { SaveError } from "../common/SaveError";
 
 export function WorkspaceModal() {
-  const a = useApp(),
-    modal = a.modal;
+  const a = useApp();
+  const [lastModal, setLastModal] = useState(a.modal);
+  if (a.modal && a.modal !== lastModal) setLastModal(a.modal);
+  const modal = a.modal || lastModal;
   const titles = {
     record: "A little moment to remember",
     type: "Build your own record",
@@ -23,9 +26,18 @@ export function WorkspaceModal() {
     child: "Add a child",
   };
   return (
-    <Dialog open={!!modal} onOpenChange={(open) => !open && a.setModal(null)}>
+    <Dialog
+      open={!!a.modal}
+      onOpenChange={(open) => !open && a.setModal(null)}
+      onOpenChangeComplete={(open) => {
+        if (!open) setLastModal(null);
+      }}
+    >
       <DialogPopup
-        className="care-dialog"
+        className={`care-dialog${modal?.kind === "record" ? " record-dialog-motion" : ""}`}
+        backdropProps={{
+          className: modal?.kind === "record" ? "record-dialog-backdrop" : undefined,
+        }}
         showCloseButton={false}
         bottomStickOnMobile={false}
         initialFocus={

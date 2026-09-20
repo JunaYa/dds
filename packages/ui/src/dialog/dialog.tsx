@@ -63,6 +63,7 @@ export function DialogPopup({
   closeLabel = 'Close',
   closeProps,
   portalProps,
+  backdropProps,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
@@ -70,10 +71,11 @@ export function DialogPopup({
   closeLabel?: string
   closeProps?: DialogPrimitive.Close.Props
   portalProps?: DialogPrimitive.Portal.Props
+  backdropProps?: DialogPrimitive.Backdrop.Props
 }): React.ReactElement {
   return (
     <DialogPortal {...portalProps}>
-      <DialogBackdrop />
+      <DialogBackdrop {...backdropProps} />
       <DialogViewport
         className={cn(bottomStickOnMobile && 'max-sm:grid-rows-[1fr_auto] max-sm:p-0 max-sm:pt-12')}
       >
