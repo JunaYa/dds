@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useApp } from "../../hooks/useApp";
 import type { Page } from "../../state/workspace-types";
 import { Icon } from "../common/Icon";
@@ -10,13 +11,14 @@ const pages: { page: Page; icon: string }[] = [
 ];
 
 export function PageNavigation({ onNavigate }: { onNavigate?: () => void }) {
+  const { tr } = useI18n();
   const { page: current, setPage } = useApp();
   return (
-    <nav className="page-navigation" aria-label="Main navigation">
+    <nav className="page-navigation" aria-label={tr("Main navigation")}>
       {pages.map(({ page, icon }) => (
         <button
           type="button"
-          key={page}
+          key={tr(page)}
           className={current === page ? "active" : undefined}
           aria-current={current === page ? "page" : undefined}
           onClick={() => {
@@ -25,7 +27,7 @@ export function PageNavigation({ onNavigate }: { onNavigate?: () => void }) {
           }}
         >
           <Icon name={icon} />
-          {page}
+          {tr(page)}
         </button>
       ))}
     </nav>

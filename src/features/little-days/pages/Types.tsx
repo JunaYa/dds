@@ -1,7 +1,15 @@
+import {
+  typeName,
+  typeDescription,
+  fieldLabel,
+  isBuiltinField,
+} from "../i18n/record-labels";
+import { useI18n } from "../i18n/LocaleProvider";
 import { useApp } from "../hooks/useApp";
 import { Icon } from "../components/common/Icon";
 
 export function Types() {
+  const { tr } = useI18n();
   const a = useApp();
   return (
     <div className="type-grid">
@@ -10,18 +18,20 @@ export function Types() {
           <span className={`icon-well ${type.id}`}>
             <Icon name={type.icon} />
           </span>
-          <h2>{type.name}</h2>
-          <p>{type.description}</p>
+          <h2>{typeName(type, tr)}</h2>
+          <p>{typeDescription(type, tr)}</p>
           <div className="field-tags">
             {type.fields.map((f) => (
               <span key={f.id}>
-                {f.label}
-                {f.unit ? ` · ${f.unit}` : ""}
+                {fieldLabel(type, f, tr)}
+                {f.unit
+                  ? ` · ${isBuiltinField(type, f) ? tr(f.unit) : f.unit}`
+                  : ""}
               </span>
             ))}
           </div>
           <button onClick={() => a.openRecord(type)}>
-            Use this record type ↗
+            {tr("Use this record type ↗")}
           </button>
         </article>
       ))}

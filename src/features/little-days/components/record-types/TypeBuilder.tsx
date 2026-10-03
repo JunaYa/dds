@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useState } from "react";
 import { Button } from "@vita/ui/button";
 import { Input } from "@vita/ui/input";
@@ -6,10 +7,11 @@ import { field, kinds, type Field, type Values } from "../../domain/model";
 import { Fields } from "../records/Fields";
 
 export function TypeBuilder() {
+  const { tr } = useI18n();
   const a = useApp(),
     [name, setName] = useState(""),
     [description, setDescription] = useState(""),
-    [fields, setFields] = useState([field("measure", "Amount", "mL")]),
+    [fields, setFields] = useState([field("measure", tr("Amount"), "mL")]),
     [preview, setPreview] = useState<Values>({});
   const update = (id: string, patch: Partial<Field>) =>
     setFields((fs) => fs.map((f) => (f.id === id ? { ...f, ...patch } : f)));
@@ -26,7 +28,7 @@ export function TypeBuilder() {
         if (name.trim() && fields.length)
           a.saveType({
             name: name.trim(),
-            description: description.trim() || "A routine, your way.",
+            description: description.trim() || tr("A routine, your way."),
             fields: fields.map((f) => ({
               ...f,
               label: f.label.trim(),
@@ -37,27 +39,27 @@ export function TypeBuilder() {
     >
       <div className="record-fields">
         <label className="form-field">
-          Record name
+          {tr("Record name")}
           <Input
             nativeInput
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Outdoor play"
+            placeholder={tr("e.g. Outdoor play")}
           />
         </label>
         <label className="form-field">
-          Short description
+          {tr("Short description")}
           <Input
             nativeInput
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What would you like to remember?"
+            placeholder={tr("What would you like to remember?")}
           />
         </label>
       </div>
       <div className="builder-bank">
-        <span className="tiny-title">ADD A BUILDING BLOCK</span>
+        <span className="tiny-title">{tr("ADD A BUILDING BLOCK")}</span>
         <div>
           {Object.entries(kinds).map(([kind, label]) => (
             <button
@@ -68,14 +70,18 @@ export function TypeBuilder() {
                   ...fs,
                   field(
                     kind as Field["kind"],
-                    label,
-                    kind === "timer" ? "min" : kind === "count" ? "times" : "",
-                    kind === "choice" ? "Option one, Option two" : "",
+                    tr(label),
+                    kind === "timer"
+                      ? tr("min")
+                      : kind === "count"
+                        ? tr("times")
+                        : "",
+                    kind === "choice" ? tr("Option one, Option two") : "",
                   ),
                 ])
               }
             >
-              ＋ {label}
+              ＋ {tr(label)}
             </button>
           ))}
         </div>
@@ -85,12 +91,12 @@ export function TypeBuilder() {
           <section key={f.id} className="builder-field">
             <div className="builder-field-head">
               <strong>
-                {String(i + 1).padStart(2, "0")} / {kinds[f.kind]}
+                {String(i + 1).padStart(2, "0")} / {tr(kinds[f.kind])}
               </strong>
               <div>
                 <button
                   type="button"
-                  aria-label={`Move ${f.label} up`}
+                  aria-label={tr("Move {label} up", { label: f.label })}
                   disabled={i === 0}
                   onClick={() => move(i, i - 1)}
                 >
@@ -98,7 +104,7 @@ export function TypeBuilder() {
                 </button>
                 <button
                   type="button"
-                  aria-label={`Move ${f.label} down`}
+                  aria-label={tr("Move {label} down", { label: f.label })}
                   disabled={i === fields.length - 1}
                   onClick={() => move(i, i + 1)}
                 >
@@ -106,7 +112,7 @@ export function TypeBuilder() {
                 </button>
                 <button
                   type="button"
-                  aria-label={`Remove ${f.label}`}
+                  aria-label={tr("Remove {label}", { label: f.label })}
                   onClick={() =>
                     setFields((fs) => fs.filter((x) => x.id !== f.id))
                   }
@@ -117,7 +123,7 @@ export function TypeBuilder() {
             </div>
             <div className="record-fields">
               <label className="form-field">
-                Field label
+                {tr("Field label")}
                 <input
                   required
                   value={f.label}
@@ -126,17 +132,17 @@ export function TypeBuilder() {
               </label>
               {["count", "measure"].includes(f.kind) && (
                 <label className="form-field">
-                  Unit
+                  {tr("Unit")}
                   <input
                     value={f.unit}
                     onChange={(e) => update(f.id, { unit: e.target.value })}
-                    placeholder="mL, kg, pieces…"
+                    placeholder={tr("mL, kg, pieces…")}
                   />
                 </label>
               )}
               {f.kind === "choice" && (
                 <label className="form-field">
-                  Options, separated by commas
+                  {tr("Options, separated by commas")}
                   <input
                     required
                     value={f.options}
@@ -150,19 +156,19 @@ export function TypeBuilder() {
       </div>
       <section className="builder-preview">
         <div className="section-heading">
-          <h3>{name || "Your new record"}</h3>
-          <span>Live form preview</span>
+          <h3>{name || tr("Your new record")}</h3>
+          <span>{tr("Live form preview")}</span>
         </div>
         <Fields
           fields={fields}
           values={preview}
           onChange={(id, v) => setPreview((p) => ({ ...p, [id]: v }))}
         />
-        {!fields.length && <p>Add at least one building block.</p>}
+        {!fields.length && <p>{tr("Add at least one building block.")}</p>}
       </section>
       <div className="form-actions">
         <Button variant="ghost" type="button" onClick={() => a.setModal(null)}>
-          Cancel
+          {tr("Cancel")}
         </Button>
         <Button
           type="submit"
@@ -178,7 +184,7 @@ export function TypeBuilder() {
             )
           }
         >
-          Create record type
+          {tr("Create record type")}
         </Button>
       </div>
     </form>

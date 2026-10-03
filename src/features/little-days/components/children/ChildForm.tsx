@@ -1,9 +1,11 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
 import { today } from "../../domain/model";
 
 export function ChildForm() {
+  const { tr } = useI18n();
   const a = useApp(),
     [name, setName] = useState(""),
     [birthday, setBirthday] = useState("");
@@ -15,7 +17,7 @@ export function ChildForm() {
       }}
     >
       <label className="form-field">
-        Child’s name
+        {tr("Child’s name")}
         <input
           required
           autoComplete="off"
@@ -24,7 +26,7 @@ export function ChildForm() {
         />
       </label>
       <label className="form-field">
-        Birthday
+        {tr("Birthday")}
         <input
           required
           type="date"
@@ -39,7 +41,7 @@ export function ChildForm() {
           className="primary"
           disabled={!name.trim() || !birthday}
         >
-          Add child
+          {tr("Add child")}
         </Button>
       </div>
     </form>

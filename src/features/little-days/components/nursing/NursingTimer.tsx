@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useTheme } from "../../hooks/useTheme";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@vita/ui/button";
@@ -29,10 +30,11 @@ import { NursingStartTime } from "./NursingStartTime";
 import { nursingSeconds, type NursingSide } from "../../domain/nursing";
 
 export function NursingTimer() {
+  const { tr, locale } = useI18n();
   const a = useApp();
   const { resolved } = useTheme();
   const [nightMode, setNightMode] = useState<boolean | null>(null);
-  const dark = nightMode ?? (resolved === "dark");
+  const dark = nightMode ?? resolved === "dark";
   const [discardOpen, setDiscardOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [instant, setInstant] = useState(false);
@@ -70,7 +72,7 @@ export function NursingTimer() {
         <DialogViewport className={`nursing-viewport ${theme}`}>
           <DialogPrimitive.Popup
             className="nursing-screen"
-            lang="zh-CN"
+            lang={locale}
             data-instant={instant || undefined}
             onKeyDownCapture={() => setInstant(true)}
             onPointerDownCapture={() => setInstant(false)}
@@ -85,7 +87,7 @@ export function NursingTimer() {
                   variant="secondary"
                   size="icon-lg"
                   className="nursing-circle"
-                  aria-label="收起亲喂计时"
+                  aria-label={tr("Minimize nursing timer")}
                   onClick={() => a.setNursingOpen(false)}
                 >
                   <Icons.chevronDown aria-hidden="true" />
@@ -95,7 +97,7 @@ export function NursingTimer() {
                     variant="secondary"
                     size="icon-lg"
                     className="nursing-circle nursing-delete"
-                    aria-label="丢弃本次亲喂"
+                    aria-label={tr("Discard this nursing session")}
                     onClick={() => setDiscardOpen(true)}
                   >
                     <Icons.trash aria-hidden="true" />
@@ -104,7 +106,7 @@ export function NursingTimer() {
                     variant="secondary"
                     size="icon-lg"
                     className="nursing-circle"
-                    aria-label="夜间模式"
+                    aria-label={tr("Night mode")}
                     aria-pressed={dark}
                     onClick={() => setNightMode(!dark)}
                   >
@@ -127,18 +129,27 @@ export function NursingTimer() {
                       className="nursing-status-text"
                       key={`${nursing.side}-${paused}`}
                     >
-                      {nursing.side === "left" ? "左" : "右"}侧亲喂
-                      {paused ? "已暂停" : "中"}
+                      {tr(
+                        paused
+                          ? nursing.side === "left"
+                            ? "Left-side nursing paused"
+                            : "Right-side nursing paused"
+                          : nursing.side === "left"
+                            ? "Nursing on the left"
+                            : "Nursing on the right",
+                      )}
                     </span>
                   </DialogTitle>
                   <DialogDescription className="sr-only">
-                    正在为 {kid?.name}{" "}
-                    记录亲喂。收起后计时会继续，结束时保存记录。
+                    {tr(
+                      "Recording nursing for {name}. The timer continues when minimized. Finish to save the record.",
+                      { name: kid?.name ?? "" },
+                    )}
                   </DialogDescription>
                 </div>
                 {a.error && (
                   <p className="nursing-error" role="alert">
-                    {a.error}
+                    {tr(a.error)}
                   </p>
                 )}
               </div>
@@ -156,25 +167,29 @@ export function NursingTimer() {
                 bottomStickOnMobile={false}
               >
                 <AlertDialogHeader>
-                  <AlertDialogTitle>丢弃这次亲喂？</AlertDialogTitle>
+                  <AlertDialogTitle>
+                    {tr("Discard this nursing session?")}
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
-                    本次计时不会保存为记录。已保存的记录不受影响。
+                    {tr(
+                      "This timer will not be saved. Previously saved records are not affected.",
+                    )}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 {a.error && (
                   <p className="nursing-dialog-error" role="alert">
-                    {a.error}
+                    {tr(a.error)}
                   </p>
                 )}
                 <AlertDialogFooter>
-                  <AlertDialogCancel>保留计时</AlertDialogCancel>
+                  <AlertDialogCancel>{tr("Keep timer")}</AlertDialogCancel>
                   <Button
                     variant="destructive"
                     onClick={() => {
                       if (a.discardSession()) setDiscardOpen(false);
                     }}
                   >
-                    丢弃计时
+                    {tr("Discard timer")}
                   </Button>
                 </AlertDialogFooter>
               </AlertDialogPopup>
@@ -202,6 +217,7 @@ function NursingControls({
   active: boolean;
   onEdit: () => void;
 }) {
+  const { tr } = useI18n();
   const a = useApp();
   const now = useNursingClock(session, active);
   const nursing = session.nursing!;
@@ -213,7 +229,9 @@ function NursingControls({
       variant="secondary"
       size="icon-xl"
       className="nursing-circle nursing-side"
-      aria-label={`${side === "left" ? "左" : "右"}侧亲喂`}
+      aria-label={tr(
+        side === "left" ? "Left-side nursing" : "Right-side nursing",
+      )}
       aria-pressed={nursing.side === side}
       onClick={() => a.changeNursingSide(side)}
     >
@@ -229,7 +247,7 @@ function NursingControls({
           className="nursing-digits"
           role="timer"
           aria-live="off"
-          aria-label="当前侧时长"
+          aria-label={tr("Current side duration")}
           data-long={sides[nursing.side] >= 6000 || undefined}
         >
           <RollingTime seconds={sides[nursing.side]} />
@@ -240,7 +258,7 @@ function NursingControls({
         <Button
           variant="ghost"
           className="nursing-stat nursing-start"
-          aria-label="修改开始时间"
+          aria-label={tr("Edit start time")}
           onClick={onEdit}
         >
           <Icons.timer aria-hidden="true" />
@@ -248,30 +266,32 @@ function NursingControls({
             {session.time.slice(11, 16)}
             <Icons.edit aria-hidden="true" />
           </span>
-          <span className="nursing-stat-label">开始</span>
+          <span className="nursing-stat-label">{tr("Start")}</span>
         </Button>
         <div className="nursing-stat">
           <Icons.clock aria-hidden="true" />
           <output
             className="nursing-stat-value"
-            aria-label="总计时长"
+            aria-label={tr("Total duration")}
             aria-live="off"
           >
             <RollingTime seconds={sides.left + sides.right} />
           </output>
-          <span className="nursing-stat-label">总计</span>
+          <span className="nursing-stat-label">{tr("Total")}</span>
         </div>
         <div className="nursing-stat">
           <NursingSymbol mirrored={other === "right"} />
           <output
             className="nursing-stat-value"
-            aria-label={`${other === "left" ? "左" : "右"}侧时长`}
+            aria-label={tr(
+              other === "left" ? "Left duration" : "Right duration",
+            )}
             aria-live="off"
           >
             <RollingTime seconds={sides[other]} />
           </output>
           <span className="nursing-stat-label">
-            {other === "left" ? "左" : "右"}侧
+            {tr(other === "left" ? "Left" : "Right")}
           </span>
         </div>
       </div>
@@ -280,7 +300,7 @@ function NursingControls({
           variant="secondary"
           size="icon-xl"
           className="nursing-circle"
-          aria-label="切换左右侧"
+          aria-label={tr("Switch sides")}
           onClick={() => a.changeNursingSide(other)}
         >
           <Icons.arrowRightLeft aria-hidden="true" />
@@ -294,14 +314,14 @@ function NursingControls({
             className="nursing-action-text"
             key={paused ? "resume" : "pause"}
           >
-            {paused ? "继续" : "暂停"}
+            {paused ? tr("Resume") : tr("Pause")}
           </span>
         </Button>
         <Button
           variant="secondary"
           size="icon-xl"
           className="nursing-circle"
-          aria-label="结束并保存亲喂"
+          aria-label={tr("Finish and save nursing")}
           onClick={a.finishSession}
         >
           <Icons.square aria-hidden="true" />

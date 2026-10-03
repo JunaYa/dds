@@ -1,3 +1,4 @@
+import { translator, type Translate } from "../i18n/translate";
 import { z } from "zod";
 
 const id = z.string().min(1);
@@ -162,7 +163,11 @@ export function localDateTime(now = new Date()) {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 export const today = () => localDateTime().slice(0, 10);
-export function age(birthday: string, now = new Date()) {
+export function age(
+  birthday: string,
+  now = new Date(),
+  tr: Translate = translator("en"),
+) {
   const born = new Date(`${birthday}T00:00`);
   const months = Math.max(
     0,
@@ -171,9 +176,20 @@ export function age(birthday: string, now = new Date()) {
       born.getMonth() -
       (now.getDate() < born.getDate() ? 1 : 0),
   );
+  const years = Math.floor(months / 12);
+  const remainder = months % 12;
+  const monthText = (count: number) =>
+    count === 1 ? tr("1 month") : tr("{count} months", { count });
+  const yearText =
+    years === 1 ? tr("1 year") : tr("{count} years", { count: years });
   return months < 12
-    ? `${months} months`
-    : `${Math.floor(months / 12)} years${months % 12 ? `, ${months % 12} months` : ""}`;
+    ? monthText(months)
+    : remainder
+      ? tr("{years}, {months}", {
+          years: yearText,
+          months: monthText(remainder),
+        })
+      : yearText;
 }
 export function elapsedSeconds(
   session: Pick<Session, "started" | "elapsed">,
@@ -202,7 +218,20 @@ export const kinds: Record<Field["kind"], string> = {
   text: "Notes",
   date: "Date",
 };
-export function summary(record: CareRecord, type: RecordType) {
+export function summary(
+  record: CareRecord,
+  type: RecordType,
+  tr: Translate = translator("en"),
+) {
+  const original = defaultTypes().find((item) => item.id === type.id);
+  const builtin = (field: Field) =>
+    original?.fields.some(
+      (f) =>
+        f.id === field.id &&
+        f.label === field.label &&
+        f.options === field.options &&
+        f.unit === field.unit,
+    );
   const details =
     type.fields
       .filter(
@@ -210,11 +239,11 @@ export function summary(record: CareRecord, type: RecordType) {
       )
       .map(
         (f) =>
-          `${record.values[f.id]}${f.kind === "timer" ? " min" : f.unit ? " " + f.unit : ""}`,
+          `${f.kind === "choice" && builtin(f) ? tr(String(record.values[f.id])) : record.values[f.id]}${f.kind === "timer" ? " " + tr("min") : f.unit ? " " + (builtin(f) ? tr(f.unit) : f.unit) : ""}`,
       )
-      .join(" · ") || "Details recorded";
+      .join(" · ") || tr("Details recorded");
   return record.nursing
-    ? `${details} · 左 ${formatTimer(record.nursing.leftSeconds)} · 右 ${formatTimer(record.nursing.rightSeconds)}`
+    ? `${details} · ${tr("Left")} ${formatTimer(record.nursing.leftSeconds)} · ${tr("Right")} ${formatTimer(record.nursing.rightSeconds)}`
     : details;
 }
 export function defaultTypes(): RecordType[] {

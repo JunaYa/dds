@@ -1,7 +1,10 @@
+import { useI18n } from "../i18n/LocaleProvider";
+import { typeName } from "../i18n/record-labels";
 import type { Page, Modal } from "../state/workspace-types";
 import { useEffect, useRef, useState } from "react";
 import {
   age,
+  summary,
   elapsedSeconds,
   localDateTime,
   today,
@@ -20,6 +23,7 @@ import {
 } from "../domain/nursing";
 
 export function useWorkspaceState() {
+  const { tr } = useI18n();
   const [loaded] = useState(() => {
     try {
       return { ...loadWorkspace(), error: "" };
@@ -41,7 +45,7 @@ export function useWorkspaceState() {
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState<Modal>(null);
   const [nursingOpen, setNursingOpen] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<string | { typeId: string }>("");
   const [removed, setRemoved] = useState<CareRecord | null>(null);
   const [day, setDay] = useState(today);
   useEffect(() => {
@@ -53,7 +57,10 @@ export function useWorkspaceState() {
       window.removeEventListener("focus", refresh);
     };
   }, []);
-  function commit(change: (state: Workspace) => Workspace, message = "") {
+  function commit(
+    change: (state: Workspace) => Workspace,
+    message: string | { typeId: string } = "",
+  ) {
     if (!current.current) return false;
     try {
       const next = change(current.current);
@@ -83,20 +90,27 @@ export function useWorkspaceState() {
   const activeChild = selected
     ? {
         ...selected,
-        age: age(selected.birthday),
+        age: age(selected.birthday, new Date(), tr),
         initial: selected.name.slice(0, 1),
         caption: "The little moments, remembered.",
       }
     : null;
   const childRecords = records.filter((r) => r.child === child);
   const visible = childRecords
-    .filter(
-      (r) =>
-        (range === "all" || r.time.startsWith(day)) &&
-        `${types.find((t) => t.id === r.type)?.name} ${r.note} ${Object.values(r.values).join(" ")}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-    )
+    .filter((record) => {
+      const type = types.find((item) => item.id === record.type);
+      const text = [
+        type?.name,
+        type && typeName(type, tr),
+        type && summary(record, type, tr),
+        record.note,
+        ...Object.values(record.values),
+      ].join(" ");
+      return (
+        (range === "all" || record.time.startsWith(day)) &&
+        text.toLowerCase().includes(query.toLowerCase())
+      );
+    })
     .sort((a, b) => b.time.localeCompare(a.time));
   const openRecord = (type: RecordType, record: CareRecord | null = null) =>
     setModal({ kind: "record", type, record, child });
@@ -185,7 +199,7 @@ export function useWorkspaceState() {
           }),
         },
       }),
-      `${type.name} timer started`,
+      { typeId: type.id },
     );
     if (saved && nursing) setNursingOpen(true);
     return saved;
@@ -300,6 +314,10 @@ export function useWorkspaceState() {
         "Record restored",
       );
   }
+  const noticeType =
+    typeof notice === "string"
+      ? undefined
+      : types.find((type) => type.id === notice.typeId);
   return {
     data,
     error,
@@ -319,7 +337,12 @@ export function useWorkspaceState() {
     setQuery,
     modal,
     setModal,
-    notice,
+    notice:
+      typeof notice === "string"
+        ? tr(notice)
+        : tr("{name} timer started", {
+            name: noticeType ? typeName(noticeType, tr) : "",
+          }),
     visible,
     childRecords,
     openRecord,

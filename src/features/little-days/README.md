@@ -16,6 +16,7 @@ little-days/
 │   ├── records/            # Record form, field inputs, history and filters
 │   ├── supplies/           # Supply and restock form
 │   └── timers/             # General session banner
+├── i18n/                   # English/Chinese messages, locale provider and built-in record labels
 ├── hooks/                  # useApp, useWorkspaceState, useNursingClock
 ├── state/                  # Context, provider and UI state types
 ├── domain/                 # Zod schemas, defaults and pure calculations
@@ -32,3 +33,5 @@ Pages compose components. `Shell` accepts page content through `children` and do
 Components access workspace actions through `useApp`. `WorkspaceProvider` owns a single `useWorkspaceState` instance; only that hook coordinates persistent mutations. The context references its return type through a type-only import, avoiding a runtime dependency cycle. `storage/` depends on `domain/`, and neither layer imports React or UI components.
 
 Keep persistence validation, the storage key, and timer timestamp calculations unchanged during structural refactors. Global styles are loaded from `src/styles.css` in their existing order; nursing-specific styles stay with the nursing components.
+
+Language settings live in `components/settings/LanguagePicker.tsx`. `i18n/LocaleProvider.tsx` defaults to the device language (Chinese for `zh-*`, English otherwise), stores explicit choices under `little-days.locale`, and synchronizes windows. Keep interface phrases in `i18n/messages.ts`; use `tr(key, params)` for sentences with variables. Dates use the selected locale. Translate built-in record labels only at render time with `i18n/record-labels.ts`; never translate persisted IDs, choice values, names, or user-entered notes.

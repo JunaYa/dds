@@ -1,3 +1,5 @@
+import { typeName } from "../../i18n/record-labels";
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
@@ -23,6 +25,7 @@ export function RecordForm({
   child: string;
   inline?: boolean;
 }) {
+  const { tr, locale } = useI18n();
   const a = useApp(),
     [typeId, setTypeId] = useState(initialType.id),
     [values, setValues] = useState<Values>(record?.values || {}),
@@ -80,8 +83,10 @@ export function RecordForm({
         <div className="nursing-entry">
           <NursingSymbol />
           <div>
-            <strong>亲喂计时</strong>
-            <span>左右侧分别记录，随时暂停或切换</span>
+            <strong>{tr("Nursing timer")}</strong>
+            <span>
+              {tr("Track each side separately. Pause or switch at any time.")}
+            </span>
           </div>
           <Button
             variant="primary-muted"
@@ -91,26 +96,26 @@ export function RecordForm({
               if (a.startSession(type, true, child)) a.setModal(null);
             }}
           >
-            开始亲喂
+            {tr("Start nursing")}
           </Button>
         </div>
       )}
       {record?.nursing && (
         <dl className="nursing-record-details">
           <div>
-            <dt>开始</dt>
-            <dd>{new Date(record.nursing.startedAt).toLocaleString()}</dd>
+            <dt>{tr("Start")}</dt>
+            <dd>{new Date(record.nursing.startedAt).toLocaleString(locale)}</dd>
           </div>
           <div>
-            <dt>结束</dt>
-            <dd>{new Date(record.nursing.endedAt).toLocaleString()}</dd>
+            <dt>{tr("End")}</dt>
+            <dd>{new Date(record.nursing.endedAt).toLocaleString(locale)}</dd>
           </div>
           <div>
-            <dt>左侧</dt>
+            <dt>{tr("Left")}</dt>
             <dd>{formatNursingTime(record.nursing.leftSeconds)}</dd>
           </div>
           <div>
-            <dt>右侧</dt>
+            <dt>{tr("Right")}</dt>
             <dd>{formatNursingTime(record.nursing.rightSeconds)}</dd>
           </div>
         </dl>
@@ -125,7 +130,7 @@ export function RecordForm({
       )}
       {!record && !inline && (
         <label className="form-field">
-          Record type
+          {tr("Record type")}
           <select
             value={typeId}
             onChange={(e) => {
@@ -135,14 +140,14 @@ export function RecordForm({
           >
             {a.types.map((t) => (
               <option key={t.id} value={t.id}>
-                {t.name}
+                {typeName(t, tr)}
               </option>
             ))}
           </select>
         </label>
       )}
       <label className="form-field">
-        When
+        {tr("When")}
         <input
           required
           type="datetime-local"
@@ -151,6 +156,7 @@ export function RecordForm({
         />
       </label>
       <Fields
+        recordType={type}
         fields={
           isGrowth
             ? type.fields.filter(
@@ -162,17 +168,17 @@ export function RecordForm({
         onChange={(id, v) => setValues((s) => ({ ...s, [id]: v }))}
       />
       <label className="form-field">
-        Caregiver note
+        {tr("Caregiver note")}
         <textarea
           rows={2}
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Anything you’d like to remember"
+          placeholder={tr("Anything you’d like to remember")}
         />
       </label>
       {type.fields.some((f) => f.kind === "timer") && !record && (
         <div className="timer-option">
-          <p>Happening right now?</p>
+          <p>{tr("Happening right now?")}</p>
           <button
             type="button"
             disabled={!!a.session}
@@ -187,11 +193,14 @@ export function RecordForm({
                 a.setModal(null);
             }}
           >
-            Start live {type.name.toLowerCase()} timer
+            {tr("Start live {name} timer", {
+              name: typeName(type, tr).toLowerCase(),
+            })}
           </button>
           <small>
-            Live mode records the first timer field; other details can be added
-            afterward.
+            {tr(
+              "Live mode records the first timer field; other details can be added afterward.",
+            )}
           </small>
         </div>
       )}
@@ -204,7 +213,7 @@ export function RecordForm({
               if (a.removeRecord(record.id)) a.setModal(null);
             }}
           >
-            Delete record
+            {tr("Delete record")}
           </button>
         ) : (
           !inline && (
@@ -213,7 +222,7 @@ export function RecordForm({
               variant="ghost"
               onClick={() => a.setModal(null)}
             >
-              Cancel
+              {tr("Cancel")}
             </Button>
           )
         )}
@@ -222,7 +231,7 @@ export function RecordForm({
           className="primary"
           disabled={isGrowth && !hasMeasurement}
         >
-          {record ? "Save changes" : "Save record"}
+          {record ? tr("Save changes") : tr("Save record")}
         </Button>
       </div>
     </form>

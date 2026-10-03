@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useEffect, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
@@ -11,6 +12,7 @@ export function Log({
   title?: string;
   compact?: boolean;
 }) {
+  const { tr, locale } = useI18n();
   const a = useApp();
   const [limit, setLimit] = useState(12);
   useEffect(() => setLimit(12), [a.child, a.range, a.query]);
@@ -24,33 +26,56 @@ export function Log({
   return (
     <section className={`log ${compact ? "compact" : ""}`}>
       <div className="section-heading">
-        <h2>{title}</h2>
-        <span>{a.visible.length} records</span>
+        <h2>{tr(title)}</h2>
+        <span>
+          {a.visible.length === 1
+            ? tr("1 record")
+            : tr("{count} records", { count: a.visible.length })}
+        </span>
       </div>
       {!a.visible.length && (
         <div className="empty">
           <Icon name="book" size={32} />
-          <h3>A little space for the next thing.</h3>
-          <p>{a.query ? "Try another search or add a new moment." : "Feeding, sleep, changes — your child’s moments will appear here."}</p>
-          <Button onClick={() => a.openRecord(a.types[0])}>Add a record</Button>
+          <h3>{tr("A little space for the next thing.")}</h3>
+          <p>
+            {a.query
+              ? tr("Try another search or add a new moment.")
+              : tr(
+                  "Feeding, sleep, changes — your child’s moments will appear here.",
+                )}
+          </p>
+          <Button onClick={() => a.openRecord(a.types[0])}>
+            {tr("Add a record")}
+          </Button>
         </div>
       )}
       <div className="record-timeline">
         {Array.from(groups, ([date, records]) => (
           <section className="timeline-day" key={date} aria-label={date}>
             <h3 className="timeline-date">
-              <time dateTime={date}>{new Date(`${date}T12:00`).toLocaleDateString(undefined, {
-                weekday: "long", year: "numeric", month: "long", day: "numeric",
-              })}</time>
-              <span>{records.length} records</span>
+              <time dateTime={date}>
+                {new Date(`${date}T12:00`).toLocaleDateString(locale, {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+              <span>
+                {records.length === 1
+                  ? tr("1 record")
+                  : tr("{count} records", { count: records.length })}
+              </span>
             </h3>
-            {records.map((record) => <RecordRow key={record.id} record={record} />)}
+            {records.map((record) => (
+              <RecordRow key={record.id} record={record} />
+            ))}
           </section>
         ))}
       </div>
       {a.visible.length > limit && (
         <button className="load-more" onClick={() => setLimit((n) => n + 12)}>
-          Show 12 more records
+          {tr("Show 12 more records")}
         </button>
       )}
     </section>

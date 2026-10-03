@@ -1,10 +1,11 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useId, useState } from "react";
 import type { Values } from "../../domain/model";
 import "../../styles/growth.css";
 
 const measurements = {
   height: {
-    label: "身高",
+    label: "Height",
     unit: "cm",
     alternate: "in",
     factor: 2.54,
@@ -14,7 +15,7 @@ const measurements = {
     interval: 10,
   },
   weight: {
-    label: "体重",
+    label: "Weight",
     unit: "kg",
     alternate: "lb",
     factor: 0.45359237,
@@ -33,10 +34,11 @@ export function GrowthFields({
   values: Values;
   onChange: (id: string, value: string | number) => void;
 }) {
+  const { tr } = useI18n();
   const [active, setActive] = useState<Measurement>("height");
   return (
-    <section className="growth-fields" aria-label="生长记录">
-      <div className="growth-switch" aria-label="选择测量项目">
+    <section className="growth-fields" aria-label={tr("Growth record")}>
+      <div className="growth-switch" aria-label={tr("Choose a measurement")}>
         {(Object.keys(measurements) as Measurement[]).map((key) => (
           <button
             type="button"
@@ -44,11 +46,11 @@ export function GrowthFields({
             aria-pressed={active === key}
             onClick={() => setActive(key)}
           >
-            <span>{measurements[key].label}</span>
+            <span>{tr(measurements[key].label)}</span>
             <small>
               {typeof values[key] === "number"
                 ? `${values[key]} ${measurements[key].unit}`
-                : "未记录"}
+                : tr("Not recorded")}
             </small>
           </button>
         ))}
@@ -60,7 +62,9 @@ export function GrowthFields({
         onChange={(value) => onChange(active, value)}
       />
       <p className="growth-hint">
-        身高、体重可单独记录；未填写的项目不会保存数值。
+        {tr(
+          "Height and weight can be recorded separately. Empty measurements will not be saved.",
+        )}
       </p>
     </section>
   );
@@ -75,6 +79,7 @@ function MeasurementRuler({
   value: string | number | undefined;
   onChange: (value: string | number) => void;
 }) {
+  const { tr } = useI18n();
   const id = useId();
   const config = measurements[kind];
   const [imperial, setImperial] = useState(false);
@@ -95,9 +100,18 @@ function MeasurementRuler({
   return (
     <>
       <div className="growth-heading">
-        <h3>记录宝宝的{config.label}</h3>
-        <p>拖动刻度选择，或在下方输入准确数值</p>
-        <div className="growth-units" aria-label={`${config.label}单位`}>
+        <h3>
+          {tr("Record your baby’s {measurement}", {
+            measurement: tr(config.label).toLowerCase(),
+          })}
+        </h3>
+        <p>{tr("Drag the ruler, or enter an exact value below")}</p>
+        <div
+          className="growth-units"
+          aria-label={tr("{measurement} unit", {
+            measurement: tr(config.label),
+          })}
+        >
           {[config.unit, config.alternate].map((label, index) => (
             <button
               type="button"
@@ -156,8 +170,17 @@ function MeasurementRuler({
             </div>
           </div>
           <input
-            aria-label={`${config.label}刻度尺`}
-            aria-valuetext={`${display(selected)} ${unit}${hasValue ? "" : "，尚未记录"}`}
+            aria-label={tr("{measurement} ruler", {
+              measurement: tr(config.label),
+            })}
+            aria-valuetext={
+              hasValue
+                ? `${display(selected)} ${unit}`
+                : tr("{value} {unit}, not recorded yet", {
+                    value: display(selected),
+                    unit,
+                  })
+            }
             type="range"
             min={config.min}
             max={config.max}
@@ -171,7 +194,7 @@ function MeasurementRuler({
       </div>
       <label className="form-field growth-value" htmlFor={id}>
         <span>
-          {config.label}
+          {tr(config.label)}
           <small>{unit}</small>
         </span>
         <input
@@ -180,7 +203,7 @@ function MeasurementRuler({
           inputMode="decimal"
           min={0.01}
           step="any"
-          placeholder="尚未记录"
+          placeholder={tr("No measurement yet")}
           value={hasValue ? display(value) : ""}
           onChange={(event) =>
             onChange(

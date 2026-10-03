@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { type ReactNode } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
@@ -11,8 +12,8 @@ import { SaveError } from "../common/SaveError";
 import { SessionBanner } from "../timers/SessionBanner";
 import { WorkspaceModal } from "../dialogs/WorkspaceModal";
 
-
 export function Shell({ children }: { children: ReactNode }) {
+  const { tr, locale } = useI18n();
   const a = useApp();
   if (!a.activeChild) return null;
   return (
@@ -22,19 +23,19 @@ export function Shell({ children }: { children: ReactNode }) {
           <div className="brand">
             <Icon name="leaf" size={27} />
             <strong>
-              little days<span>A little less to remember</span>
+              little days<span>{tr("A little less to remember")}</span>
             </strong>
           </div>
           <ChildPicker />
           <PageNavigation />
           <div className="side-note">
-            <span className="tiny-title">THE LITTLE THINGS ADD UP</span>
+            <span className="tiny-title">{tr("THE LITTLE THINGS ADD UP")}</span>
             <p>
-              A bottle, a nap, a fresh diaper.
+              {tr("A bottle, a nap, a fresh diaper.")}
               <br />
-              One day at a time.
+              {tr("One day at a time.")}
             </p>
-            <span>Stored on this device</span>
+            <span>{tr("Stored on this device")}</span>
           </div>
         </aside>
         <main>
@@ -42,7 +43,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <header className="page-heading">
             <div>
               <div className="eyebrow">
-                {new Date(`${a.day}T12:00`).toLocaleDateString(undefined, {
+                {new Date(`${a.day}T12:00`).toLocaleDateString(locale, {
                   weekday: "long",
                   month: "long",
                   day: "numeric",
@@ -51,17 +52,23 @@ export function Shell({ children }: { children: ReactNode }) {
               </div>
               <h1>
                 {a.page === "Today"
-                  ? `${a.activeChild.name}’s little day`
+                  ? tr("{name}’s little day", { name: a.activeChild.name })
                   : a.page === "Supplies"
-                    ? "Ready for the everyday."
-                    : a.page === "Settings" ? "Make yourself at home." : "Make room for your routine."}
+                    ? tr("Ready for the everyday.")
+                    : a.page === "Settings"
+                      ? tr("Make yourself at home.")
+                      : tr("Make room for your routine.")}
               </h1>
               <p>
                 {a.page === "Today"
-                  ? a.activeChild.caption
+                  ? tr(a.activeChild.caption)
                   : a.page === "Supplies"
-                    ? "Family supplies, with one less thing to keep in your head."
-                    : a.page === "Settings" ? "Small preferences for your everyday." : "Choose what matters. Build a record that fits."}
+                    ? tr(
+                        "Family supplies, with one less thing to keep in your head.",
+                      )
+                    : a.page === "Settings"
+                      ? tr("Small preferences for your everyday.")
+                      : tr("Choose what matters. Build a record that fits.")}
               </p>
             </div>
             {a.page === "Today" ? (
@@ -69,7 +76,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 className="primary"
                 onClick={() => a.openRecord(a.types[0])}
               >
-                ＋ Add a record
+                {tr("＋ Add a record")}
               </Button>
             ) : a.page !== "Settings" ? (
               <Button
@@ -80,7 +87,10 @@ export function Shell({ children }: { children: ReactNode }) {
                   })
                 }
               >
-                ＋ {a.page === "Supplies" ? "Add supply" : "Create record type"}
+                ＋{" "}
+                {a.page === "Supplies"
+                  ? tr("Add supply")
+                  : tr("Create record type")}
               </Button>
             ) : null}
           </header>
@@ -89,10 +99,10 @@ export function Shell({ children }: { children: ReactNode }) {
           {children}
           <div className="notice" role="status">
             {a.notice}
-            {a.undo && <button onClick={a.undo}>Undo</button>}
+            {a.undo && <button onClick={a.undo}>{tr("Undo")}</button>}
           </div>
           <footer className="app-footer">
-            Saved on this device · No cloud sync
+            {tr("Saved on this device · No cloud sync")}
           </footer>
         </main>
       </div>

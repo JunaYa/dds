@@ -191,11 +191,11 @@ it("records growth measurements from the ruler and preserves them after reopenin
   await createChild();
   fireEvent.click(screen.getByRole("button", { name: "Growth", exact: true }));
   expect(screen.getByRole("button", { name: "Save record" })).toBeDisabled();
-  fireEvent.change(screen.getByRole("slider", { name: "身高刻度尺" }), {
+  fireEvent.change(screen.getByRole("slider", { name: "Height ruler" }), {
     target: { value: "65.4" },
   });
-  fireEvent.click(screen.getByRole("button", { name: /体重.*未记录/ }));
-  fireEvent.change(screen.getByLabelText("体重kg"), {
+  fireEvent.click(screen.getByRole("button", { name: /Weight.*Not recorded/ }));
+  fireEvent.change(screen.getByLabelText("Weightkg"), {
     target: { value: "7.25" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Save record" }));
@@ -207,9 +207,9 @@ it("records growth measurements from the ruler and preserves them after reopenin
   render(<App />);
   expect(screen.getByText("7.25 kg · 65.4 cm")).toBeInTheDocument();
   fireEvent.click(screen.getByText("7.25 kg · 65.4 cm"));
-  expect(screen.getByLabelText("身高cm")).toHaveValue(65.4);
-  fireEvent.click(screen.getByRole("button", { name: /体重.*7.25 kg/ }));
-  expect(screen.getByLabelText("体重kg")).toHaveValue(7.25);
+  expect(screen.getByLabelText("Heightcm")).toHaveValue(65.4);
+  fireEvent.click(screen.getByRole("button", { name: /Weight.*7.25 kg/ }));
+  expect(screen.getByLabelText("Weightkg")).toHaveValue(7.25);
 });
 
 it("saves a single growth measurement in metric units after imperial entry", async () => {
@@ -217,11 +217,11 @@ it("saves a single growth measurement in metric units after imperial entry", asy
   await createChild();
   fireEvent.click(screen.getByRole("button", { name: "Growth", exact: true }));
   fireEvent.click(screen.getByRole("button", { name: "in", exact: true }));
-  fireEvent.change(screen.getByLabelText("身高in"), {
+  fireEvent.change(screen.getByLabelText("Heightin"), {
     target: { value: "20" },
   });
   fireEvent.click(screen.getByRole("button", { name: "cm", exact: true }));
-  expect(screen.getByLabelText("身高cm")).toHaveValue(50.8);
+  expect(screen.getByLabelText("Heightcm")).toHaveValue(50.8);
   fireEvent.click(screen.getByRole("button", { name: "Save record" }));
   expect(loadWorkspace().data.records[0].values).toEqual({ height: 50.8 });
 });

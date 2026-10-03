@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { Button } from "@vita/ui/button";
 import { Icons } from "@vita/ui/icons";
 import { useApp } from "../../hooks/useApp";
@@ -7,6 +8,7 @@ import { useNursingClock } from "../../hooks/useNursingClock";
 import { nursingSeconds } from "../../domain/nursing";
 
 export function NursingMiniBar() {
+  const { tr } = useI18n();
   const a = useApp();
   const now = useNursingClock(a.session, !a.nursingOpen);
   if (!a.session?.nursing) return null;
@@ -17,7 +19,7 @@ export function NursingMiniBar() {
   return (
     <section
       className="nursing-minibar"
-      aria-label="亲喂计时"
+      aria-label={tr("Nursing timer")}
       aria-hidden={a.nursingOpen}
       data-expanded={a.nursingOpen || undefined}
       inert={a.nursingOpen}
@@ -25,27 +27,27 @@ export function NursingMiniBar() {
       <Button
         variant="ghost"
         className="nursing-mini-open"
-        aria-label="打开亲喂计时"
+        aria-label={tr("Open nursing timer")}
         onClick={() => a.setNursingOpen(true)}
       >
         <NursingSymbol mirrored={side === "right"} />
         <span className="nursing-mini-copy">
-          <output aria-live="off" aria-label="累计亲喂时长">
+          <output aria-live="off" aria-label={tr("Total nursing time")}>
             <RollingTime seconds={seconds.left + seconds.right} />
           </output>
           <span>
             {a.children.find((child) => child.id === session.child)?.name} ·{" "}
-            {paused ? "已暂停" : "亲喂中"}
+            {paused ? tr("Paused") : tr("Nursing in progress")}
           </span>
         </span>
       </Button>
       <span className="nursing-mini-side">
-        {side === "left" ? "左侧" : "右侧"}
+        {side === "left" ? tr("Left") : tr("Right")}
       </span>
       <Button
         variant="ghost"
         size="icon-lg"
-        aria-label="切换左右侧"
+        aria-label={tr("Switch sides")}
         onClick={() => a.changeNursingSide(side === "left" ? "right" : "left")}
       >
         <Icons.arrowRightLeft aria-hidden="true" />
@@ -53,7 +55,9 @@ export function NursingMiniBar() {
       <Button
         variant="ghost"
         size="icon-lg"
-        aria-label={paused ? "继续亲喂计时" : "暂停亲喂计时"}
+        aria-label={
+          paused ? tr("Resume nursing timer") : tr("Pause nursing timer")
+        }
         onClick={a.pauseSession}
       >
         <span

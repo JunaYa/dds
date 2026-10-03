@@ -1,14 +1,19 @@
-import { type Field, type Values } from "../../domain/model";
+import { fieldLabel, isBuiltinField } from "../../i18n/record-labels";
+import { useI18n } from "../../i18n/LocaleProvider";
+import { type Field, type Values, type RecordType } from "../../domain/model";
 
 export function Fields({
   fields,
+  recordType,
   values,
   onChange,
 }: {
   fields: Field[];
+  recordType?: RecordType;
   values: Values;
   onChange: (id: string, value: string | number) => void;
 }) {
+  const { tr } = useI18n();
   return (
     <div className="record-fields">
       {fields.map((f) => (
@@ -17,21 +22,27 @@ export function Fields({
           key={f.id}
         >
           <span>
-            {f.label}
-            {f.unit && <small>{f.unit}</small>}
+            {fieldLabel(recordType, f, tr)}
+            {f.unit && (
+              <small>
+                {isBuiltinField(recordType, f) ? tr(f.unit) : f.unit}
+              </small>
+            )}
           </span>
           {f.kind === "choice" ? (
             <select
               value={values[f.id] ?? ""}
               onChange={(e) => onChange(f.id, e.target.value)}
             >
-              <option value="">Choose…</option>
+              <option value="">{tr("Choose…")}</option>
               {f.options
                 .split(",")
                 .map((s) => s.trim())
                 .filter(Boolean)
                 .map((o) => (
-                  <option key={o}>{o}</option>
+                  <option key={o} value={o}>
+                    {isBuiltinField(recordType, f) ? tr(o) : o}
+                  </option>
                 ))}
             </select>
           ) : f.kind === "text" ? (
@@ -44,7 +55,9 @@ export function Fields({
             <span className="count-input">
               <button
                 type="button"
-                aria-label={`Decrease ${f.label}`}
+                aria-label={tr("Decrease {label}", {
+                  label: fieldLabel(recordType, f, tr),
+                })}
                 disabled={!Number(values[f.id])}
                 onClick={() =>
                   onChange(f.id, Math.max(0, Number(values[f.id] || 0) - 1))
@@ -53,7 +66,7 @@ export function Fields({
                 −
               </button>
               <input
-                aria-label={f.label}
+                aria-label={fieldLabel(recordType, f, tr)}
                 type="number"
                 min="0"
                 step="1"
@@ -67,7 +80,9 @@ export function Fields({
               />
               <button
                 type="button"
-                aria-label={`Increase ${f.label}`}
+                aria-label={tr("Increase {label}", {
+                  label: fieldLabel(recordType, f, tr),
+                })}
                 onClick={() => onChange(f.id, Number(values[f.id] || 0) + 1)}
               >
                 ＋

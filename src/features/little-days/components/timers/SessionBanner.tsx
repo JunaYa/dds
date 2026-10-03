@@ -1,3 +1,5 @@
+import { typeName } from "../../i18n/record-labels";
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useEffect, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
@@ -5,6 +7,7 @@ import { elapsedSeconds, formatTimer } from "../../domain/model";
 import { Icon } from "../common/Icon";
 
 export function SessionBanner() {
+  const { tr } = useI18n();
   const a = useApp();
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -27,18 +30,20 @@ export function SessionBanner() {
       <Icon name={type?.icon} />
       <div>
         <strong>
-          {kid?.name} · {type?.name}
+          {kid?.name} · {type ? typeName(type, tr) : ""}
         </strong>
-        <span>{session.started === null ? "Paused" : "Timer running"}</span>
+        <span>
+          {session.started === null ? tr("Paused") : tr("Timer running")}
+        </span>
       </div>
-      <output aria-label="Elapsed time">
+      <output aria-label={tr("Elapsed time")}>
         {formatTimer(elapsedSeconds(session, now))}
       </output>
       <button onClick={a.pauseSession}>
-        {session.started === null ? "Resume" : "Pause"}
+        {session.started === null ? tr("Resume") : tr("Pause")}
       </button>
       <Button variant="outline" onClick={a.finishSession}>
-        Finish & save
+        {tr("Finish & save")}
       </Button>
     </section>
   );

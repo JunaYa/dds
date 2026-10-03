@@ -1,3 +1,5 @@
+import { typeName } from "../i18n/record-labels";
+import { useI18n } from "../i18n/LocaleProvider";
 import { Settings } from "./Settings";
 import { Supplies } from "./Supplies";
 import { Types } from "./Types";
@@ -8,21 +10,25 @@ import { LogTools } from "../components/records/LogTools";
 import { useApp } from "../hooks/useApp";
 
 export default function Focus() {
+  const { tr } = useI18n();
   const a = useApp();
   return (
     <Shell>
       {a.page === "Today" ? (
         <div className="journal">
-          <section className="quick-records" aria-label="Quick add a record">
+          <section
+            className="quick-records"
+            aria-label={tr("Quick add a record")}
+          >
             <div className="section-heading">
-              <h2>Capture a little moment</h2>
-              <span>Choose a record to get started</span>
+              <h2>{tr("Capture a little moment")}</h2>
+              <span>{tr("Choose a record to get started")}</span>
             </div>
             <div className="focus-types">
               {a.types.map((type) => (
                 <button key={type.id} onClick={() => a.openRecord(type)}>
                   <Icon name={type.icon} />
-                  <span>{type.name}</span>
+                  <span>{typeName(type, tr)}</span>
                 </button>
               ))}
             </div>

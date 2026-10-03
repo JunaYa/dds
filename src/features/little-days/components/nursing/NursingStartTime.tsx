@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { Input } from "@vita/ui/input";
@@ -111,6 +112,7 @@ function StartTimeForm({
   time: string;
   onClose: () => void;
 }) {
+  const { tr, locale } = useI18n();
   const a = useApp();
   const [draft, setDraft] = useState(time);
   const [anchorDate, setAnchorDate] = useState(time.slice(0, 10));
@@ -129,15 +131,15 @@ function StartTimeForm({
         value,
         label:
           value === localDateTime(today).slice(0, 10)
-            ? "今天"
-            : date.toLocaleDateString("zh-CN", {
+            ? tr("Today")
+            : date.toLocaleDateString(locale, {
                 month: "long",
                 day: "numeric",
                 weekday: "short",
               }),
       };
     });
-  }, [anchorDate]);
+  }, [anchorDate, locale, tr]);
   const update = (part: "date" | "hour" | "minute", value: string) => {
     setError("");
     setDraft((current) =>
@@ -157,7 +159,7 @@ function StartTimeForm({
           !Number.isFinite(new Date(draft).getTime()) ||
           new Date(draft).getTime() > Date.now()
         ) {
-          setError("开始时间不能晚于现在。");
+          setError("Start time cannot be in the future.");
           return;
         }
         if (a.editSessionTime(draft)) onClose();
@@ -166,19 +168,21 @@ function StartTimeForm({
       <div className="nursing-sheet-handle" aria-hidden="true" />
       <header className="nursing-time-heading">
         <Button type="button" variant="ghost" onClick={onClose}>
-          取消
+          {tr("Cancel")}
         </Button>
-        <DialogTitle>开始时间</DialogTitle>
-        <Button type="submit" variant="ghost" aria-label="保存时间">
-          完成
+        <DialogTitle>{tr("Start time")}</DialogTitle>
+        <Button type="submit" variant="ghost" aria-label={tr("Save time")}>
+          {tr("Done")}
         </Button>
       </header>
       <DialogDescription className="sr-only">
-        滚动选择日期、小时和分钟，或使用方向键调整。修改开始时间不会改变左右侧已计时的时长。
+        {tr(
+          "Scroll to choose the date, hour, and minute, or use arrow keys. Changing the start time does not change the timed duration for either side.",
+        )}
       </DialogDescription>
       {manual ? (
         <label className="nursing-manual-time form-field">
-          开始时间
+          {tr("Start time")}
           <Input
             nativeInput
             type="datetime-local"
@@ -197,19 +201,19 @@ function StartTimeForm({
       ) : (
         <div className="nursing-time-wheels">
           <TimeWheel
-            label="开始日期"
+            label={tr("Start date")}
             options={days}
             value={draft.slice(0, 10)}
             onChange={(value) => update("date", value)}
           />
           <TimeWheel
-            label="开始小时"
+            label={tr("Start hour")}
             options={hours}
             value={draft.slice(11, 13)}
             onChange={(value) => update("hour", value)}
           />
           <TimeWheel
-            label="开始分钟"
+            label={tr("Start minute")}
             options={minutes}
             value={draft.slice(14, 16)}
             onChange={(value) => update("minute", value)}
@@ -218,7 +222,7 @@ function StartTimeForm({
       )}
       {(error || a.error) && (
         <p className="nursing-dialog-error" role="alert">
-          {error || a.error}
+          {tr(error || a.error)}
         </p>
       )}
       <Button
@@ -233,7 +237,7 @@ function StartTimeForm({
           setManual((value) => !value);
         }}
       >
-        {manual ? "滚动选择时间" : "手动输入时间"}
+        {manual ? tr("Choose time with wheels") : tr("Enter time manually")}
       </Button>
     </form>
   );

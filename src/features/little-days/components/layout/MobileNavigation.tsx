@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/LocaleProvider";
 import { useEffect, useState } from "react";
 import {
   Sheet,
@@ -12,6 +13,7 @@ import { ChildPicker } from "../children/ChildPicker";
 import { PageNavigation } from "./PageNavigation";
 
 export function MobileNavigation() {
+  const { tr } = useI18n();
   const [open, setOpen] = useState(false);
   useEffect(() => {
     const desktop = matchMedia("(min-width: 761px)");
@@ -25,7 +27,10 @@ export function MobileNavigation() {
   return (
     <div className="mobile-toolbar">
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger className="navigation-toggle" aria-label="Open navigation">
+        <SheetTrigger
+          className="navigation-toggle"
+          aria-label={tr("Open navigation")}
+        >
           <Icon name="menu" />
         </SheetTrigger>
         <SheetPopup
@@ -35,16 +40,19 @@ export function MobileNavigation() {
         >
           <div className="navigation-drawer-heading">
             <SheetTitle>little days</SheetTitle>
-            <SheetClose className="navigation-toggle" aria-label="Close navigation">
+            <SheetClose
+              className="navigation-toggle"
+              aria-label={tr("Close navigation")}
+            >
               <Icon name="close" />
             </SheetClose>
           </div>
           <SheetDescription className="navigation-description">
-            A little less to remember
+            {tr("A little less to remember")}
           </SheetDescription>
           <PageNavigation onNavigate={() => setOpen(false)} />
           <p className="navigation-device-note">
-            Saved on this device · No cloud sync
+            {tr("Saved on this device · No cloud sync")}
           </p>
         </SheetPopup>
       </Sheet>

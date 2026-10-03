@@ -14,12 +14,14 @@
   margin: 0;
   min-width: 0;
 }
-.theme-picker legend, .settings-storage h2 {
+.theme-picker legend,
+.settings-storage h2 {
   font-size: 18px;
   font-weight: 600;
-  letter-spacing: -.3px;
+  letter-spacing: -0.3px;
 }
-.theme-picker > p, .settings-storage p {
+.theme-picker > p,
+.settings-storage p {
   color: var(--muted-foreground);
   font-size: 14px;
   line-height: 1.6;
@@ -39,7 +41,9 @@
   background: var(--card);
   box-shadow: 0 0 0 1px var(--border);
   cursor: pointer;
-  transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+  transition:
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
 }
 .theme-option:has(input:checked) {
   box-shadow: 0 0 0 2px var(--foreground);
@@ -49,7 +53,7 @@
   outline-offset: 5px;
 }
 .theme-option:active {
-  transform: scale(.96);
+  transform: scale(0.96);
 }
 .theme-option input {
   position: absolute;
@@ -69,7 +73,7 @@
   background: var(--preview-bg);
   pointer-events: none;
   user-select: none;
-  box-shadow: inset 0 0 0 1px rgb(0 0 0 / .08);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
 }
 .theme-preview-dark {
   --preview-bg: #222;
@@ -129,7 +133,8 @@
 .onboarding-settings {
   max-width: 800px;
 }
-.settings-back, .onboarding-settings-link {
+.settings-back,
+.onboarding-settings-link {
   color: var(--foreground);
   border: 0;
   background: transparent;
@@ -172,4 +177,42 @@
   .theme-option:active {
     transform: none;
   }
+}
+
+.language-picker {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.language-picker legend {
+  font-size: 19px;
+  font-weight: 600;
+}
+.language-picker > p {
+  margin-top: 8px;
+  color: var(--care-text);
+}
+.language-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.language-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid var(--care-line);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.language-options label:has(input:checked) {
+  background: var(--care-soft);
+  border-color: var(--foreground);
+}
+.language-options input {
+  accent-color: var(--foreground);
 }
