@@ -15,21 +15,21 @@ name = "dds_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+tauri-build = { version = "2.6.3", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
-tauri-plugin-opener = "2"
-tauri-plugin-dialog = "=2.2.0"
-tauri-plugin-fs = "=2.2.0"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-tracing = "0.1.41"
-chrono = "0.4.39"
-uuid = { version = "1.11.0", features = ["v4"] }
+tauri = { version = "2.11.6", features = [] }
+tauri-plugin-opener = "2.5.5"
+tauri-plugin-dialog = "2.7.3"
+tauri-plugin-fs = "2.5.2"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+tracing = "0.1.44"
+chrono = "0.4.45"
+uuid = { version = "1.26.1", features = ["v4"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri = { version = "2", features = ["tray-icon"] }
+tauri = { version = "2.11.6", features = ["tray-icon"] }
 
 [target.'cfg(target_os = "ios")'.dependencies]
 tauri-plugin-native-navigation = { path = "plugins/native-navigation" }

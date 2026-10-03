@@ -108,7 +108,9 @@ it("adds custom fields and supplies through the real forms", async () => {
 it("does not overwrite unreadable stored data on startup", () => {
   localStorage.setItem(STORAGE_KEY, "{broken");
   render(<App />);
-  expect(screen.getAllByRole("alert")[0]).toHaveTextContent("could not be opened");
+  expect(screen.getAllByRole("alert")[0]).toHaveTextContent(
+    "could not be opened",
+  );
   expect(localStorage.getItem(STORAGE_KEY)).toBe("{broken");
 });
 
@@ -143,24 +145,83 @@ it("keeps a timer with its original child and supports delete with Undo", async 
   expect(loadWorkspace().data.records).toHaveLength(1);
 });
 
-
 it("shows all records in date order and opens forms only after a click", async () => {
   const data = emptyWorkspace();
   data.children = [{ id: "baby", name: "Baby", birthday: "2026-01-01" }];
   data.child = "baby";
   data.records = [
-    { id: "older", child: "baby", type: "feed", time: "2026-08-01T09:00", values: { amount: 80 }, note: "" },
-    { id: "newer", child: "baby", type: "feed", time: "2026-08-02T10:30", values: { amount: 120 }, note: "" },
+    {
+      id: "older",
+      child: "baby",
+      type: "feed",
+      time: "2026-08-01T09:00",
+      values: { amount: 80 },
+      note: "",
+    },
+    {
+      id: "newer",
+      child: "baby",
+      type: "feed",
+      time: "2026-08-02T10:30",
+      values: { amount: 120 },
+      note: "",
+    },
   ];
   saveWorkspace(data, null);
   const { container } = render(<App />);
   expect(screen.queryByLabelText("When")).not.toBeInTheDocument();
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  expect(Array.from(container.querySelectorAll(".timeline-day"), (day) => day.getAttribute("aria-label"))).toEqual(["2026-08-02", "2026-08-01"]);
+  expect(
+    Array.from(container.querySelectorAll(".timeline-day"), (day) =>
+      day.getAttribute("aria-label"),
+    ),
+  ).toEqual(["2026-08-02", "2026-08-01"]);
   expect(screen.getByText("80 mL")).toBeInTheDocument();
   const user = userEvent.setup();
   await user.click(screen.getByRole("button", { name: "Sleep", exact: true }));
-  expect(within(screen.getByRole("dialog")).getByLabelText("Record type")).toHaveValue("sleep");
+  expect(
+    within(screen.getByRole("dialog")).getByLabelText("Record type"),
+  ).toHaveValue("sleep");
   await user.click(screen.getByRole("button", { name: "Cancel", exact: true }));
   expect(loadWorkspace().data.records).toHaveLength(2);
+});
+
+it("records growth measurements from the ruler and preserves them after reopening", async () => {
+  const app = render(<App />);
+  await createChild();
+  fireEvent.click(screen.getByRole("button", { name: "Growth", exact: true }));
+  expect(screen.getByRole("button", { name: "Save record" })).toBeDisabled();
+  fireEvent.change(screen.getByRole("slider", { name: "身高刻度尺" }), {
+    target: { value: "65.4" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: /体重.*未记录/ }));
+  fireEvent.change(screen.getByLabelText("体重kg"), {
+    target: { value: "7.25" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Save record" }));
+  expect(loadWorkspace().data.records[0].values).toEqual({
+    height: 65.4,
+    weight: 7.25,
+  });
+  app.unmount();
+  render(<App />);
+  expect(screen.getByText("7.25 kg · 65.4 cm")).toBeInTheDocument();
+  fireEvent.click(screen.getByText("7.25 kg · 65.4 cm"));
+  expect(screen.getByLabelText("身高cm")).toHaveValue(65.4);
+  fireEvent.click(screen.getByRole("button", { name: /体重.*7.25 kg/ }));
+  expect(screen.getByLabelText("体重kg")).toHaveValue(7.25);
+});
+
+it("saves a single growth measurement in metric units after imperial entry", async () => {
+  render(<App />);
+  await createChild();
+  fireEvent.click(screen.getByRole("button", { name: "Growth", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: "in", exact: true }));
+  fireEvent.change(screen.getByLabelText("身高in"), {
+    target: { value: "20" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "cm", exact: true }));
+  expect(screen.getByLabelText("身高cm")).toHaveValue(50.8);
+  fireEvent.click(screen.getByRole("button", { name: "Save record" }));
+  expect(loadWorkspace().data.records[0].values).toEqual({ height: 50.8 });
 });

@@ -1,2 +1,12 @@
 packages:
   - "packages/*"
+allowBuilds:
+  esbuild: true
+  tesseract.js: false
+minimumReleaseAgeExclude:
+  - '@vitest/mocker@5.0.2'
+  - '@vitest/spy@5.0.2'
+  - framer-motion@13.4.4
+  - motion-dom@13.4.4
+  - motion@13.4.4
+  - vitest@5.0.2

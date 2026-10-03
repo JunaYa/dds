@@ -10,6 +10,7 @@ import {
   type CareRecord,
 } from "../../domain/model";
 import { Fields } from "./Fields";
+import { GrowthFields } from "./GrowthFields";
 
 export function RecordForm({
   type: initialType,
@@ -28,11 +29,31 @@ export function RecordForm({
     [time, setTime] = useState(record?.time || localDateTime()),
     [note, setNote] = useState(record?.note || "");
   const type = a.types.find((t) => t.id === typeId) || initialType;
+  const isGrowth =
+    type.id === "growth" &&
+    ["height", "weight"].every((id) =>
+      type.fields.some(
+        (field) =>
+          field.id === id &&
+          field.kind === "measure" &&
+          field.unit === (id === "height" ? "cm" : "kg"),
+      ),
+    );
+  const measurements = [values.height, values.weight].filter(
+    (value) => value !== undefined && value !== "",
+  );
+  const hasMeasurement =
+    measurements.length > 0 &&
+    measurements.every(
+      (value) =>
+        typeof value === "number" && Number.isFinite(value) && value > 0,
+    );
   return (
     <form
       className="record-form"
       onSubmit={(e) => {
         e.preventDefault();
+        if (isGrowth && !hasMeasurement) return;
         const saved = a.saveRecord({
           id: record?.id,
           child,
@@ -94,6 +115,14 @@ export function RecordForm({
           </div>
         </dl>
       )}
+      {isGrowth && (
+        <GrowthFields
+          values={values}
+          onChange={(id, value) =>
+            setValues((previous) => ({ ...previous, [id]: value }))
+          }
+        />
+      )}
       {!record && !inline && (
         <label className="form-field">
           Record type
@@ -122,7 +151,13 @@ export function RecordForm({
         />
       </label>
       <Fields
-        fields={type.fields}
+        fields={
+          isGrowth
+            ? type.fields.filter(
+                (field) => !["height", "weight"].includes(field.id),
+              )
+            : type.fields
+        }
         values={values}
         onChange={(id, v) => setValues((s) => ({ ...s, [id]: v }))}
       />
@@ -182,7 +217,11 @@ export function RecordForm({
             </Button>
           )
         )}
-        <Button type="submit" className="primary">
+        <Button
+          type="submit"
+          className="primary"
+          disabled={isGrowth && !hasMeasurement}
+        >
           {record ? "Save changes" : "Save record"}
         </Button>
       </div>

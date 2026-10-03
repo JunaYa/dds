@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import { readFile, rm } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -16,11 +17,11 @@ const artifact = new URL(
 await rm(artifact, { recursive: true }).catch((error) => {
   if (error.code !== "ENOENT") throw error;
 });
+const tauriCli = createRequire(import.meta.url).resolve('@tauri-apps/cli/tauri.js');
 const result = spawnSync(
-  "pnpm",
+  process.execPath,
   [
-    "exec",
-    "tauri",
+    tauriCli,
     "ios",
     "build",
     "--debug",

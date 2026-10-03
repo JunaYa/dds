@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import { spawnSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -5,10 +6,11 @@ import { dirname, resolve } from 'node:path';
 import { androidEnv } from './android-env.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const tauriCli = createRequire(import.meta.url).resolve('@tauri-apps/cli/tauri.js');
 const result = spawnSync(
-  process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
-  ['exec', 'tauri', 'android', 'init', '--ci'],
-  { cwd: root, env: androidEnv(), stdio: 'inherit', shell: process.platform === 'win32' },
+  process.execPath,
+  [tauriCli, 'android', 'init', '--ci'],
+  { cwd: root, env: androidEnv(), stdio: 'inherit' },
 );
 if (result.error) throw result.error;
 if (result.status !== 0) process.exit(result.status ?? 1);

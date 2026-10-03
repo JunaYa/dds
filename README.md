@@ -8,9 +8,18 @@ Settings offers System, Light, and Dark appearances, remembered on each device. 
 
 ## Development
 
+Use Node.js 22.12+ (Node 24 LTS recommended) and pnpm 12.6.0, pinned in `package.json`.
+If your global pnpm is older, prefix commands with `npm exec --yes --package=pnpm@12.6.0 --`,
+for example `npm exec --yes --package=pnpm@12.6.0 -- pnpm install`.
+
+Android uses AGP 8.13.2, Gradle 8.14.5, and Kotlin 2.1.21 for compatibility with
+Tauri 2.11.6. AGP 9.4.1 / Kotlin 2.4.20 reject the legacy Android and
+`kotlinOptions` DSL still used by Tauri's Android libraries. Upgrade that toolchain
+when the upstream libraries migrate; do not upgrade those three versions independently.
+
 ```sh
 pnpm install
-pnpm dev                 # Browser: http://localhost:1420
+pnpm dev                 # Browser: http://localhost:1424
 pnpm dev:desktop         # Tauri desktop
 pnpm init:ios            # Once, with Xcode installed
 pnpm dev:ios             # Select a simulator/device
@@ -18,7 +27,7 @@ pnpm init:android        # Once, with Android SDK/NDK installed
 pnpm dev:android
 ```
 
-To select the simulator directly: `pnpm dev:ios 'iPhone 17 Pro'`. Close another development process using port 1420 before launching. No example URL or configuration override is required.
+To select the simulator directly: `pnpm dev:ios 'iPhone 17 Pro'`. Close another development process using port 1424 before launching. No example URL or configuration override is required.
 
 ## Verification and builds
 
