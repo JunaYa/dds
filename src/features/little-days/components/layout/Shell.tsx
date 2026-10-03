@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/LocaleProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { type ReactNode } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";

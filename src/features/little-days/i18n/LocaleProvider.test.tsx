@@ -1,3 +1,4 @@
+import { LanguagePicker } from "../components/settings/LanguagePicker";
 import {
   act,
   cleanup,
@@ -8,7 +9,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "../App";
-import { LOCALE_KEY } from "./LocaleProvider";
+import { LOCALE_KEY } from "../storage/locale";
 import { emptyWorkspace } from "../domain/model";
 import {
   loadWorkspace,
@@ -141,4 +142,11 @@ it("keeps interpolation parameters consistent in both languages", () => {
       key.match(/\{\w+\}/g)?.sort() ?? [],
     );
   }
+});
+
+it("reports a missing language provider instead of silently showing an inert English picker", () => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
+  expect(() => render(<LanguagePicker />)).toThrow(
+    "Language settings require LocaleProvider",
+  );
 });

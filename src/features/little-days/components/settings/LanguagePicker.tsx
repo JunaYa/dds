@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/LocaleProvider";
+import { useI18n } from "../../i18n/useI18n";
 export function LanguagePicker() {
   const { locale, changeLocale, tr, error } = useI18n();
   return (

@@ -1,5 +1,5 @@
 import { typeName } from "../i18n/record-labels";
-import { useI18n } from "../i18n/LocaleProvider";
+import { useI18n } from "../i18n/useI18n";
 import { Settings } from "./Settings";
 import { Supplies } from "./Supplies";
 import { Types } from "./Types";

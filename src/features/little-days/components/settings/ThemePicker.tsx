@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/LocaleProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { useId } from "react";
 import { useTheme } from "../../hooks/useTheme";
 import type { ThemePreference } from "../../storage/preferences";

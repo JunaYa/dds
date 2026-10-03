@@ -1,33 +1,14 @@
 import {
-  createContext,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import { translator, type Locale, type Translate } from "./translate";
-export const LOCALE_KEY = "little-days.locale";
-function deviceLocale(): Locale {
-  return navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en";
-}
-function parseLocale(value: string | null): Locale {
-  return value === "en" || value === "zh-CN" ? value : deviceLocale();
-}
-function readLocale(): Locale {
-  try {
-    return parseLocale(localStorage.getItem(LOCALE_KEY));
-  } catch {
-    return deviceLocale();
-  }
-}
-const LocaleContext = createContext<{
-  locale: Locale;
-  tr: Translate;
-  changeLocale: (locale: Locale) => void;
-  error: string;
-}>({ locale: "en", tr: translator("en"), changeLocale: () => {}, error: "" });
+import { translator, type Locale } from "./translate";
+import { LocaleContext } from "./LocaleContext";
+import { LOCALE_KEY, readLocale, parseLocale } from "../storage/locale";
+
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocale] = useState(readLocale);
   const [error, setError] = useState("");
@@ -64,7 +45,4 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       {children}
     </LocaleContext.Provider>
   );
-}
-export function useI18n() {
-  return useContext(LocaleContext);
 }

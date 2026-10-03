@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/LocaleProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { useApp } from "../../hooks/useApp";
 import type { Page } from "../../state/workspace-types";
 import { Icon } from "../common/Icon";

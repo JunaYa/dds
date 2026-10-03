@@ -1,4 +1,4 @@
-import { useI18n } from "../i18n/LocaleProvider";
+import { useI18n } from "../i18n/useI18n";
 import { typeName } from "../i18n/record-labels";
 import type { Page, Modal } from "../state/workspace-types";
 import { useEffect, useRef, useState } from "react";

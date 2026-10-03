@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/LocaleProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { Button } from "@vita/ui/button";
 import { Icons } from "@vita/ui/icons";
 import { useApp } from "../../hooks/useApp";

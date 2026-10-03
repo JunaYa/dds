@@ -1,5 +1,5 @@
 import { typeName } from "../../i18n/record-labels";
-import { useI18n } from "../../i18n/LocaleProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { useEffect, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";

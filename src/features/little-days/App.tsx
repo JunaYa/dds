@@ -1,5 +1,5 @@
 import { LocaleProvider } from "./i18n/LocaleProvider";
-import { useI18n } from "./i18n/LocaleProvider";
+import { useI18n } from "./i18n/useI18n";
 import { ThemeProvider } from "./state/ThemeProvider";
 import { Settings } from "./pages/Settings";
 import Focus from "./pages/Focus";
