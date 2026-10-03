@@ -1,7 +1,8 @@
+import { DateTimePicker } from '@vita/ui/date-time-picker';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { DialogFooter, DialogPanel } from '@vita/ui/dialog';
 import { Button } from '@vita/ui/button';
-import { Input } from '@vita/ui/input';
+import { Input, NativeInput } from '@vita/ui/input';
 import { Textarea } from '@vita/ui/textarea';
 import { Icons } from '@vita/ui/icons';
 import { Tabs, TabsList, TabsTab, TabsPanel } from '@vita/ui/tabs';
@@ -374,7 +375,7 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
     <form className="journal-dialog-form" onSubmit={submit}>
       <DialogPanel>
         <fieldset disabled={busy} className="space-y-5">
-          <input
+          <NativeInput
             ref={input}
             type="file"
             accept="image/*"
@@ -384,7 +385,7 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
               e.target.value = '';
             }}
           />
-          <input
+          <NativeInput
             ref={cameraInput}
             type="file"
             accept="image/*"
@@ -548,13 +549,13 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
                       </FormField>
                       <div className="grid grid-cols-2 gap-3">
                         <FormField label="日期" htmlFor="photo-date">
-                          <Input
-                            nativeInput
+                          <DateTimePicker
+                            locale="zh-CN"
                             id="photo-date"
-                            type="date"
+                            mode="date"
                             required
                             value={event.date}
-                            onChange={(e) => change('date', e.target.value)}
+                            onValueChange={(value) => change('date', value)}
                           />
                         </FormField>
                         <FormField label="时间" htmlFor="photo-time">
@@ -661,13 +662,12 @@ export function PhotoCapture({ onClose }: { onClose: () => void }) {
                       </FormField>
                       {typeId !== 'feeding' && (
                         <FormField label="发生时间" htmlFor="photo-occurred">
-                          <Input
-                            nativeInput
+                          <DateTimePicker
+                            locale="zh-CN"
                             id="photo-occurred"
-                            type="datetime-local"
                             required
                             value={occurredAt}
-                            onChange={(e) => setOccurredAt(e.target.value)}
+                            onValueChange={setOccurredAt}
                           />
                         </FormField>
                       )}

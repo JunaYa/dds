@@ -1,6 +1,9 @@
+import { DateTimePicker } from "@vita/ui/date-time-picker";
+import { NativeSelect } from "@vita/ui/select";
+import { Textarea } from "@vita/ui/textarea";
 import { typeName } from "../../i18n/record-labels";
 import { useI18n } from "../../i18n/useI18n";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
 import { NursingSymbol } from "../nursing/NursingSymbol";
@@ -26,6 +29,7 @@ export function RecordForm({
   inline?: boolean;
 }) {
   const { tr, locale } = useI18n();
+  const dateInputId = useId();
   const a = useApp(),
     [typeId, setTypeId] = useState(initialType.id),
     [values, setValues] = useState<Values>(record?.values || {}),
@@ -131,7 +135,7 @@ export function RecordForm({
       {!record && !inline && (
         <label className="form-field">
           {tr("Record type")}
-          <select
+          <NativeSelect
             value={typeId}
             onChange={(e) => {
               setTypeId(e.target.value);
@@ -143,18 +147,20 @@ export function RecordForm({
                 {typeName(t, tr)}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </label>
       )}
-      <label className="form-field">
-        {tr("When")}
-        <input
+      <div className="form-field">
+        <label htmlFor={dateInputId}>{tr("When")}</label>
+        <DateTimePicker
+          id={dateInputId}
+          locale={locale}
           required
-          type="datetime-local"
+
           value={time}
-          onChange={(e) => setTime(e.target.value)}
+          onValueChange={setTime}
         />
-      </label>
+      </div>
       <Fields
         recordType={type}
         fields={
@@ -169,7 +175,7 @@ export function RecordForm({
       />
       <label className="form-field">
         {tr("Caregiver note")}
-        <textarea
+        <Textarea
           rows={2}
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -179,7 +185,8 @@ export function RecordForm({
       {type.fields.some((f) => f.kind === "timer") && !record && (
         <div className="timer-option">
           <p>{tr("Happening right now?")}</p>
-          <button
+          <Button
+            unstyled
             type="button"
             disabled={!!a.session}
             onClick={() => {
@@ -196,7 +203,7 @@ export function RecordForm({
             {tr("Start live {name} timer", {
               name: typeName(type, tr).toLowerCase(),
             })}
-          </button>
+          </Button>
           <small>
             {tr(
               "Live mode records the first timer field; other details can be added afterward.",
@@ -206,7 +213,8 @@ export function RecordForm({
       )}
       <div className="form-actions">
         {record ? (
-          <button
+          <Button
+            unstyled
             className="delete-record"
             type="button"
             onClick={() => {
@@ -214,7 +222,7 @@ export function RecordForm({
             }}
           >
             {tr("Delete record")}
-          </button>
+          </Button>
         ) : (
           !inline && (
             <Button

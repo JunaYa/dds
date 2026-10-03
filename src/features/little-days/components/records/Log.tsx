@@ -74,9 +74,13 @@ export function Log({
         ))}
       </div>
       {a.visible.length > limit && (
-        <button className="load-more" onClick={() => setLimit((n) => n + 12)}>
+        <Button
+          unstyled
+          className="load-more"
+          onClick={() => setLimit((n) => n + 12)}
+        >
           {tr("Show 12 more records")}
-        </button>
+        </Button>
       )}
     </section>
   );

@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import { LocaleProvider } from "./i18n/LocaleProvider";
 import { useI18n } from "./i18n/useI18n";
 import { ThemeProvider } from "./state/ThemeProvider";
@@ -15,9 +16,13 @@ function Workspace() {
   if (!activeChild && page === "Settings")
     return (
       <main className="onboarding onboarding-settings">
-        <button className="settings-back" onClick={() => setPage("Today")}>
+        <Button
+          unstyled
+          className="settings-back"
+          onClick={() => setPage("Today")}
+        >
           {tr("← Back")}
-        </button>
+        </Button>
         <h1>{tr("Settings")}</h1>
         <Settings />
       </main>
@@ -27,18 +32,21 @@ function Workspace() {
       <main className="onboarding">
         <h1>{tr("Your records are still on this device.")}</h1>
         <SaveError />
-        <button onClick={() => location.reload()}>{tr("Try again")}</button>
+        <Button unstyled onClick={() => location.reload()}>
+          {tr("Try again")}
+        </Button>
       </main>
     );
   if (!activeChild)
     return (
       <main className="onboarding">
-        <button
+        <Button
+          unstyled
           className="onboarding-settings-link"
           onClick={() => setPage("Settings")}
         >
           {tr("Settings")}
-        </button>
+        </Button>
         <Icon name="leaf" size={36} />
         <p className="eyebrow">LITTLE DAYS</p>
         <h1>{tr("A little less to remember.")}</h1>

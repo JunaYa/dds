@@ -1,3 +1,6 @@
+import { Button } from "@vita/ui/button";
+import { Input } from "@vita/ui/input";
+import { NativeInput } from "@vita/ui/input";
 import { useI18n } from "../../i18n/useI18n";
 import { useId, useState } from "react";
 import type { Values } from "../../domain/model";
@@ -40,7 +43,8 @@ export function GrowthFields({
     <section className="growth-fields" aria-label={tr("Growth record")}>
       <div className="growth-switch" aria-label={tr("Choose a measurement")}>
         {(Object.keys(measurements) as Measurement[]).map((key) => (
-          <button
+          <Button
+            unstyled
             type="button"
             key={key}
             aria-pressed={active === key}
@@ -52,7 +56,7 @@ export function GrowthFields({
                 ? `${values[key]} ${measurements[key].unit}`
                 : tr("Not recorded")}
             </small>
-          </button>
+          </Button>
         ))}
       </div>
       <MeasurementRuler
@@ -113,14 +117,15 @@ function MeasurementRuler({
           })}
         >
           {[config.unit, config.alternate].map((label, index) => (
-            <button
+            <Button
+              unstyled
               type="button"
               key={label}
               aria-pressed={imperial === !!index}
               onClick={() => setImperial(!!index)}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -169,7 +174,7 @@ function MeasurementRuler({
               </span>
             </div>
           </div>
-          <input
+          <NativeInput
             aria-label={tr("{measurement} ruler", {
               measurement: tr(config.label),
             })}
@@ -197,7 +202,8 @@ function MeasurementRuler({
           {tr(config.label)}
           <small>{unit}</small>
         </span>
-        <input
+        <Input
+          nativeInput
           id={id}
           type="number"
           inputMode="decimal"

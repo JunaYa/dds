@@ -1,3 +1,4 @@
+import { NativeInput } from "@vita/ui/input";
 import { useI18n } from "../../i18n/useI18n";
 import { useId } from "react";
 import { useTheme } from "../../hooks/useTheme";
@@ -26,7 +27,7 @@ export function ThemePicker() {
       <div className="theme-options">
         {options.map(({ value, label, description }) => (
           <label className="theme-option" key={value}>
-            <input
+            <NativeInput
               type="radio"
               name={id}
               value={value}

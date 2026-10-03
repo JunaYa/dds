@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import { typeName } from "../../i18n/record-labels";
 import { useI18n } from "../../i18n/useI18n";
 import { useApp } from "../../hooks/useApp";
@@ -15,15 +16,17 @@ export function RecordRow({ record }: { record: CareRecord }) {
       <span className={`record-dot ${type.id}`}>
         <Icon name={type.icon} size={19} />
       </span>
-      <button
+      <Button
+        unstyled
         className="record-content"
         onClick={() => a.openRecord(type, record)}
       >
         <strong>{typeName(type, tr)}</strong>
         <span>{summary(record, type, tr)}</span>
         {record.note && <p>{record.note}</p>}
-      </button>
-      <button
+      </Button>
+      <Button
+        unstyled
         className="record-edit"
         aria-label={tr("Edit {name} at {time}", {
           name: typeName(type, tr),
@@ -32,7 +35,7 @@ export function RecordRow({ record }: { record: CareRecord }) {
         onClick={() => a.openRecord(type, record)}
       >
         ↗
-      </button>
+      </Button>
     </article>
   );
 }

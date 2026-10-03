@@ -1,3 +1,4 @@
+import { Input } from "@vita/ui/input";
 import { useI18n } from "../../i18n/useI18n";
 import { useState } from "react";
 import { Button } from "@vita/ui/button";
@@ -32,7 +33,8 @@ export function SupplyForm({ supply }: { supply?: Supply }) {
           <h3 className="restock-name">{supply.name}</h3>
           <label className="form-field">
             {tr("How many {unit} are you adding?", { unit: supply.unit })}
-            <input
+            <Input
+              nativeInput
               required
               type="number"
               min="1"
@@ -46,7 +48,8 @@ export function SupplyForm({ supply }: { supply?: Supply }) {
         <>
           <label className="form-field">
             {tr("Supply name")}
-            <input
+            <Input
+              nativeInput
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -55,7 +58,8 @@ export function SupplyForm({ supply }: { supply?: Supply }) {
           </label>
           <label className="form-field">
             {tr("Stock unit")}
-            <input
+            <Input
+              nativeInput
               required
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
@@ -64,7 +68,8 @@ export function SupplyForm({ supply }: { supply?: Supply }) {
           <div className="record-fields">
             <label className="form-field">
               {tr("Quantity in stock")}
-              <input
+              <Input
+                nativeInput
                 required
                 type="number"
                 min="0"
@@ -75,7 +80,8 @@ export function SupplyForm({ supply }: { supply?: Supply }) {
             </label>
             <label className="form-field">
               {tr("Refill threshold")}
-              <input
+              <Input
+                nativeInput
                 required
                 type="number"
                 min="0"

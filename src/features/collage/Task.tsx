@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import { useApp } from "./context";
 import type { Task as TaskModel } from "./model";
 export function Tags({ task }: { task: TaskModel }) {
@@ -32,31 +33,33 @@ export function Actions({ task: t }: { task: TaskModel }) {
             {String(Math.floor(sec / 60)).padStart(2, "0")}:
             {String(sec % 60).padStart(2, "0")}
           </span>
-          <button disabled={t.done} onClick={() => a.toggleTimer(t)}>
+          <Button unstyled disabled={t.done} onClick={() => a.toggleTimer(t)}>
             {t.started !== null ? "暂停" : sec === 0 ? "重新计时" : "开始"}
-          </button>
+          </Button>
         </div>
       )}
       {t.blocks.includes("count") && (
         <div className="counter">
-          <button
+          <Button
+            unstyled
             aria-label={`减少${t.title}次数`}
             disabled={t.done || t.value === 0}
             onClick={() => a.count(t, -1)}
           >
             −
-          </button>
+          </Button>
           <span>
             {t.value}
             <small> / {t.count}</small>
           </span>
-          <button
+          <Button
+            unstyled
             aria-label={`增加${t.title}次数`}
             disabled={t.done || t.value >= t.count}
             onClick={() => a.count(t, 1)}
           >
             ＋
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -67,27 +70,29 @@ export function Task({ task: t }: { task: TaskModel }) {
   return (
     <article className={`task ${t.done ? "done" : ""}`}>
       <div className="task-top">
-        <button
+        <Button
+          unstyled
           className="check"
           aria-label={`${t.done ? "恢复" : "完成"}${t.title}`}
           aria-pressed={t.done}
           onClick={() => a.toggleDone(t)}
         >
           <span>{t.done ? "✓" : ""}</span>
-        </button>
-        <button
+        </Button>
+        <Button
+          unstyled
           className="task-title"
           onClick={() => a.setEditing({ ...t, blocks: [...t.blocks] })}
         >
           {t.title}
-        </button>
+        </Button>
       </div>
       <Tags task={t} />
       <Actions task={t} />
       {t.done && t.blocks.includes("repeat") && (
-        <button className="next" onClick={() => a.next(t)}>
+        <Button unstyled className="next" onClick={() => a.next(t)}>
           开始下一次 · {t.repeat}
-        </button>
+        </Button>
       )}
     </article>
   );

@@ -37,7 +37,8 @@ export default function App() {
           </div>
           <p className="side-caption">我的任务</p>
           {filters.map((f, i) => (
-            <button
+            <Button
+              unstyled
               key={f}
               className={a.filter === f ? "selected" : ""}
               aria-pressed={a.filter === f}
@@ -54,7 +55,7 @@ export default function App() {
                   ).length
                 }
               </small>
-            </button>
+            </Button>
           ))}
           <div className="side-bottom">
             <p>
@@ -98,13 +99,14 @@ export default function App() {
           )}
           <nav className="mobile-nav" aria-label="任务筛选">
             {filters.map((f) => (
-              <button
+              <Button
+                unstyled
                 key={f}
                 aria-pressed={a.filter === f}
                 onClick={() => a.setFilter(f)}
               >
                 {f}
-              </button>
+              </Button>
             ))}
           </nav>
           <div className="toolbar">

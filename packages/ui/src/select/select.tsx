@@ -243,3 +243,20 @@ export function SelectGroupLabel(props: SelectPrimitive.GroupLabel.Props): React
 }
 
 export { SelectPrimitive, SelectPopup as SelectContent }
+
+/** Native select for platform pickers, standard form validation, and option children. */
+export function NativeSelect({
+  className,
+  ...props
+}: React.ComponentProps<'select'>): React.ReactElement {
+  return (
+    <select
+      data-slot="native-select"
+      className={cn(
+        'min-h-11 rounded-lg border border-input bg-background px-3 text-base text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50',
+        className
+      )}
+      {...props}
+    />
+  )
+}

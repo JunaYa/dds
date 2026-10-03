@@ -39,9 +39,9 @@ export function SessionBanner() {
       <output aria-label={tr("Elapsed time")}>
         {formatTimer(elapsedSeconds(session, now))}
       </output>
-      <button onClick={a.pauseSession}>
+      <Button unstyled onClick={a.pauseSession}>
         {session.started === null ? tr("Resume") : tr("Pause")}
-      </button>
+      </Button>
       <Button variant="outline" onClick={a.finishSession}>
         {tr("Finish & save")}
       </Button>

@@ -1,3 +1,4 @@
+import { NativeInput } from "@vita/ui/input";
 import { useI18n } from "../../i18n/useI18n";
 export function LanguagePicker() {
   const { locale, changeLocale, tr, error } = useI18n();
@@ -13,7 +14,7 @@ export function LanguagePicker() {
           ] as const
         ).map(([value, label]) => (
           <label key={value} lang={value}>
-            <input
+            <NativeInput
               type="radio"
               name="language"
               value={value}

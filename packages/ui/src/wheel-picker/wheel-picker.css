@@ -1,0 +1,35 @@
+.ui-wheel-picker {
+  position: relative;
+  height: 224px;
+  padding-block: 96px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  font-size: 19px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  -webkit-mask-image: linear-gradient(
+    transparent,
+    black 40%,
+    black 60%,
+    transparent
+  );
+  mask-image: linear-gradient(transparent, black 40%, black 60%, transparent);
+}
+.ui-wheel-picker:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.ui-wheel-picker::-webkit-scrollbar {
+  display: none;
+}
+.ui-wheel-option {
+  height: 32px;
+  line-height: 32px;
+  scroll-snap-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+}

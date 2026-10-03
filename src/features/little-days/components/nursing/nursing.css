@@ -627,41 +627,6 @@
   background: var(--muted);
   pointer-events: none;
 }
-.nursing-time-wheel {
-  position: relative;
-  height: 224px;
-  padding-block: 96px;
-  overflow-y: auto;
-  scrollbar-width: none;
-  scroll-snap-type: y mandatory;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  font-size: 19px;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-  -webkit-mask-image: linear-gradient(
-    transparent,
-    black 40%,
-    black 60%,
-    transparent
-  );
-  mask-image: linear-gradient(transparent, black 40%, black 60%, transparent);
-}
-.nursing-time-wheel:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-  border-radius: 8px;
-}
-.nursing-time-wheel::-webkit-scrollbar {
-  display: none;
-}
-.nursing-wheel-option {
-  height: 32px;
-  line-height: 32px;
-  scroll-snap-align: center;
-  white-space: nowrap;
-  cursor: pointer;
-}
 .nursing-manual-toggle[data-slot="button"] {
   display: flex;
   margin: 10px auto 0;

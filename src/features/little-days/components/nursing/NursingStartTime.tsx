@@ -1,7 +1,8 @@
+import { WheelPicker } from "@vita/ui/wheel-picker";
+import { DateTimePicker } from "@vita/ui/date-time-picker";
 import { useI18n } from "../../i18n/useI18n";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Button } from "@vita/ui/button";
-import { Input } from "@vita/ui/input";
 import {
   Dialog,
   DialogPortal,
@@ -14,7 +15,6 @@ import {
 import { localDateTime } from "../../domain/model";
 import { useApp } from "../../hooks/useApp";
 
-type WheelOption = { value: string; label: string };
 const hours = Array.from({ length: 24 }, (_, value) => ({
   value: String(value).padStart(2, "0"),
   label: String(value).padStart(2, "0"),
@@ -23,88 +23,6 @@ const minutes = Array.from({ length: 60 }, (_, value) => ({
   value: String(value).padStart(2, "0"),
   label: String(value).padStart(2, "0"),
 }));
-const rowHeight = 32;
-
-function TimeWheel({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  options: WheelOption[];
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const position = useRef(-1);
-  const index = Math.max(
-    0,
-    options.findIndex((item) => item.value === value),
-  );
-  useLayoutEffect(() => {
-    if (ref.current && position.current !== index) {
-      ref.current.scrollTop = index * rowHeight;
-      position.current = index;
-    }
-  }, [index, options]);
-  return (
-    <div
-      ref={ref}
-      className="nursing-time-wheel"
-      role="spinbutton"
-      tabIndex={0}
-      aria-label={label}
-      aria-valuenow={index}
-      aria-valuemin={0}
-      aria-valuemax={options.length - 1}
-      aria-valuetext={options[index].label}
-      onScroll={(event) => {
-        const next = Math.max(
-          0,
-          Math.min(
-            options.length - 1,
-            Math.round(event.currentTarget.scrollTop / rowHeight),
-          ),
-        );
-        if (position.current !== next) {
-          position.current = next;
-          onChange(options[next].value);
-        }
-      }}
-      onKeyDown={(event) => {
-        const change = { ArrowUp: -1, ArrowDown: 1, PageUp: -5, PageDown: 5 }[
-          event.key
-        ];
-        if (change === undefined && event.key !== "Home" && event.key !== "End")
-          return;
-        event.preventDefault();
-        const next =
-          event.key === "Home"
-            ? 0
-            : event.key === "End"
-              ? options.length - 1
-              : Math.max(
-                  0,
-                  Math.min(options.length - 1, index + (change ?? 0)),
-                );
-        onChange(options[next].value);
-      }}
-    >
-      {options.map((option) => (
-        <div
-          className="nursing-wheel-option"
-          key={option.value}
-          aria-hidden="true"
-          onClick={() => onChange(option.value)}
-        >
-          {option.label}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function StartTimeForm({
   time,
   onClose,
@@ -113,6 +31,7 @@ function StartTimeForm({
   onClose: () => void;
 }) {
   const { tr, locale } = useI18n();
+  const dateInputId = useId();
   const a = useApp();
   const [draft, setDraft] = useState(time);
   const [anchorDate, setAnchorDate] = useState(time.slice(0, 10));
@@ -181,42 +100,41 @@ function StartTimeForm({
         )}
       </DialogDescription>
       {manual ? (
-        <label className="nursing-manual-time form-field">
-          {tr("Start time")}
-          <Input
-            nativeInput
-            type="datetime-local"
+        <div className="nursing-manual-time form-field">
+          <label htmlFor={dateInputId}>{tr("Start time")}</label>
+          <DateTimePicker
+            id={dateInputId}
+            locale={locale}
             required
             max={localDateTime()}
             value={draft}
-            onChange={(event) => {
-              setDraft(event.target.value);
+            onValueChange={(value) => {
+              setDraft(value);
               setError("");
-              if (event.target.value)
-                setAnchorDate(event.target.value.slice(0, 10));
+              if (value) setAnchorDate(value.slice(0, 10));
             }}
             aria-invalid={!!error}
           />
-        </label>
+        </div>
       ) : (
         <div className="nursing-time-wheels">
-          <TimeWheel
+          <WheelPicker
             label={tr("Start date")}
             options={days}
             value={draft.slice(0, 10)}
-            onChange={(value) => update("date", value)}
+            onValueChange={(value) => update("date", value)}
           />
-          <TimeWheel
+          <WheelPicker
             label={tr("Start hour")}
             options={hours}
             value={draft.slice(11, 13)}
-            onChange={(value) => update("hour", value)}
+            onValueChange={(value) => update("hour", value)}
           />
-          <TimeWheel
+          <WheelPicker
             label={tr("Start minute")}
             options={minutes}
             value={draft.slice(14, 16)}
-            onChange={(value) => update("minute", value)}
+            onValueChange={(value) => update("minute", value)}
           />
         </div>
       )}

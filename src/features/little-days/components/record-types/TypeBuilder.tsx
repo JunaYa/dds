@@ -62,7 +62,8 @@ export function TypeBuilder() {
         <span className="tiny-title">{tr("ADD A BUILDING BLOCK")}</span>
         <div>
           {Object.entries(kinds).map(([kind, label]) => (
-            <button
+            <Button
+              unstyled
               type="button"
               key={kind}
               onClick={() =>
@@ -82,7 +83,7 @@ export function TypeBuilder() {
               }
             >
               ＋ {tr(label)}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -94,23 +95,26 @@ export function TypeBuilder() {
                 {String(i + 1).padStart(2, "0")} / {tr(kinds[f.kind])}
               </strong>
               <div>
-                <button
+                <Button
+                  unstyled
                   type="button"
                   aria-label={tr("Move {label} up", { label: f.label })}
                   disabled={i === 0}
                   onClick={() => move(i, i - 1)}
                 >
                   ↑
-                </button>
-                <button
+                </Button>
+                <Button
+                  unstyled
                   type="button"
                   aria-label={tr("Move {label} down", { label: f.label })}
                   disabled={i === fields.length - 1}
                   onClick={() => move(i, i + 1)}
                 >
                   ↓
-                </button>
-                <button
+                </Button>
+                <Button
+                  unstyled
                   type="button"
                   aria-label={tr("Remove {label}", { label: f.label })}
                   onClick={() =>
@@ -118,13 +122,14 @@ export function TypeBuilder() {
                   }
                 >
                   ×
-                </button>
+                </Button>
               </div>
             </div>
             <div className="record-fields">
               <label className="form-field">
                 {tr("Field label")}
-                <input
+                <Input
+                  nativeInput
                   required
                   value={f.label}
                   onChange={(e) => update(f.id, { label: e.target.value })}
@@ -133,7 +138,8 @@ export function TypeBuilder() {
               {["count", "measure"].includes(f.kind) && (
                 <label className="form-field">
                   {tr("Unit")}
-                  <input
+                  <Input
+                    nativeInput
                     value={f.unit}
                     onChange={(e) => update(f.id, { unit: e.target.value })}
                     placeholder={tr("mL, kg, pieces…")}
@@ -143,7 +149,8 @@ export function TypeBuilder() {
               {f.kind === "choice" && (
                 <label className="form-field">
                   {tr("Options, separated by commas")}
-                  <input
+                  <Input
+                    nativeInput
                     required
                     value={f.options}
                     onChange={(e) => update(f.id, { options: e.target.value })}

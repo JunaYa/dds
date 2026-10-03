@@ -99,7 +99,11 @@ export function Shell({ children }: { children: ReactNode }) {
           {children}
           <div className="notice" role="status">
             {a.notice}
-            {a.undo && <button onClick={a.undo}>{tr("Undo")}</button>}
+            {a.undo && (
+              <Button unstyled onClick={a.undo}>
+                {tr("Undo")}
+              </Button>
+            )}
           </div>
           <footer className="app-footer">
             {tr("Saved on this device · No cloud sync")}

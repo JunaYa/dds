@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import { useI18n } from "../../i18n/useI18n";
 import { Input } from "@vita/ui/input";
 import { useApp } from "../../hooks/useApp";
@@ -12,13 +13,14 @@ export function LogTools() {
           ["today", "Today"],
           ["all", "All records"],
         ].map(([id, label]) => (
-          <button
+          <Button
+            unstyled
             key={id}
             aria-pressed={a.range === id}
             onClick={() => a.setRange(id)}
           >
             {tr(label)}
-          </button>
+          </Button>
         ))}
       </div>
       <Input

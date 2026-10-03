@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import { typeName } from "../i18n/record-labels";
 import { useI18n } from "../i18n/useI18n";
 import { Settings } from "./Settings";
@@ -26,10 +27,14 @@ export default function Focus() {
             </div>
             <div className="focus-types">
               {a.types.map((type) => (
-                <button key={type.id} onClick={() => a.openRecord(type)}>
+                <Button
+                  unstyled
+                  key={type.id}
+                  onClick={() => a.openRecord(type)}
+                >
                   <Icon name={type.icon} />
                   <span>{typeName(type, tr)}</span>
-                </button>
+                </Button>
               ))}
             </div>
           </section>

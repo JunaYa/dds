@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import { useI18n } from "../../i18n/useI18n";
 import { useApp } from "../../hooks/useApp";
 import type { Page } from "../../state/workspace-types";
@@ -16,7 +17,8 @@ export function PageNavigation({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav className="page-navigation" aria-label={tr("Main navigation")}>
       {pages.map(({ page, icon }) => (
-        <button
+        <Button
+          unstyled
           type="button"
           key={tr(page)}
           className={current === page ? "active" : undefined}
@@ -28,7 +30,7 @@ export function PageNavigation({ onNavigate }: { onNavigate?: () => void }) {
         >
           <Icon name={icon} />
           {tr(page)}
-        </button>
+        </Button>
       ))}
     </nav>
   );

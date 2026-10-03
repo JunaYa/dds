@@ -948,3 +948,17 @@ main {
 .child-picker small {
   white-space: nowrap;
 }
+
+/* Shared fields retain the record form's spacing and sizing. */
+.form-field > label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.count-input > [data-slot="input-control"] {
+  flex: 1;
+  min-width: 0;
+}
+.form-field > [data-slot="textarea-control"] textarea {
+  border: 0;
+}

@@ -63,3 +63,10 @@ export function Input({
 }
 
 export { InputPrimitive }
+
+/** Native controls for file, radio, and range inputs whose geometry is caller-owned. */
+export function NativeInput(
+  props: React.ComponentProps<'input'>
+): React.ReactElement {
+  return <input data-slot="input" {...props} />
+}

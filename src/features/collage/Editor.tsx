@@ -1,3 +1,5 @@
+import { NativeSelect } from "@vita/ui/select";
+import { Textarea } from "@vita/ui/textarea";
 import { useState } from "react";
 import { Button } from "@vita/ui/button";
 import { Input } from "@vita/ui/input";
@@ -40,7 +42,8 @@ export default function Editor({ draft }: { draft: Task }) {
       <p className="field-label">添加积木</p>
       <div className="block-bank">
         {blocks.map((k) => (
-          <button
+          <Button
+            unstyled
             type="button"
             aria-pressed={d.blocks.includes(k)}
             key={k}
@@ -54,7 +57,7 @@ export default function Editor({ draft }: { draft: Task }) {
             }
           >
             {d.blocks.includes(k) ? "✓" : "＋"} {blockNames[k]}
-          </button>
+          </Button>
         ))}
       </div>
       <div className="blocks">
@@ -65,23 +68,26 @@ export default function Editor({ draft }: { draft: Task }) {
                 {String(i + 1).padStart(2, "0")}　{blockNames[b]}
               </strong>
               <div>
-                <button
+                <Button
+                  unstyled
                   type="button"
                   aria-label={`上移${blockNames[b]}`}
                   disabled={i === 0}
                   onClick={() => reorder(i, i - 1)}
                 >
                   ↑
-                </button>
-                <button
+                </Button>
+                <Button
+                  unstyled
                   type="button"
                   aria-label={`下移${blockNames[b]}`}
                   disabled={i === d.blocks.length - 1}
                   onClick={() => reorder(i, i + 1)}
                 >
                   ↓
-                </button>
-                <button
+                </Button>
+                <Button
+                  unstyled
                   type="button"
                   aria-label={`移除${blockNames[b]}`}
                   onClick={() =>
@@ -92,7 +98,7 @@ export default function Editor({ draft }: { draft: Task }) {
                   }
                 >
                   ×
-                </button>
+                </Button>
               </div>
             </div>
             <label className="field">
@@ -109,22 +115,23 @@ export default function Editor({ draft }: { draft: Task }) {
                 }
               </span>
               {b === "content" ? (
-                <textarea
+                <Textarea
                   value={d[b]}
                   onChange={(e) => set(b, e.target.value)}
                   rows={3}
                 />
               ) : b === "repeat" ? (
-                <select
+                <NativeSelect
                   value={d[b]}
                   onChange={(e) => set(b, e.target.value as Task["repeat"])}
                 >
                   <option>每天</option>
                   <option>工作日</option>
                   <option>每周</option>
-                </select>
+                </NativeSelect>
               ) : (
-                <input
+                <Input
+                  nativeInput
                   required
                   type={
                     b === "time"

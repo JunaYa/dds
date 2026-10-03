@@ -76,16 +76,18 @@ function Button({
   children,
   disabled,
   loading = false,
+  unstyled = false,
   ...props
 }: ButtonPrimitive.Props &
   VariantProps<typeof buttonVariants> & {
     loading?: boolean
+    unstyled?: boolean
   }) {
   const { 'aria-busy': ariaBusy, ...buttonProps } = props
 
   return (
     <ButtonPrimitive
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={unstyled ? className : cn(buttonVariants({ variant, size, className }))}
       aria-busy={loading ? true : ariaBusy}
       aria-disabled={loading || undefined}
       data-slot="button"

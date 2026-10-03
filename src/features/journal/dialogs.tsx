@@ -1,3 +1,4 @@
+import { DateTimePicker } from '@vita/ui/date-time-picker';
 import { useEffect, useState, type FormEvent } from 'react';
 import {
   Dialog,
@@ -239,13 +240,12 @@ function RecordForm({
           </FormField>
           {typeId !== 'feeding' && (
             <FormField label="发生时间" htmlFor="record-time">
-              <Input
+              <DateTimePicker
+                locale="zh-CN"
                 id="record-time"
-                nativeInput
-                type="datetime-local"
                 required
                 value={occurredAt}
-                onChange={(event) => setOccurredAt(event.target.value)}
+                onValueChange={setOccurredAt}
               />
             </FormField>
           )}

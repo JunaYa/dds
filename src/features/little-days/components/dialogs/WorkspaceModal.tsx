@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import { useI18n } from "../../i18n/useI18n";
 import { useState } from "react";
 import {
@@ -50,12 +51,13 @@ export function WorkspaceModal() {
         <DialogHeader>
           <div className="dialog-heading">
             <DialogTitle>{modal ? tr(titles[modal.kind]) : ""}</DialogTitle>
-            <button
+            <Button
+              unstyled
               aria-label={tr("Close dialog")}
               onClick={() => a.setModal(null)}
             >
               ×
-            </button>
+            </Button>
           </div>
           <DialogDescription>
             {modal?.kind === "type"

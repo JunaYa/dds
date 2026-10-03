@@ -1,3 +1,4 @@
+import { Button } from "@vita/ui/button";
 import {
   typeName,
   typeDescription,
@@ -30,9 +31,9 @@ export function Types() {
               </span>
             ))}
           </div>
-          <button onClick={() => a.openRecord(type)}>
+          <Button unstyled onClick={() => a.openRecord(type)}>
             {tr("Use this record type ↗")}
-          </button>
+          </Button>
         </article>
       ))}
     </div>

@@ -1,11 +1,14 @@
+import { DateTimePicker } from "@vita/ui/date-time-picker";
+import { Input } from "@vita/ui/input";
 import { useI18n } from "../../i18n/useI18n";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
 import { today } from "../../domain/model";
 
 export function ChildForm() {
-  const { tr } = useI18n();
+  const { tr, locale } = useI18n();
+  const dateInputId = useId();
   const a = useApp(),
     [name, setName] = useState(""),
     [birthday, setBirthday] = useState("");
@@ -18,23 +21,26 @@ export function ChildForm() {
     >
       <label className="form-field">
         {tr("Child’s name")}
-        <input
+        <Input
+          nativeInput
           required
           autoComplete="off"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </label>
-      <label className="form-field">
-        {tr("Birthday")}
-        <input
+      <div className="form-field">
+        <label htmlFor={dateInputId}>{tr("Birthday")}</label>
+        <DateTimePicker
+          id={dateInputId}
+          locale={locale}
           required
-          type="date"
+          mode="date"
           max={today()}
           value={birthday}
-          onChange={(e) => setBirthday(e.target.value)}
+          onValueChange={setBirthday}
         />
-      </label>
+      </div>
       <div className="form-actions">
         <Button
           type="submit"

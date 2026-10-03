@@ -24,6 +24,8 @@
     "./avatar": "./src/avatar/avatar.tsx",
     "./badge": "./src/badge/badge.tsx",
     "./breadcrumb": "./src/breadcrumb/breadcrumb.tsx",
+    "./date-time-picker": "./src/date-time-picker/date-time-picker.tsx",
+    "./wheel-picker": "./src/wheel-picker/wheel-picker.tsx",
     "./calendar": "./src/calendar/calendar.tsx",
     "./chart": "./src/chart/chart.tsx",
     "./collapsible": "./src/collapsible/collapsible.tsx",
