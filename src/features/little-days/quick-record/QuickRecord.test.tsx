@@ -146,3 +146,16 @@ it("defaults to feeding and navigates the rendered grid with all four arrow keys
   expect(buttons[1]).toHaveFocus();
   expect(buttons[1]).toHaveAttribute("aria-current", "true");
 });
+
+it("offers a dark night view with a neutral glow when history is insufficient", async () => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date(2026, 9, 10, 22));
+  await open();
+  const dialog = screen.getByRole("dialog", { name: "Quick recording" });
+  expect(dialog).toHaveClass("quick-recorder-night");
+  expect(dialog.querySelector(".night-edge-glow")).toHaveAttribute("data-signal", "neutral");
+  expect(screen.getByText("No active sleep timer")).toBeVisible();
+  await userEvent.setup().click(screen.getByRole("button", { name: "Night view" }));
+  expect(dialog).not.toHaveClass("quick-recorder-night");
+  expect(dialog.querySelector(".night-edge-glow")).toBeNull();
+});

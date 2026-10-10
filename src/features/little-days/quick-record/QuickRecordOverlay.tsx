@@ -9,8 +9,10 @@ import { typeName } from "../i18n/record-labels";
 import { Icon } from "../components/common/Icon";
 import { RecordForm } from "../components/records/RecordForm";
 import { SaveError } from "../components/common/SaveError";
+import { NightStatus } from "./NightStatus";
+import { isNight } from "./night-status";
 
-function Recorder() {
+function Recorder({ night, onToggleNight }: { night: boolean; onToggleNight: () => void }) {
   const { close, error } = useQuickRecord();
   const a = useApp();
   const { tr, locale } = useI18n();
@@ -58,12 +60,16 @@ function Recorder() {
           <DialogTitle>{tr("Quick recording")}</DialogTitle>
           <DialogDescription>{child ? tr("Recording for {name}.", { name: child.name }) : tr("Add a child in the main app to start recording.")}</DialogDescription>
         </div>
-        <Button variant="ghost" onClick={() => void close()}>{tr("Close")} <kbd>Esc</kbd></Button>
+        <div className="quick-recorder-actions">
+          <Button variant="ghost" aria-pressed={night} onClick={onToggleNight}>{tr("Night view")}</Button>
+          <Button variant="ghost" onClick={() => void close()}>{tr("Close")} <kbd>Esc</kbd></Button>
+        </div>
       </header>
       <div className="quick-recorder-clock">
         <time dateTime={now.toISOString()}>{now.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", hour12: false })}</time>
         <p>{now.toLocaleDateString(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
       </div>
+      {child && <NightStatus child={child.id} now={now} enabled={night} />}
       {error && <p role="alert">{error}</p>}
       {choosing && <SaveError />}
       {completed && <p role="status" className="quick-recorder-help">{a.notice}</p>}
@@ -126,10 +132,12 @@ function Recorder() {
 
 export function QuickRecordOverlay() {
   const { open } = useQuickRecord();
+  const [nightPreference, setNightPreference] = useState<boolean | null>(null);
+  const night = nightPreference ?? isNight(new Date());
   return (
     <Dialog open={open}>
-      <DialogPopup className="quick-recorder-popup" style={{ scale: 1, opacity: 1 }} showCloseButton={false} bottomStickOnMobile={false}>
-        {open && <Recorder />}
+      <DialogPopup className={`quick-recorder-popup${night ? " dark quick-recorder-night" : ""}`} style={{ scale: 1, opacity: 1 }} showCloseButton={false} bottomStickOnMobile={false}>
+        {open && <Recorder night={night} onToggleNight={() => setNightPreference(!night)} />}
       </DialogPopup>
     </Dialog>
   );
