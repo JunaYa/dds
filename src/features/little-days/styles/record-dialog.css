@@ -1,3 +1,79 @@
+.diaper-type-field {
+  min-width: 0;
+  margin: 18px 0 0;
+  padding: 0;
+  border: 0;
+  font-size: 13px;
+}
+
+.diaper-type-field legend {
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.diaper-type-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.diaper-type-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--care-line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out;
+}
+
+.diaper-type-option span {
+  overflow-wrap: anywhere;
+}
+
+.diaper-type-option input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--foreground);
+}
+
+.diaper-type-option:has(input:checked) {
+  border-color: var(--foreground);
+  background: var(--care-soft);
+}
+
+.diaper-type-option:has(input:focus-visible) {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .diaper-type-option:hover {
+    background: var(--care-soft);
+  }
+}
+
+.diaper-type-option:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diaper-type-option {
+    transition: none;
+  }
+  .diaper-type-option:active {
+    transform: none;
+  }
+}
+
 .record-dialog-motion[data-slot="dialog-popup"],
 .record-dialog-backdrop[data-slot="dialog-backdrop"] {
   transition-duration: 240ms;

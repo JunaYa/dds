@@ -225,3 +225,51 @@ it("saves a single growth measurement in metric units after imperial entry", asy
   fireEvent.click(screen.getByRole("button", { name: "Save record" }));
   expect(loadWorkspace().data.records[0].values).toEqual({ height: 50.8 });
 });
+
+it("records each diaper change once using flat choices and edits without adding a change", async () => {
+  const user = userEvent.setup();
+  const app = render(<App />);
+  await createChild();
+  for (const kind of ["Wet", "Dirty"]) {
+    await user.click(screen.getByRole("button", { name: "Diaper", exact: true }));
+    const dialog = within(screen.getByRole("dialog"));
+    expect(dialog.getAllByRole("radio")).toHaveLength(4);
+    expect(dialog.queryByRole("combobox", { name: "Type", exact: true })).not.toBeInTheDocument();
+    expect(dialog.queryByRole("spinbutton")).not.toBeInTheDocument();
+    await user.click(dialog.getByRole("button", { name: "Save record" }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await user.click(dialog.getByRole("radio", { name: kind, exact: true }));
+    expect(dialog.getByRole("radio", { name: kind, exact: true })).toBeChecked();
+    await user.click(dialog.getByRole("button", { name: "Save record" }));
+  }
+  expect(loadWorkspace().data.records.map((record) => record.values)).toEqual([
+    { kind: "Dirty", times: 1 },
+    { kind: "Wet", times: 1 },
+  ]);
+  app.unmount();
+  render(<App />);
+  await user.click(screen.getByText("Wet · 1 changes"));
+  expect(screen.getByRole("radio", { name: "Wet", exact: true })).toBeChecked();
+  await user.click(screen.getByRole("radio", { name: "Mixed", exact: true }));
+  await user.click(screen.getByRole("button", { name: "Save changes" }));
+  const records = loadWorkspace().data.records;
+  expect(records).toHaveLength(2);
+  expect(records.find((record) => record.values.kind === "Mixed")?.values.times).toBe(1);
+});
+
+it("preserves historical diaper counts when changing the type", async () => {
+  const data = emptyWorkspace();
+  data.children = [{ id: "baby", name: "Baby", birthday: "2026-01-01" }];
+  data.child = "baby";
+  data.records = [{
+    id: "legacy-diaper", child: "baby", type: "diaper",
+    time: "2026-08-01T09:00", values: { kind: "Wet", times: 3 }, note: "",
+  }];
+  saveWorkspace(data, null);
+  render(<App />);
+  fireEvent.click(screen.getByText("Wet · 3 changes"));
+  fireEvent.click(screen.getByRole("radio", { name: "Dry", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+  expect(loadWorkspace().data.records).toHaveLength(1);
+  expect(loadWorkspace().data.records[0].values).toEqual({ kind: "Dry", times: 3 });
+});

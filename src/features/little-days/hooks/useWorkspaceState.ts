@@ -1,5 +1,5 @@
 import { useI18n } from "../i18n/useI18n";
-import { typeName } from "../i18n/record-labels";
+import { isBuiltinField, typeName } from "../i18n/record-labels";
 import type { Page, Modal } from "../state/workspace-types";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -114,8 +114,19 @@ export function useWorkspaceState() {
     .sort((a, b) => b.time.localeCompare(a.time));
   const openRecord = (type: RecordType, record: CareRecord | null = null) =>
     setModal({ kind: "record", type, record, child });
-  function saveRecord(record: Omit<CareRecord, "id"> & { id?: string }) {
-    const saved = { ...record, id: record.id || crypto.randomUUID() };
+  function saveRecord(record: Omit<CareRecord, "id"> & { id?: string }, closeModal = true) {
+    const type = types.find((item) => item.id === record.type);
+    const countOnce =
+      !record.id &&
+      type?.id === "diaper" &&
+      type.fields.some(
+        (field) => field.id === "times" && isBuiltinField(type, field),
+      );
+    const saved = {
+      ...record,
+      values: countOnce ? { ...record.values, times: 1 } : record.values,
+      id: record.id || crypto.randomUUID(),
+    };
     const ok = commit(
       (s) => ({
         ...s,
@@ -125,7 +136,7 @@ export function useWorkspaceState() {
       }),
       "Record saved",
     );
-    if (ok) setModal(null);
+    if (ok && closeModal) setModal(null);
     return ok;
   }
   function removeRecord(id: string) {

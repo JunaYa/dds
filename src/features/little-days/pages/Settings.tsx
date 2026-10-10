@@ -1,11 +1,13 @@
 import { LanguagePicker } from "../components/settings/LanguagePicker";
 import { useI18n } from "../i18n/useI18n";
 import { ThemePicker } from "../components/settings/ThemePicker";
+import { ShortcutSettings } from "../quick-record/ShortcutSettings";
 
 export function Settings() {
   const { tr } = useI18n();
   return (
     <div className="settings-page">
+      <ShortcutSettings />
       <section className="settings-section">
         <LanguagePicker />
       </section>

@@ -1,10 +1,16 @@
 # Little days
 
-A local-first care journal for children aged 0–6, built with React, TypeScript, Tauri 2, and the shared Vita design system. Desktop, iOS, and Android use the same application entry at `/`.
+A local-first family journal being developed to cover pregnancy, birth, postpartum care, and raising children. The product prioritizes quick recording, accurate history, traceable analysis, data protection, and use across platforms. See the [product definition (Chinese)](docs/product-definition.md) for the target experience, acceptance criteria, and implementation order.
+
+The current implementation covers daily care for children aged 0–6, built with React, TypeScript, Tauri 2, and the shared Vita design system. Desktop, iOS, and Android use the same application entry at `/`. Pregnancy and maternal profiles, birth transitions, and trend analysis are planned, not yet implemented.
 
 Create a child profile, record feeding, diaper changes, sleep, bathing, vaccinations, growth, and vitamins. Build custom record types from timers, counters, measurements, choices, notes, and dates. Track family supplies with refill thresholds. Search history, edit records, delete with Undo, and resume active timers after reopening the app.
 
 Settings offers System, Light, and Dark appearances, remembered on each device. Appearance settings are also available before creating a child profile.
+
+Desktop Settings also includes a configurable global shortcut for quick recording. The default is Command+Shift+Space on macOS and Control+Shift+Space on Windows/Linux. While the app is running, it opens an always-on-top full-screen recorder with a clock and numbered record types. Press 1–9 to select a type and open its bottom sheet, then save with Enter (Command/Control+Enter in notes). Saving closes only the sheet, keeping the recorder open for the next entry. Escape dismisses the sheet; Escape from the type picker or the Close button closes the recorder and restores the previous window state. Returning to the picker preserves the current form until another type is selected or the recorder closes. Types beyond the first nine remain clickable.
+
+Closing the main desktop window keeps the app in the system tray; use the tray's Quit action to exit. Shortcut preferences are stored in the native app configuration directory, separately from care data. Registration conflicts are reported in Settings. Browser and mobile builds do not expose desktop shortcuts. macOS packaging and the recorder UI have been checked locally; physical cross-app hotkey activation and Windows/Linux window behavior still need platform verification.
 
 ## Development
 

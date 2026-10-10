@@ -1,9 +1,9 @@
 import { DateTimePicker } from "@vita/ui/date-time-picker";
 import { NativeSelect } from "@vita/ui/select";
 import { Textarea } from "@vita/ui/textarea";
-import { typeName } from "../../i18n/record-labels";
+import { isBuiltinField, typeName } from "../../i18n/record-labels";
 import { useI18n } from "../../i18n/useI18n";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
 import { NursingSymbol } from "../nursing/NursingSymbol";
@@ -22,19 +22,36 @@ export function RecordForm({
   record,
   child,
   inline = false,
+  focusContent = false,
+  defaultTime,
+  onComplete,
 }: {
   type: RecordType;
   record?: CareRecord | null;
   child: string;
   inline?: boolean;
+  focusContent?: boolean;
+  defaultTime?: Date;
+  onComplete?: () => void;
 }) {
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (focusContent) {
+      formRef.current?.querySelector<HTMLElement>(
+        '.record-fields input, .record-fields select, .record-fields textarea, .growth-fields input',
+      )?.focus();
+    }
+  }, [focusContent]);
   const { tr, locale } = useI18n();
   const dateInputId = useId();
   const a = useApp(),
     [typeId, setTypeId] = useState(initialType.id),
     [values, setValues] = useState<Values>(record?.values || {}),
-    [time, setTime] = useState(record?.time || localDateTime()),
+    [time, setTime] = useState(() => record?.time || localDateTime(defaultTime)),
     [note, setNote] = useState(record?.note || "");
+  useEffect(() => {
+    if (defaultTime && !record) setTime(localDateTime(defaultTime));
+  }, [defaultTime, record]);
   const type = a.types.find((t) => t.id === typeId) || initialType;
   const isGrowth =
     type.id === "growth" &&
@@ -57,6 +74,7 @@ export function RecordForm({
     );
   return (
     <form
+      ref={formRef}
       className="record-form"
       onSubmit={(e) => {
         e.preventDefault();
@@ -69,12 +87,13 @@ export function RecordForm({
           time,
           note,
           nursing: record?.nursing,
-        });
+        }, !inline);
         if (saved && inline) {
           setValues({});
           setNote("");
           setTime(localDateTime());
         }
+        if (saved) onComplete?.();
       }}
       onKeyDown={(e) => {
         if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
@@ -97,7 +116,10 @@ export function RecordForm({
             type="button"
             disabled={!!a.session}
             onClick={() => {
-              if (a.startSession(type, true, child)) a.setModal(null);
+              if (a.startSession(type, true, child)) {
+                if (!inline) a.setModal(null);
+                onComplete?.();
+              }
             }}
           >
             {tr("Start nursing")}
@@ -164,11 +186,14 @@ export function RecordForm({
       <Fields
         recordType={type}
         fields={
-          isGrowth
-            ? type.fields.filter(
-                (field) => !["height", "weight"].includes(field.id),
-              )
-            : type.fields
+          type.fields.filter((field) => {
+            if (isGrowth && ["height", "weight"].includes(field.id)) return false;
+            return !(
+              type.id === "diaper" &&
+              field.id === "times" &&
+              isBuiltinField(type, field)
+            );
+          })
         }
         values={values}
         onChange={(id, v) => setValues((s) => ({ ...s, [id]: v }))}
@@ -196,8 +221,10 @@ export function RecordForm({
                   type.id === "feed" && values.method === "Nursing",
                   child,
                 )
-              )
-                a.setModal(null);
+              ) {
+                if (!inline) a.setModal(null);
+                onComplete?.();
+              }
             }}
           >
             {tr("Start live {name} timer", {

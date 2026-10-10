@@ -9,6 +9,8 @@ import { useApp } from "./hooks/useApp";
 import { ChildForm } from "./components/children/ChildForm";
 import { SaveError } from "./components/common/SaveError";
 import { Icon } from "./components/common/Icon";
+import { QuickRecordProvider } from "./quick-record/QuickRecordProvider";
+import { QuickRecordOverlay } from "./quick-record/QuickRecordOverlay";
 
 function Workspace() {
   const { tr } = useI18n();
@@ -69,7 +71,10 @@ export default function LittleDays() {
     <LocaleProvider>
       <ThemeProvider>
         <WorkspaceProvider>
-          <Workspace />
+          <QuickRecordProvider>
+            <Workspace />
+            <QuickRecordOverlay />
+          </QuickRecordProvider>
         </WorkspaceProvider>
       </ThemeProvider>
     </LocaleProvider>

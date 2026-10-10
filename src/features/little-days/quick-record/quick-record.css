@@ -1,0 +1,63 @@
+.shortcut-settings h2 { font-size: 18px; font-weight: 600; }
+.shortcut-settings p { margin: 10px 0; color: var(--muted-foreground); font-size: 14px; }
+.shortcut-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.quick-recorder-popup[data-slot="dialog-popup"] {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+  background: var(--background);
+  overflow-y: auto;
+  transform: none;
+  scale: 1;
+  transition: opacity 150ms ease-out;
+  opacity: 1;
+}
+.quick-recorder {
+  width: min(100%, 1080px);
+  min-height: 100%;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 64px);
+}
+.quick-recorder-header { display: flex; justify-content: space-between; gap: 24px; align-items: center; }
+.quick-recorder-header [data-slot="dialog-description"] { margin-top: 8px; }
+.quick-recorder kbd { font: inherit; font-variant-numeric: tabular-nums; color: var(--muted-foreground); }
+.quick-recorder-clock { margin: clamp(24px, 5vh, 64px) 0; text-align: center; }
+.quick-recorder-clock time { font-size: clamp(56px, 9vw, 112px); line-height: 1.1; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+.quick-recorder-clock p, .quick-recorder-help, .quick-recorder-form > p { color: var(--muted-foreground); font-size: 14px; margin-top: 12px; }
+.quick-recorder-help { text-align: center; margin-bottom: 20px; }
+.quick-recorder-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.quick-recorder-types button { min-height: 80px; justify-content: flex-start; gap: 12px; padding: 20px; font-size: 16px; }
+.quick-recorder-types kbd { margin-left: auto; }
+.quick-recorder-types button[aria-current="true"] {
+  border-color: var(--foreground);
+  background: var(--care-soft);
+  color: var(--foreground);
+}
+.quick-recorder-form { width: 100%; max-width: 600px; margin: 0 auto; }
+.quick-record-sheet[data-slot="sheet-popup"] {
+  width: calc(100% - 32px);
+  max-width: 640px;
+  justify-self: center;
+  max-height: 85dvh;
+  overflow-y: auto;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 24px max(24px, env(safe-area-inset-bottom));
+  transition: translate 240ms cubic-bezier(0.32, 0.72, 0, 1), opacity 240ms ease-out;
+}
+.quick-record-sheet[data-starting-style],
+.quick-record-sheet[data-ending-style] { translate: 0 100%; }
+.quick-record-sheet-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.quick-recorder [data-slot="sheet-backdrop"] { transition: opacity 240ms ease-out; }
+.quick-recorder-form h2 { margin-top: 16px; font-size: 24px; font-weight: 600; }
+.quick-recorder-form .record-form { padding: 0; }
+.quick-recorder button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .quick-recorder-popup[data-slot="dialog-popup"] { transition: none; }
+  .quick-record-sheet[data-slot="sheet-popup"],
+  .quick-recorder [data-slot="sheet-backdrop"] { transition: none; }
+}
