@@ -17,6 +17,7 @@ vi.mock("@tauri-apps/api/event", () => ({ listen: vi.fn(async (name: string, cal
 }) }));
 
 beforeEach(() => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
   localStorage.clear();
   native.listeners.clear();
   native.invoke.mockReset();
@@ -41,6 +42,7 @@ async function open() {
 it("opens a bottom sheet, saves repeatedly, and keeps the recorder open until explicitly closed", async () => {
   const dialog = await open();
   const user = userEvent.setup();
+  const status = dialog.getAllByRole('status').find((element) => element.classList.contains('quick-recorder-status'))!;
   await user.keyboard("2");
   expect(screen.getByRole("radio", { name: "Wet", exact: true })).toHaveFocus();
   await user.click(screen.getByRole("radio", { name: "Wet", exact: true }));
@@ -49,7 +51,10 @@ it("opens a bottom sheet, saves repeatedly, and keeps the recorder open until ex
   expect(screen.getByRole("dialog", { name: "Quick recording" })).toBeVisible();
   expect(loadWorkspace().data.records[0].values).toEqual({ kind: "Wet", times: 1 });
   expect(native.invoke).not.toHaveBeenCalledWith("present_quick_record", { open: false });
+  expect(dialog.getAllByRole('status').find((element) => element.classList.contains('quick-recorder-status'))!).toBe(status);
   await user.click(dialog.getByRole("button", { name: /^Diaper\s*2$/ }));
+  expect(status).toBeInTheDocument();
+  expect(status).toHaveTextContent('');
   expect(screen.getByRole("dialog", { name: "Diaper" })).toHaveAttribute("data-slot", "sheet-popup");
   await user.click(screen.getByRole("radio", { name: "Dirty", exact: true }));
   await user.keyboard("{Control>}{Enter}{/Control}");
@@ -158,4 +163,43 @@ it("offers a dark night view with a neutral glow when history is insufficient", 
   await userEvent.setup().click(screen.getByRole("button", { name: "Night view" }));
   expect(dialog).not.toHaveClass("quick-recorder-night");
   expect(dialog.querySelector(".night-edge-glow")).toBeNull();
+});
+
+it("edits individual widgets and restores the layout after reopening", async () => {
+  const dialog = await open();
+  const user = userEvent.setup();
+  await user.click(dialog.getByRole('button', { name: 'Edit widgets' }));
+  expect(screen.queryByLabelText('Size of Time')).toBeNull();
+  await user.click(screen.getByRole('button', { name: 'Options for Diaper' }));
+  await user.click(await screen.findByRole('menuitem', { name: 'Remove Diaper' }));
+  expect(screen.getByRole('button', { name: 'Add Diaper' })).toBeVisible();
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Drag Sleep' })).toHaveFocus());
+  await user.keyboard('2');
+  expect(screen.queryByRole('dialog', { name: 'Diaper' })).toBeNull();
+  await user.keyboard('{Escape}');
+  expect(dialog.getByRole('button', { name: 'Edit widgets' })).toBeVisible();
+  await user.click(dialog.getByRole('button', { name: 'Close Esc' }));
+  await act(async () => native.listeners.get('quick-record-open')?.());
+  expect(screen.getByRole('region', { name: 'Time', exact: true })).toHaveAttribute('data-size', 'medium');
+  expect(screen.queryByRole('button', { name: /^Diaper\s*2$/ })).toBeNull();
+  await user.click(screen.getByRole('button', { name: 'Edit widgets' }));
+  await user.click(screen.getByRole('button', { name: 'Add Diaper' }));
+  await user.click(screen.getByRole('button', { name: 'Restore default layout' }));
+  await user.click(screen.getByRole('button', { name: 'Done editing' }));
+  expect(screen.getByRole('region', { name: 'Time', exact: true })).toHaveAttribute('data-size', 'medium');
+  await user.click(screen.getByRole('button', { name: /^Diaper\s*2$/ }));
+  expect(screen.getByRole('radio', { name: 'Wet', exact: true })).toHaveFocus();
+});
+
+it('cancels dragging before exiting widget editing', async () => {
+  const dialog = await open();
+  const user = userEvent.setup();
+  await user.click(dialog.getByRole('button', { name: 'Edit widgets' }));
+  const handle = screen.getByRole('button', { name: 'Drag Time' });
+  handle.focus();
+  await user.keyboard('[Space]');
+  expect(document.querySelector('[data-dragging]')).not.toBeNull();
+  await user.keyboard('[Escape]');
+  expect(document.querySelector('[data-dragging]')).toBeNull();
+  expect(dialog.getByRole('button', { name: 'Done editing' })).toBeVisible();
 });

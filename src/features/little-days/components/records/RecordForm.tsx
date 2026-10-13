@@ -39,7 +39,7 @@ export function RecordForm({
     if (focusContent) {
       formRef.current?.querySelector<HTMLElement>(
         '.record-fields input, .record-fields select, .record-fields textarea, .growth-fields input',
-      )?.focus();
+      )?.focus({ preventScroll: true });
     }
   }, [focusContent]);
   const { tr, locale } = useI18n();

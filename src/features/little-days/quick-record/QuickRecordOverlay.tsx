@@ -6,16 +6,15 @@ import { useQuickRecord } from "./QuickRecordContext";
 import { useApp } from "../hooks/useApp";
 import { useI18n } from "../i18n/useI18n";
 import { typeName } from "../i18n/record-labels";
-import { Icon } from "../components/common/Icon";
 import { RecordForm } from "../components/records/RecordForm";
 import { SaveError } from "../components/common/SaveError";
-import { NightStatus } from "./NightStatus";
+import { QuickRecordWidgets } from "./QuickRecordWidgets";
 import { isNight } from "./night-status";
 
 function Recorder({ night, onToggleNight }: { night: boolean; onToggleNight: () => void }) {
   const { close, error } = useQuickRecord();
   const a = useApp();
-  const { tr, locale } = useI18n();
+  const { tr } = useI18n();
   const [now, setNow] = useState(() => new Date());
   const [child] = useState(a.activeChild);
   const [selected, setSelected] = useState<string | null>(null);
@@ -23,6 +22,7 @@ function Recorder({ night, onToggleNight }: { night: boolean; onToggleNight: () 
     a.types.find((item) => item.id === "feed")?.id ?? a.types[0]?.id,
   );
   const [choosing, setChoosing] = useState(true);
+  const [editing, setEditing] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [formOpenedAt, setFormOpenedAt] = useState(() => new Date());
   const [recorder, setRecorder] = useState<HTMLDivElement | null>(null);
@@ -34,22 +34,24 @@ function Recorder({ night, onToggleNight }: { night: boolean; onToggleNight: () 
     return () => clearInterval(timer);
   }, []);
   useEffect(() => {
-    if (choosing) {
-      grid.current?.querySelector<HTMLButtonElement>('[aria-current="true"]')?.focus();
+    if (choosing && !editing) {
+      (grid.current?.querySelector<HTMLButtonElement>('[aria-current="true"]') ??
+        grid.current?.querySelector<HTMLButtonElement>('button[data-record-type]:not(:disabled)'))?.focus({ preventScroll: true });
     }
-  }, [choosing, highlighted]);
+  }, [choosing, highlighted, editing]);
   function pick(id: string) { setFormOpenedAt(new Date()); setCompleted(false); setHighlighted(id); setSelected(id); setChoosing(false); }
   return (
-    <div ref={setRecorder} className="quick-recorder" onKeyDown={(event) => {
-      if (event.defaultPrevented || event.nativeEvent.isComposing || event.repeat) return;
+    <div ref={setRecorder} className="quick-recorder" data-editing={editing || undefined} onKeyDown={(event) => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing || event.repeat || grid.current?.querySelector('[data-dragging]')) return;
       if (event.key === "Escape") {
         event.preventDefault();
         event.stopPropagation();
         if (!choosing) setChoosing(true);
+        else if (editing) setEditing(false);
         else void close();
         return;
       }
-      if (!choosing || !child || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+      if (editing || !choosing || !child || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
       const target = event.target as HTMLElement;
       if (target.closest("input, textarea, select, [contenteditable=true]")) return;
       const index = /^[1-9]$/.test(event.key) ? Number(event.key) - 1 : -1;
@@ -61,54 +63,17 @@ function Recorder({ night, onToggleNight }: { night: boolean; onToggleNight: () 
           <DialogDescription>{child ? tr("Recording for {name}.", { name: child.name }) : tr("Add a child in the main app to start recording.")}</DialogDescription>
         </div>
         <div className="quick-recorder-actions">
-          <Button variant="ghost" aria-pressed={night} onClick={onToggleNight}>{tr("Night view")}</Button>
+          <Button variant="ghost" aria-pressed={editing} onClick={() => setEditing((value) => !value)}>{tr(editing ? "Done editing" : "Edit widgets")}</Button>
+          <Button variant="ghost" className="quick-recorder-night-toggle" aria-pressed={night} onClick={onToggleNight}>{tr("Night view")}</Button>
           <Button variant="ghost" onClick={() => void close()}>{tr("Close")} <kbd>Esc</kbd></Button>
         </div>
       </header>
-      <div className="quick-recorder-clock">
-        <time dateTime={now.toISOString()}>{now.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", hour12: false })}</time>
-        <p>{now.toLocaleDateString(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-      </div>
-      {child && <NightStatus child={child.id} now={now} enabled={night} />}
       {error && <p role="alert">{error}</p>}
       {choosing && <SaveError />}
-      {completed && <p role="status" className="quick-recorder-help">{a.notice}</p>}
+      <p role="status" className="quick-recorder-status">{completed ? a.notice : '\u00a0'}</p>
+      <QuickRecordWidgets child={child?.id} now={now} night={night} editing={editing}
+        highlighted={highlighted} onHighlight={setHighlighted} onPick={pick} grid={grid} />
       {child && a.data && <>
-        <section aria-label={tr("Choose a record type")}>
-          <p className="quick-recorder-help">{tr("Press 1–9 to choose a record type")}</p>
-          <p className="quick-recorder-help">{tr("Arrow keys to select · Enter to open")}</p>
-          <div ref={grid} className="quick-recorder-types" onKeyDown={(event) => {
-            if (event.defaultPrevented || event.nativeEvent.isComposing ||
-                event.metaKey || event.ctrlKey || event.altKey || event.shiftKey ||
-                !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
-            const buttons = Array.from(grid.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
-            const index = buttons.indexOf(event.target as HTMLButtonElement);
-            if (index < 0) return;
-            event.preventDefault();
-            const nextRow = buttons.findIndex((button) => button.offsetTop > buttons[0].offsetTop);
-            const columns = nextRow > 0 ? nextRow : buttons.length;
-            let next = index;
-            if (event.key === "ArrowLeft") next = Math.max(0, index - 1);
-            if (event.key === "ArrowRight") next = Math.min(buttons.length - 1, index + 1);
-            if (event.key === "ArrowUp" && index >= columns) next = index - columns;
-            if (event.key === "ArrowDown" && Math.floor(index / columns) < Math.floor((buttons.length - 1) / columns)) {
-              next = Math.min(buttons.length - 1, index + columns);
-            }
-            buttons[next]?.focus();
-          }}>
-            {a.types.map((item, index) => (
-              <Button key={item.id} variant="outline"
-                aria-current={highlighted === item.id ? "true" : undefined}
-                tabIndex={highlighted === item.id ? 0 : -1}
-                onFocus={() => setHighlighted(item.id)}
-                onClick={() => pick(item.id)}>
-                <Icon name={item.icon} />
-                <span>{typeName(item, tr)}</span>
-                {index < 9 && <kbd>{index + 1}</kbd>}
-              </Button>
-            ))}
-          </div>
-        </section>
         <Sheet open={!choosing} onOpenChange={(open) => { if (!open) setChoosing(true); }}>
           <SheetPopup ref={sheet} side="bottom" className="quick-record-sheet" showCloseButton={false}
             portalProps={{ container: recorder, keepMounted: true }}
@@ -136,7 +101,11 @@ export function QuickRecordOverlay() {
   const night = nightPreference ?? isNight(new Date());
   return (
     <Dialog open={open}>
-      <DialogPopup className={`quick-recorder-popup${night ? " dark quick-recorder-night" : ""}`} style={{ scale: 1, opacity: 1 }} showCloseButton={false} bottomStickOnMobile={false}>
+      <DialogPopup className={`quick-recorder-popup${night ? " dark quick-recorder-night" : ""}`} style={{ scale: 'none', opacity: 1 }} showCloseButton={false} bottomStickOnMobile={false}
+        onKeyDown={(event) => {
+          // Let the drag sensor receive arrows, Space and Escape before the modal handles them.
+          if (event.currentTarget.querySelector('[data-dragging]')) event.preventBaseUIHandler();
+        }}>
         {open && <Recorder night={night} onToggleNight={() => setNightPreference(!night)} />}
       </DialogPopup>
     </Dialog>

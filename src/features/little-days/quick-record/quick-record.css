@@ -13,7 +13,9 @@
   background: var(--background);
   overflow-y: auto;
   transform: none;
-  scale: 1;
+  will-change: auto;
+  scrollbar-gutter: stable;
+  scale: none;
   transition: opacity 150ms ease-out;
   opacity: 1;
 }
@@ -30,14 +32,7 @@
 .quick-recorder-clock time { font-size: clamp(56px, 9vw, 112px); line-height: 1.1; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
 .quick-recorder-clock p, .quick-recorder-help, .quick-recorder-form > p { color: var(--muted-foreground); font-size: 14px; margin-top: 12px; }
 .quick-recorder-help { text-align: center; margin-bottom: 20px; }
-.quick-recorder-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
-.quick-recorder-types button { min-height: 80px; justify-content: flex-start; gap: 12px; padding: 20px; font-size: 16px; }
-.quick-recorder-types kbd { margin-left: auto; }
-.quick-recorder-types button[aria-current="true"] {
-  border-color: var(--foreground);
-  background: var(--care-soft);
-  color: var(--foreground);
-}
+.quick-recorder-status { min-height: 20px; margin-top: 12px; color: var(--muted-foreground); font-size: 14px; line-height: 20px; text-align: center; }
 .quick-recorder-form { width: 100%; max-width: 600px; margin: 0 auto; }
 .quick-record-sheet[data-slot="sheet-popup"] {
   width: calc(100% - 32px);
@@ -73,7 +68,6 @@
   color-scheme: dark;
 }
 .night-status { margin: 0 auto 28px; max-width: 760px; }
-.night-status-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
 .night-status h3 { font-size: 14px; color: var(--muted-foreground); font-weight: 500; }
 .night-status strong { display: block; margin: 8px 0 12px; font-size: clamp(22px, 3vw, 32px); font-weight: 500; font-variant-numeric: tabular-nums; }
 .night-status p { font-size: 13px; line-height: 1.6; color: var(--muted-foreground); }
@@ -93,7 +87,42 @@
   box-shadow: inset 0 0 64px 6px color-mix(in srgb, var(--night-signal) 22%, transparent);
 }
 @media (max-width: 540px) {
-  .night-status-metrics { grid-template-columns: 1fr; gap: 20px; }
   .quick-recorder-header { align-items: flex-start; gap: 12px; }
   .night-edge-glow { box-shadow: inset 0 0 36px 3px color-mix(in srgb, var(--night-signal) 18%, transparent); }
 }
+.quick-recorder .vita-widget-board { margin-top: 28px; }
+.quick-recorder .quick-recorder-clock { margin: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.quick-recorder .quick-recorder-clock time { font-size: clamp(40px, 5vw, 76px); }
+.quick-recorder [data-size="small"] .quick-recorder-clock time { font-size: 42px; }
+.quick-recorder .night-status { margin: 0; max-width: none; }
+.quick-recorder .night-status strong { font-size: 24px; }
+.night-status-duration { word-break: keep-all; }
+.quick-recorder .vita-widget-body:has(> .quick-record-widget-action) { padding: 0; }
+.quick-record-widget-action { width: 100%; height: 100%; min-height: 100px; display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; align-content: center; gap: 12px; padding: 28px; border: 0; background: transparent; color: inherit; font-size: 20px; font-weight: 500; white-space: normal; text-align: left; cursor: pointer; }
+.quick-record-widget-action:disabled { cursor: default; opacity: 0.5; }
+.quick-recorder .quick-record-widget-action:focus-visible { outline: none; }
+.quick-recorder .vita-widget-card:has(.quick-record-widget-action:focus-visible) { outline: 2px solid var(--foreground); outline-offset: 3px; }
+.quick-recorder .vita-widget-card:has(.quick-record-widget-action:not(:disabled):hover) > .vita-widget-surface { background: color-mix(in srgb, var(--primary) 8%, var(--card, var(--background))); }
+.quick-record-widget-action svg { width: 28px; height: 28px; }
+.quick-record-widget-action kbd { margin-left: auto; }
+.quick-record-widget-action small { flex-basis: 100%; font-size: 13px; color: var(--muted-foreground); font-weight: 400; }
+.quick-recorder .vita-widget-card:has(.quick-record-widget-action[aria-current="true"]) {
+  background: color-mix(in srgb, var(--primary) 30%, var(--border));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+.quick-recorder .vita-widget-card:has(.quick-record-widget-action[aria-current="true"]) > .vita-widget-surface {
+  border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+  background: color-mix(in srgb, var(--primary) 5%, var(--card, var(--background)));
+}
+.quick-record-widget-action[aria-current="true"] { background: transparent; }
+.quick-recorder .vita-widget-card, .quick-recorder .vita-widget-surface { transition: background-color 150ms ease-out, border-color 150ms ease-out, box-shadow 150ms ease-out; }
+.quick-widget-library { margin-top: 24px; padding: 16px; border-radius: 16px; border: 1px solid var(--border); }
+.quick-widget-library p { color: var(--muted-foreground); font-size: 14px; margin-bottom: 12px; }
+.quick-widget-library > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.quick-widget-help { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 24px 0 16px; color: var(--muted-foreground); font-size: 13px; }
+.night-status-notes { margin-top: 20px; color: var(--muted-foreground); font-size: 12px; line-height: 1.7; }
+.quick-recorder-night { --card: #11161b; }
+.quick-recorder[data-editing] .quick-recorder-night-toggle,
+.quick-recorder[data-editing] .quick-recorder-status,
+.quick-recorder[data-editing] .quick-record-widget-action kbd,
+.quick-recorder[data-editing] .quick-record-widget-action small { visibility: hidden; }

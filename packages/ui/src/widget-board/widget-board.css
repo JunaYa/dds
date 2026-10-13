@@ -1,0 +1,52 @@
+.vita-widget-board { position: relative; display: grid; min-width: 0; min-height: var(--home-cell); isolation: isolate; border-radius: 24px; }
+.vita-widget-board[data-editing] {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--foreground) 16%, transparent) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+.vita-widget-card { --widget-span: 1; position: relative; min-width: 0; min-height: 0; padding: 4px; border-radius: 24px; background: linear-gradient(color-mix(in srgb, var(--muted) 50%, transparent), color-mix(in srgb, var(--border) 40%, transparent)); color: var(--foreground); }
+.vita-widget-card[data-size="medium"] { --widget-span: 2; }
+.vita-widget-card[data-size="large"] { --widget-span: 2; grid-row: span 2; }
+.vita-widget-board[data-columns="1"] > .vita-widget-card { --widget-span: 1; }
+.vita-widget-surface { display: flex; flex-direction: column; height: 100%; min-height: 0; border-radius: 20px; border: 1px solid var(--border); background: var(--card, var(--background)); overflow: hidden; }
+.vita-widget-body { flex: 1; min-height: 0; overflow: auto; padding: 20px; }
+.vita-widget-drag, .vita-widget-options { position: absolute; top: 4px; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; color: var(--foreground); border-radius: 12px; }
+.vita-widget-drag { left: 50%; translate: -50% 0; cursor: grab; touch-action: none; align-items: flex-start; padding-top: 8px; }
+.vita-widget-drag span { width: 24px; height: 4px; border-radius: 999px; background: color-mix(in srgb, var(--foreground) 30%, transparent); pointer-events: none; }
+.vita-widget-drag:hover span { background: color-mix(in srgb, var(--foreground) 50%, transparent); }
+.vita-widget-drag:active { cursor: grabbing; }
+.vita-widget-options { top: 8px; right: 8px; width: 24px; height: 24px; min-width: 24px; min-height: 24px; padding: 0; line-height: 1; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: color-mix(in srgb, var(--card) 95%, transparent); box-shadow: 0 1px 2px #0000000d; touch-action: manipulation; transition: background-color 150ms ease-out, border-color 150ms ease-out; }
+.vita-widget-options::before { content: ''; position: absolute; inset: -8px; }
+.vita-widget-options-icon { width: 16px; height: 16px; pointer-events: none; }
+.vita-widget-size-option { display: flex; align-items: center; gap: 8px; }
+.vita-widget-size-code { width: 12px; color: var(--muted-foreground); font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.vita-widget-options:active:not(:disabled) { transform: none; }
+.vita-widget-options:hover { background: var(--muted); }
+.vita-widget-drag:focus-visible, .vita-widget-options:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
+.vita-widget-card[data-dragging] { outline: 2px dashed var(--ring); background: var(--muted); }
+.vita-widget-card[data-dragging] > * { opacity: 0; }
+.vita-widget-overlay { height: 100%; cursor: grabbing; box-shadow: 0 16px 40px #0003; }
+@media (pointer: coarse) { .vita-widget-drag, .vita-widget-options { width: 44px; height: 44px; } .vita-widget-options { border-radius: 8px; } .vita-widget-options::before { inset: 0; } }
+
+.vita-widget-menu-positioner { z-index: var(--z-layer-flyout); }
+.vita-widget-menu { min-width: 128px; }
+.vita-widget-drop-target {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  border: 2px dashed var(--primary);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--primary) 8%, transparent);
+}
+.vita-widget-drop-target[data-valid="false"] { border-color: var(--destructive); background: color-mix(in srgb, var(--destructive) 12%, transparent); box-shadow: none; }
+.vita-widget-overlay { opacity: .85; }
+.vita-widget-drop-label { position: absolute; top: 12px; left: 50%; translate: -50% 0; white-space: nowrap; border-radius: 999px; padding: 6px 12px; background: var(--foreground); color: var(--background); font-size: 13px; font-weight: 500; pointer-events: none; }
+.vita-widget-overlay[data-valid="false"] .vita-widget-drop-label { background: var(--destructive); color: white; }
+
+.vita-widget-menu [role="menuitemradio"], .vita-widget-menu [role="menuitem"] { min-height: 40px; cursor: pointer; }
+.vita-widget-menu [role="menuitemradio"][aria-checked="true"] { background: var(--accent); }
+.vita-widget-menu [data-disabled] { cursor: not-allowed; }
+@media (pointer: coarse) {
+  .vita-widget-options { min-width: 44px; min-height: 44px; }
+  .vita-widget-menu [role="menuitemradio"], .vita-widget-menu [role="menuitem"] { min-height: 44px; }
+}
