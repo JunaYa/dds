@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "brand:generate": "node scripts/generate-brand.mjs",
+    "brand:generate:macos": "node scripts/generate-macos-icon.mjs",
     "check:ui": "node scripts/check-ui-boundaries.mjs",
     "typecheck": "node scripts/check-ui-boundaries.mjs && tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
     "test": "node --test scripts/android-env.test.mjs && vitest run",

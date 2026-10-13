@@ -41,3 +41,5 @@ if (existsSync(android)) {
     rmSync(output, { recursive: true, force: true });
   }
 }
+
+await import('./generate-macos-icon.mjs');

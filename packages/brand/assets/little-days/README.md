@@ -31,3 +31,21 @@ icons. Tauri applies the platform sizes and Android adaptive launcher structure.
 
 These assets are the Little days application identity. Older Ancher materials
 elsewhere in this package belong to the inherited design system.
+
+## macOS Dock icon
+
+`app-icon-macos.png` is the separate alpha-transparent macOS master, adapted
+from the original artwork with a cream rounded-square tile and outer padding.
+The apricot baby sits inside a green protective embrace. A smaller leaf conveys
+healthy growth, while an open journal with three connected milestone dots makes
+growth data recording explicit. At small Dock sizes the baby and embrace carry
+recognition; the journal details become legible as the icon grows. The design
+prompt is retained in `prompt-macos.txt`.
+It follows the rounded-rectangle direction in the
+[Apple app icon guidelines](https://developer.apple.com/design/human-interface-guidelines/app-icons/).
+This is a raster adaptation for the existing Tauri ICNS pipeline, not an Icon
+Composer layered asset or an exact Apple system mask.
+
+Run `pnpm brand:generate:macos` to regenerate only `src-tauri/icons/icon.icns`.
+The full `pnpm brand:generate` command also runs this step last, preserving the
+macOS-specific contour while leaving the opaque master for other platforms.
