@@ -28,6 +28,14 @@ export function moveWidgetTo(items: PositionedWidget[], id: string, col: number,
   const item = items.find((entry) => entry.id === id);
   if (!item) return items;
   const next = { ...item, col, row };
-  if (col < 0 || row < 0 || col + Math.min(widgetSpan(item.size).cols, columns) > columns || items.some((other) => other.id !== id && overlaps(next, other, columns))) return items;
+  if (col < 0 || row < 0 || col + Math.min(widgetSpan(item.size).cols, columns) > columns) return items;
+  const collisions = items.filter((other) => other.id !== id && overlaps(next, other, columns));
+  if (collisions.length) {
+    const target = collisions[0];
+    if (collisions.length !== 1 || target.size !== item.size || target.col !== col || target.row !== row) return items;
+    const swapped = { ...target, col: item.col, row: item.row };
+    if (items.some((other) => other.id !== id && other.id !== target.id && overlaps(swapped, other, columns))) return items;
+    return items.map((entry) => entry.id === id ? next : entry.id === target.id ? swapped : entry);
+  }
   return items.map((entry) => entry.id === id ? next : entry);
 }

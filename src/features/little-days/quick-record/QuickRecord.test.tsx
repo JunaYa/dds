@@ -203,3 +203,21 @@ it('cancels dragging before exiting widget editing', async () => {
   expect(document.querySelector('[data-dragging]')).toBeNull();
   expect(dialog.getByRole('button', { name: 'Done editing' })).toBeVisible();
 });
+
+it('shows feeding elapsed time inside the feeding action instead of a separate widget', async () => {
+  const dialog = await open();
+  const feeding = dialog.getByRole('button', { name: /^Feeding\s*1$/ });
+  expect(within(feeding).getByText('Since last recorded feeding')).toBeVisible();
+  expect(dialog.queryByRole('region', { name: 'Since last recorded feeding' })).toBeNull();
+  await userEvent.setup().click(feeding);
+  expect(screen.getByLabelText(/Amount/)).toBeVisible();
+});
+
+it('shows the timer within the sleep action and opens its record form', async () => {
+  const dialog = await open();
+  const sleep = dialog.getByRole('button', { name: /^Sleep\s*3$/ });
+  expect(within(sleep).getByText('No active sleep timer')).toBeVisible();
+  expect(dialog.queryByRole('region', { name: 'Sleep timer' })).toBeNull();
+  await userEvent.setup().click(sleep);
+  expect(screen.getByRole('dialog', { name: 'Sleep', exact: true })).toBeVisible();
+});

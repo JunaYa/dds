@@ -4,12 +4,16 @@ import { type Field, type RecordType } from "../../domain/model";
 import { fieldLabel, isBuiltinField } from "../../i18n/record-labels";
 import { useI18n } from "../../i18n/useI18n";
 
-export function DiaperTypeField({
+export function RecordChoiceField({
   field,
   recordType,
   value,
   onChange,
+  required = false,
+  columns = 2,
 }: {
+  required?: boolean;
+  columns?: 2 | 3;
   field: Field;
   recordType: RecordType;
   value: string | number | undefined;
@@ -21,17 +25,17 @@ export function DiaperTypeField({
     ...new Set(field.options.split(",").map((o) => o.trim()).filter(Boolean)),
   ];
   return (
-    <fieldset className="diaper-type-field wide">
+    <fieldset className="record-choice-field wide">
       <legend>{fieldLabel(recordType, field, tr)}</legend>
-      <div className="diaper-type-options">
+      <div className="record-choice-options" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
         {options.map((option) => (
-          <label className="diaper-type-option" key={option}>
+          <label className="record-choice-option" key={option}>
             <NativeInput
               type="radio"
               name={name}
               value={option}
               checked={value === option}
-              required
+              required={required}
               onChange={() => onChange(option)}
             />
             <span>{isBuiltinField(recordType, field) ? tr(option) : option}</span>

@@ -5,7 +5,7 @@ import { beforeEach, vi, afterEach, expect, it } from 'vitest';
 import { WidgetBoard, moveWidget, type WidgetItem, type WidgetBoardLabels } from './widget-board';
 beforeEach(() => vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} }));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
-const labels: WidgetBoardLabels = { move: (name) => `Drag ${name}`, remove: (name) => `Remove ${name}`, options: (name) => `Options ${name}`, resize: 'Size', canDrop: 'Release to place here', cannotDrop: 'Cannot place here', sizes: { small: 'Small', medium: 'Medium', large: 'Large' } };
+const labels: WidgetBoardLabels = { move: (name) => `Drag ${name}`, remove: (name) => `Remove ${name}`, removeText: 'Remove', options: (name) => `Options ${name}`, resize: 'Size', canDrop: 'Release to place here', canSwap: 'Release to swap positions', cannotDrop: 'Cannot place here', sizes: { small: 'Small', medium: 'Medium', large: 'Large' } };
 function Demo() {
   const [items, setItems] = useState<WidgetItem[]>([{ id: 'a', size: 'medium' }, { id: 'b', size: 'small' }]);
   return <WidgetBoard items={items} editing onChange={setItems} labels={labels}

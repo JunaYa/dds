@@ -8,21 +8,24 @@ const labels = {
   red: "At or beyond the usual time",
 };
 
-export function NightStatusMetric({ metric, kind, detailed }: { metric: NightMetric; kind: 'sleep' | 'feed'; detailed: boolean }) {
+export function NightStatusMetric({ metric, kind, detailed, inline = false }: { inline?: boolean; metric: NightMetric; kind: 'sleep' | 'feed'; detailed: boolean }) {
   const { tr } = useI18n();
   const duration = (minutes: number) => tr("{hours}h {minutes}m", { hours: Math.floor(minutes / 60), minutes: Math.floor(minutes % 60) });
-  return <div className="night-status">
-    <h3>{tr(kind === 'sleep' ? "Sleep timer" : "Since last recorded feeding")}</h3>
+  const Root = inline ? 'span' : 'div';
+  const Heading = inline ? 'span' : 'h3';
+  const Paragraph = inline ? 'span' : 'p';
+  return <Root className="night-status">
+    <Heading className="night-status-heading">{tr(kind === 'sleep' ? "Sleep timer" : "Since last recorded feeding")}</Heading>
     <strong className={metric.elapsed === null ? undefined : 'night-status-duration'}>{metric.elapsed === null ? tr(kind === 'sleep' ? "No active sleep timer" : "No recent feeding record") : duration(metric.elapsed)}</strong>
-    {metric.paused && <p>{tr(kind === 'sleep' ? "Paused" : "Feeding timer active")}</p>}
-    <p className="night-signal-label" data-signal={metric.signal}><span aria-hidden="true" />{tr(labels[metric.signal])}</p>
+    {metric.paused && <Paragraph>{tr(kind === 'sleep' ? "Paused" : "Feeding timer active")}</Paragraph>}
+    <Paragraph className="night-signal-label" data-signal={metric.signal}><span aria-hidden="true" />{tr(labels[metric.signal])}</Paragraph>
     {detailed && <>
-      <p>{metric.typical === null ? tr("Not enough consistent records for an estimate.") : tr("7-day median · {count} samples · {duration}", { count: metric.samples, duration: duration(metric.typical) })}</p>
-      {metric.typical !== null && !metric.paused && metric.elapsed !== null && <p>{metric.elapsed < metric.typical
+      <Paragraph>{metric.typical === null ? tr("Not enough consistent records for an estimate.") : tr("7-day median · {count} samples · {duration}", { count: metric.samples, duration: duration(metric.typical) })}</Paragraph>
+      {metric.typical !== null && !metric.paused && metric.elapsed !== null && <Paragraph>{metric.elapsed < metric.typical
         ? tr("About {duration} until the historical reference", { duration: duration(metric.typical - metric.elapsed) })
-        : tr("Past the historical reference by {duration}", { duration: duration(metric.elapsed - metric.typical) })}</p>}
+        : tr("Past the historical reference by {duration}", { duration: duration(metric.elapsed - metric.typical) })}</Paragraph>}
     </>}
-  </div>;
+  </Root>;
 }
 
 export function NightStatusNotes() {

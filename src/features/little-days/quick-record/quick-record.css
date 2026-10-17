@@ -126,3 +126,11 @@
 .quick-recorder[data-editing] .quick-recorder-status,
 .quick-recorder[data-editing] .quick-record-widget-action kbd,
 .quick-recorder[data-editing] .quick-record-widget-action small { visibility: hidden; }
+
+.quick-record-widget-action[data-record-type="feed"],
+.quick-record-widget-action[data-record-type="sleep"] { padding: 20px; gap: 8px; }
+.quick-record-widget-action .night-status { flex-basis: 100%; display: block; text-align: left; font-weight: 400; }
+.quick-record-widget-action .night-status-heading { display: block; color: var(--muted-foreground); font-size: 13px; }
+.quick-record-widget-action .night-status > span:not(.night-signal-label) { display: block; }
+.quick-record-widget-action .night-status > span { font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
+.quick-record-widget-action .night-status strong { margin: 4px 0 8px; font-size: 20px; }

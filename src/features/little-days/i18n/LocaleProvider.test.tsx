@@ -73,9 +73,7 @@ it("saves canonical choice values in Chinese and preserves records when switchin
   localStorage.setItem(LOCALE_KEY, "zh-CN");
   render(<App />);
   fireEvent.click(screen.getByRole("button", { name: "喂养", exact: true }));
-  fireEvent.change(screen.getByLabelText("喂养方式"), {
-    target: { value: "Bottle" },
-  });
+  fireEvent.click(screen.getByRole("radio", { name: "瓶喂", exact: true }));
   fireEvent.change(screen.getByLabelText("照护备注"), {
     target: { value: "Milk / 牛奶" },
   });
@@ -93,7 +91,7 @@ it("saves canonical choice values in Chinese and preserves records when switchin
   );
   expect(screen.getByText("Milk / 牛奶")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: /^Edit Feeding/ }));
-  expect(screen.getByLabelText("Method")).toHaveValue("Bottle");
+  expect(screen.getByRole("radio", { name: "Bottle", exact: true })).toBeChecked();
 });
 
 it("syncs another window and reports preference write failure without blocking the UI", () => {

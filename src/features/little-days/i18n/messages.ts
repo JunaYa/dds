@@ -16,6 +16,8 @@ export const messages: Record<string, string> = {
   "Widget size": "组件尺寸",
   "Release to place here": "松开放在这里",
   "Cannot place here": "此处无法放置",
+  "Release to swap positions": "松开交换位置",
+  "Remove": "移除",
   "Time": "时间",
   "Edit widgets": "编辑组件",
   "Done editing": "完成编辑",

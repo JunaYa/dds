@@ -7,7 +7,7 @@ import { Input } from "@vita/ui/input";
 import { fieldLabel, isBuiltinField } from "../../i18n/record-labels";
 import { useI18n } from "../../i18n/useI18n";
 import { type Field, type Values, type RecordType } from "../../domain/model";
-import { DiaperTypeField } from "./DiaperTypeField";
+import { RecordChoiceField } from "./RecordChoiceField";
 
 export function Fields({
   fields,
@@ -25,11 +25,17 @@ export function Fields({
   return (
     <div className="record-fields">
       {fields.map((f) => (
-        recordType?.id === "diaper" && f.id === "kind" && f.kind === "choice" ? (
-          <DiaperTypeField
+        f.kind === "choice" && recordType && (
+          (recordType.id === "diaper" && f.id === "kind") ||
+          (recordType.id === "feed" && f.id === "method" &&
+            new Set(f.options.split(",").map((option) => option.trim()).filter(Boolean)).size <= 3)
+        ) ? (
+          <RecordChoiceField
             key={f.id}
             field={f}
             recordType={recordType}
+            required={recordType.id === "diaper"}
+            columns={recordType.id === "feed" ? 3 : 2}
             value={values[f.id]}
             onChange={(value) => onChange(f.id, value)}
           />

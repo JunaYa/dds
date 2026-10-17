@@ -37,20 +37,19 @@ export function QuickRecordWidgets({ child, now, night, editing, highlighted, on
         <time dateTime={now.toISOString()}>{now.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false })}</time>
         <p>{now.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })}</p>
       </div> },
-    { id: 'sleep', title: tr('Sleep timer'), sizes: ['small', 'medium', 'large'], render: (size) =>
-      <NightStatusMetric metric={status.sleep} kind="sleep" detailed={size !== 'small'} /> },
-    { id: 'feeding', title: tr('Since last recorded feeding'), sizes: ['small', 'medium', 'large'], render: (size) =>
-      <NightStatusMetric metric={status.feed} kind="feed" detailed={size !== 'small'} /> },
     ...a.types.map((type, index): WidgetDefinition => ({
       id: `record:${type.id}`, title: typeName(type, tr), sizes: ['small', 'medium', 'large'], render: (size) =>
         <Button unstyled className="quick-record-widget-action" data-record-type={type.id}
+          aria-label={`${typeName(type, tr)}${index < 9 ? ` ${index + 1}` : ''}`}
           disabled={!child || editing}
           aria-current={highlighted === type.id ? 'true' : undefined}
           tabIndex={highlighted === type.id || !items.some((item) => item.id === `record:${highlighted}`) ? 0 : -1}
           onFocus={() => onHighlight(type.id)} onClick={() => onPick(type.id)}>
           <Icon name={type.icon} /><span>{typeName(type, tr)}</span>
           {index < 9 && <kbd>{index + 1}</kbd>}
-          {size !== 'small' && <small>{tr('Open the form to record details')}</small>}
+          {type.id === 'feed' && <NightStatusMetric metric={status.feed} kind="feed" detailed={size === 'large'} inline />}
+          {type.id === 'sleep' && <NightStatusMetric metric={status.sleep} kind="sleep" detailed={size === 'large'} inline />}
+          {type.id !== 'feed' && type.id !== 'sleep' && size !== 'small' && <small>{tr('Open the form to record details')}</small>}
         </Button>,
     })),
   ];
@@ -90,9 +89,9 @@ export function QuickRecordWidgets({ child, now, night, editing, highlighted, on
       }}>
         <WidgetBoard definitions={definitions} items={items} editing={editing} onChange={update} labels={{
           move: (name) => tr('Drag {name}', { name }),
-          remove: (name) => tr('Remove {name}', { name }),
+          remove: (name) => tr('Remove {name}', { name }), removeText: tr('Remove'),
           options: (name) => tr('Options for {name}', { name }), resize: tr('Widget size'),
-          canDrop: tr('Release to place here'), cannotDrop: tr('Cannot place here'),
+          canDrop: tr('Release to place here'), canSwap: tr('Release to swap positions'), cannotDrop: tr('Cannot place here'),
           sizes: { small: tr('Small'), medium: tr('Medium'), large: tr('Large') },
         }} />
       </div>

@@ -1,4 +1,4 @@
-.diaper-type-field {
+.record-choice-field {
   min-width: 0;
   margin: 18px 0 0;
   padding: 0;
@@ -6,18 +6,18 @@
   font-size: 13px;
 }
 
-.diaper-type-field legend {
+.record-choice-field legend {
   margin-bottom: 8px;
   padding: 0;
 }
 
-.diaper-type-options {
+.record-choice-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
-.diaper-type-option {
+.record-choice-option {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -33,11 +33,11 @@
   transition: background-color 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out;
 }
 
-.diaper-type-option span {
+.record-choice-option span {
   overflow-wrap: anywhere;
 }
 
-.diaper-type-option input {
+.record-choice-option input {
   width: 18px;
   height: 18px;
   margin: 0;
@@ -45,31 +45,31 @@
   accent-color: var(--foreground);
 }
 
-.diaper-type-option:has(input:checked) {
+.record-choice-option:has(input:checked) {
   border-color: var(--foreground);
   background: var(--care-soft);
 }
 
-.diaper-type-option:has(input:focus-visible) {
+.record-choice-option:has(input:focus-visible) {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
 }
 
 @media (hover: hover) {
-  .diaper-type-option:hover {
+  .record-choice-option:hover {
     background: var(--care-soft);
   }
 }
 
-.diaper-type-option:active {
+.record-choice-option:active {
   transform: scale(0.96);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .diaper-type-option {
+  .record-choice-option {
     transition: none;
   }
-  .diaper-type-option:active {
+  .record-choice-option:active {
     transform: none;
   }
 }

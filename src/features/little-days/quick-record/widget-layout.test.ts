@@ -12,6 +12,22 @@ it('preserves an intentionally empty layout and valid saved order', () => {
 });
 
 it('preserves empty rows and positions across storage normalization', () => {
-  const saved = [{ id: 'clock', size: 'medium', col: 1, row: 4 }, { id: 'sleep', size: 'small', col: 0, row: 0 }];
+  const saved = [{ id: 'clock', size: 'medium', col: 1, row: 4 }, { id: 'record:sleep', size: 'small', col: 0, row: 0 }];
   expect(normalizeWidgetLayout(saved, defaults)).toEqual(saved);
+});
+
+it('merges legacy feeding widgets while preserving the recording tile position', () => {
+  const feed = { id: 'record:feed', size: 'small', col: 1, row: 3 };
+  const legacy = { id: 'feeding', size: 'medium', col: 0, row: 0 };
+  expect(normalizeWidgetLayout([legacy, feed], defaults)).toEqual([feed]);
+  expect(normalizeWidgetLayout([legacy], defaults)).toEqual([{ ...legacy, id: 'record:feed' }]);
+  expect(defaults.some((item) => item.id === 'feeding')).toBe(false);
+});
+
+it('merges the sleep timer into the sleep record widget', () => {
+  const sleep = { id: 'record:sleep', size: 'large', col: 2, row: 4 };
+  const legacy = { id: 'sleep', size: 'small', col: 0, row: 1 };
+  expect(normalizeWidgetLayout([legacy, sleep], defaults)).toEqual([sleep]);
+  expect(normalizeWidgetLayout([legacy], defaults)).toEqual([{ ...legacy, id: 'record:sleep' }]);
+  expect(defaults.some((item) => item.id === 'sleep')).toBe(false);
 });

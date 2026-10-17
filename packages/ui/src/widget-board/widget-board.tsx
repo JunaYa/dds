@@ -14,7 +14,7 @@ import './widget-board.css';
 export type WidgetSize = 'small' | 'medium' | 'large';
 export type WidgetItem = { id: string; size: WidgetSize; col?: number; row?: number };
 export type WidgetDefinition = { id: string; title: string; sizes: WidgetSize[]; render: (size: WidgetSize) => ReactNode };
-export type WidgetBoardLabels = { move: (title: string) => string; remove: (title: string) => string; options: (title: string) => string; resize: string; canDrop: string; cannotDrop: string; sizes: Record<WidgetSize, string> };
+export type WidgetBoardLabels = { move: (title: string) => string; remove: (title: string) => string; removeText: string; options: (title: string) => string; resize: string; canDrop: string; canSwap: string; cannotDrop: string; sizes: Record<WidgetSize, string> };
 
 export function moveWidget(items: WidgetItem[], from: string, to: string) {
   const start = items.findIndex((item) => item.id === from), end = items.findIndex((item) => item.id === to);
@@ -56,13 +56,13 @@ function Tile({ item, definition, editing, labels, onRemove, onResize, canResize
             </DropdownMenuRadioGroup>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => {
+          <DropdownMenuItem aria-label={labels.remove(definition.title)} variant="destructive" onClick={() => {
             const sibling = container?.nextElementSibling ?? container?.previousElementSibling;
             const target = sibling?.querySelector<HTMLButtonElement>('.vita-widget-drag');
             removalFocus.current = target ?? container?.parentElement ?? null;
             requestAnimationFrame(() => removalFocus.current?.focus({ preventScroll: true }));
             onRemove(item.id);
-          }}><IconRenderer name="remove" aria-hidden="true" />{labels.remove(definition.title)}</DropdownMenuItem>
+          }}><IconRenderer name="remove" aria-hidden="true" />{labels.removeText}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>}
@@ -105,7 +105,8 @@ export function WidgetBoard({ items, definitions, editing, onChange, labels }: {
     row: activeItem.row + Math.round(delta.y / step),
   } : null;
   const canDrop = !!activeItem && !!destination && moveWidgetTo(positioned, activeItem.id, destination.col, destination.row, columns) !== positioned;
-  const dropMessage = canDrop ? labels.canDrop : labels.cannotDrop;
+  const swapTarget = canDrop && destination && positioned.find((item) => item.id !== activeItem?.id && item.col === destination.col && item.row === destination.row);
+  const dropMessage = canDrop ? swapTarget ? labels.canSwap : labels.canDrop : labels.cannotDrop;
   return <DndContext sensors={sensors} modifiers={[restrictToParentElement]}
     onDragStart={({ active }) => {
       setDelta({ x: 0, y: 0 });
@@ -136,7 +137,7 @@ export function WidgetBoard({ items, definitions, editing, onChange, labels }: {
     <DragOverlay dropAnimation={reducedMotion ? null : undefined}>
       {active && activeItem && activeDefinition && <div aria-hidden="true" inert className="vita-widget-card vita-widget-overlay" data-valid={canDrop} style={{ width: active.width, height: active.height } as CSSProperties}>
         <div className="vita-widget-surface"><div className="vita-widget-body">{activeDefinition.render(activeItem.size)}</div></div>
-        <span className="vita-widget-drop-label">{canDrop ? '✓' : '×'} {dropMessage}</span>
+        <span className="vita-widget-drop-label">{swapTarget ? '⇄' : canDrop ? '✓' : '×'} {dropMessage}</span>
       </div>}
     </DragOverlay>
   </DndContext>;
