@@ -19,6 +19,26 @@ struct SystemTabsUpdate: Decodable {
     let theme: String
 }
 
+// All tabs share one WebView. UIKit's default crossfade would fade out that same
+// view after it has moved to the destination, including the shared profile header.
+private final class SharedWebViewTransition: NSObject, UIViewControllerAnimatedTransitioning {
+    func transitionDuration(using context: UIViewControllerContextTransitioning?) -> TimeInterval { 0 }
+
+    func animateTransition(using context: UIViewControllerContextTransitioning) {
+        guard let destination = context.viewController(forKey: .to),
+              let destinationView = context.view(forKey: .to) else {
+            context.completeTransition(false)
+            return
+        }
+        UIView.performWithoutAnimation {
+            destinationView.frame = context.finalFrame(for: destination)
+            context.containerView.addSubview(destinationView)
+            destinationView.layoutIfNeeded()
+            context.completeTransition(!context.transitionWasCancelled)
+        }
+    }
+}
+
 @available(iOS 26.0, *)
 private final class WebTabPage: UIViewController {
     weak var webview: WKWebView?
@@ -57,6 +77,7 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
     private var originalConstraints: [NSLayoutConstraint] = []
     private var requestedVisible = true
     private var keyboardVisible = false
+    private let contentTransition = SharedWebViewTransition()
     var onSelect: ((String) -> Void)?
 
     init(webview: WKWebView, options: SystemTabsOptions) {
@@ -141,6 +162,12 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         (viewController as? WebTabPage)?.installWebView()
         onSelect?(Self.pages[selectedIndex])
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController,
+                          animationControllerForTransitionFrom fromVC: UIViewController,
+                          to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        contentTransition
     }
 
     @objc private func keyboardChanged(_ notification: Notification) {

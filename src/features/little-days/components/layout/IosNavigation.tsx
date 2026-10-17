@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { ThemeContext } from "../../state/ThemeContext";
 import { Button } from "@vita/ui/button";
 import { Icons } from "@vita/ui/icons";
@@ -19,16 +19,16 @@ export function IosNavigation() {
   const { page, setPage, modal, nursingOpen } = useApp();
   const selected = page === "Today" || page === "Analysis" ? page : "My";
   const blocked = modal !== null || nursingOpen;
-  const native = useSystemTabs(selected, tabs.map(tab => tr(tab.label)), blocked, target => {
-    setPage(target);
+  useLayoutEffect(() => {
     window.scrollTo(0, 0);
-  }, theme);
+  }, [page]);
+  const native = useSystemTabs(selected, tabs.map(tab => tr(tab.label)), blocked, setPage, theme);
   return (
     <nav className="ios-bottom-navigation" aria-label={tr("Main navigation")}
       hidden={blocked || native}>
       {tabs.map(({ page: target, label, icon: TabIcon }) => (
         <Button unstyled key={target} aria-current={selected === target ? "page" : undefined}
-          onClick={() => { setPage(target); window.scrollTo(0, 0); }}>
+          onClick={() => setPage(target)}>
           <TabIcon aria-hidden="true" />
           <span>{tr(label)}</span>
         </Button>

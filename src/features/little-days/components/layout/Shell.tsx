@@ -41,8 +41,13 @@ export function Shell({ children }: { children: ReactNode }) {
             <span>{tr("Stored on this device")}</span>
           </div>
         </aside>}
+        {ios && (
+          <div className="ios-profile">
+            <div className="ios-profile-content"><ChildPicker /></div>
+          </div>
+        )}
         <main>
-          {ios ? <div className="ios-profile"><ChildPicker /></div> : <MobileNavigation />}
+          {!ios && <MobileNavigation />}
           {ios && (a.page === "Supplies" || a.page === "Record types" || a.page === "Settings") && (
             <Button variant="ghost" onClick={() => a.setPage("My")}>{tr("← My")}</Button>
           )}

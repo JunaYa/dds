@@ -75,3 +75,20 @@ it("keeps the existing navigation outside the native iOS app", () => {
   expect(screen.queryByRole("button", { name: "Home records" })).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Open navigation" })).toBeInTheDocument();
 });
+
+it("preserves the shared profile and scrolls after the destination has rendered", () => {
+  const { container } = render(<App />);
+  const profile = container.querySelector(".ios-profile");
+  const picker = screen.getByLabelText("Child", { exact: true });
+  const titlesAtScroll: string[] = [];
+  vi.mocked(window.scrollTo).mockImplementation(() => {
+    titlesAtScroll.push(screen.getByRole("heading", { level: 1 }).textContent ?? "");
+  });
+  const nav = within(screen.getByRole("navigation", { name: "Main navigation" }));
+  for (const destination of ["Analysis", "My", "Home records"]) {
+    fireEvent.click(nav.getByRole("button", { name: destination, exact: true }));
+    expect(container.querySelector(".ios-profile")).toBe(profile);
+    expect(screen.getByLabelText("Child", { exact: true })).toBe(picker);
+  }
+  expect(titlesAtScroll).toEqual(["Analysis", "My", "Baby’s little day"]);
+});

@@ -11,6 +11,7 @@
 .ios-workspace { --ios-tab-height: calc(64px + env(safe-area-inset-bottom)); }
 .ios-workspace .app-frame { display: block; }
 .ios-workspace .app-frame > main {
+  padding-top: 12px;
   padding-bottom: calc(var(--ios-tab-height) + 32px);
   max-width: 960px;
   margin-inline: auto;
@@ -18,7 +19,19 @@
 .ios-workspace:has(.nursing-minibar) .app-frame > main {
   padding-bottom: calc(var(--ios-tab-height) + 112px);
 }
-.ios-profile { margin-bottom: 24px; }
+.ios-profile {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-bottom: 12px;
+  background: var(--card);
+}
+.ios-profile-content {
+  max-width: 960px;
+  margin-inline: auto;
+  padding-inline: max(44px, env(safe-area-inset-left)) max(44px, env(safe-area-inset-right));
+}
 .ios-profile .child-picker { margin: 0; }
 .ios-bottom-navigation {
   position: fixed;
@@ -106,6 +119,9 @@
   .page-navigation button:hover { background: var(--sidebar-accent); }
 }
 @media (max-width: 760px) {
+  .ios-profile-content {
+    padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+  }
   .mobile-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
   .mobile-profile { flex: 1; min-width: 0; }
   .mobile-profile .child-picker { margin: 0; padding: 8px; }

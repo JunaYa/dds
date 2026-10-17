@@ -12,6 +12,11 @@ final class TabChecks: XCTestCase {
         let mine = app.buttons["little-days.tab.My"]
         mine.tap()
         XCTAssertTrue(mine.isSelected)
+        let addChild = app.webViews.buttons.matching(
+            NSPredicate(format: "label IN %@", ["Add child", "添加宝宝"])
+        ).firstMatch
+        XCTAssertTrue(addChild.exists)
+        let profileY = addChild.frame.minY
         let before = XCTAttachment(screenshot: app.screenshot())
         before.name = "Expanded"
         before.lifetime = .keepAlways
@@ -20,6 +25,8 @@ final class TabChecks: XCTestCase {
         scroll.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.65))
             .press(forDuration: 0.05, thenDragTo: scroll.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)), withVelocity: .slow, thenHoldForDuration: 1)
         sleep(2)
+        XCTAssertTrue(addChild.isHittable)
+        XCTAssertEqual(addChild.frame.minY, profileY, accuracy: 1)
         let after = XCTAttachment(screenshot: app.screenshot())
         after.name = "After scrolling down"
         after.lifetime = .keepAlways
