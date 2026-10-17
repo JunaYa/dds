@@ -45,6 +45,22 @@ Some manufacturers also ask for confirmation on the phone for USB installation. 
 
 For live development instead of a standalone APK, use `pnpm dev:android` with the same environment.
 
+## Android and iOS together (macOS)
+
+Boot the desired iOS simulator, connect an Android phone by USB, and allow USB debugging on the phone. Run:
+
+```sh
+pnpm dev:mobile
+```
+
+This starts one shared Vite server on `127.0.0.1:1424`, with hot reload on port `1425`, and both native development processes. Android uses ADB reverse forwarding for both ports, so Wi-Fi is unnecessary. If the phone is not connected or authorized yet, iOS starts while Android waits. With multiple USB phones, set `ANDROID_SERIAL` to the desired serial before running the command.
+
+Stop other development servers using ports 1424/1425 first. The command fails on a port conflict rather than stopping an existing server. Press Ctrl+C to stop the shared server and both native development processes. After unplugging/reconnecting the phone, restart the command to restore USB forwarding. The existing standalone `dev:ios` and `dev:android` commands remain available; do not run them alongside `dev:mobile`.
+
+To also connect an installed physical-iPhone development build, start the shared server with `MOBILE_DEV_HOST=0.0.0.0 pnpm dev:mobile`. Keep the iPhone and Mac on the same network. The iPhone build must use the Mac's LAN address as its development URL and requires Developer Mode and a valid development signing team. Hot reload uses each device's page hostname, so the iPhone's LAN connection and Android's USB forwarding can coexist.
+
+The shared command disables native file watching to avoid generated native files triggering competing builds. Frontend hot reload remains enabled; restart after Rust/native changes. Build and install the physical iPhone separately, without a concurrent Xcode build in the same project. If the default bundle identifier cannot be registered to your signing team, use a separate development identifier in both Tauri's configuration override and the Xcode build settings.
+
 ## Verified device run
 
 On September 19, 2026, the ARM64 debug APK was installed on a vivo Y78t (V2312BA, Android 13). `am start -W` returned `Status: ok`, and `dumpsys activity` confirmed `com.dds.app/.MainActivity` as the visible, resumed activity. Startup logs showed no application crash. This verifies installation and native startup, not every recording flow.

@@ -40,6 +40,9 @@ targets:
       path: dds_iOS/Info.plist
       properties:
         LSRequiresIPhoneOS: true
+        NSLocalNetworkUsageDescription: 连接同一网络中的开发电脑，加载应用调试页面并实时更新。
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
         UILaunchStoryboardName: LaunchScreen
         UIRequiredDeviceCapabilities: [arm64, metal]
         UISupportedInterfaceOrientations:

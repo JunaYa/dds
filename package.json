@@ -14,6 +14,7 @@
     "typecheck": "node scripts/check-ui-boundaries.mjs && tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
     "test": "node --test scripts/android-env.test.mjs && vitest run",
     "dev:desktop": "tauri dev",
+    "dev:mobile": "node scripts/dev-mobile.mjs",
     "build:desktop": "tauri build",
     "init:ios": "tauri ios init --ci",
     "dev:ios": "tauri ios dev",

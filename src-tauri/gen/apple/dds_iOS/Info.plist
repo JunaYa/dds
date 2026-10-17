@@ -20,6 +20,13 @@
 	<string>0.1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>连接同一网络中的开发电脑，加载应用调试页面并实时更新。</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>拍摄票据或照片，快速创建事件与生活记录。</string>
 	<key>NSMicrophoneUsageDescription</key>
