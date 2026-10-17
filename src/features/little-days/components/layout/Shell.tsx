@@ -11,15 +11,18 @@ import { ChildPicker } from "../children/ChildPicker";
 import { SaveError } from "../common/SaveError";
 import { SessionBanner } from "../timers/SessionBanner";
 import { WorkspaceModal } from "../dialogs/WorkspaceModal";
+import { IosNavigation } from "./IosNavigation";
+import { isIosApp } from "./ios-platform";
 
 export function Shell({ children }: { children: ReactNode }) {
   const { tr, locale } = useI18n();
   const a = useApp();
+  const ios = isIosApp();
   if (!a.activeChild) return null;
   return (
-    <>
+    <div className={ios ? "ios-workspace" : undefined}>
       <div className="app-frame">
-        <aside className="sidebar">
+        {!ios && <aside className="sidebar">
           <div className="brand">
             <Icon name="leaf" size={27} />
             <strong>
@@ -37,9 +40,12 @@ export function Shell({ children }: { children: ReactNode }) {
             </p>
             <span>{tr("Stored on this device")}</span>
           </div>
-        </aside>
+        </aside>}
         <main>
-          <MobileNavigation />
+          {ios ? <div className="ios-profile"><ChildPicker /></div> : <MobileNavigation />}
+          {ios && (a.page === "Supplies" || a.page === "Record types" || a.page === "Settings") && (
+            <Button variant="ghost" onClick={() => a.setPage("My")}>{tr("← My")}</Button>
+          )}
           <header className="page-heading">
             <div>
               <div className="eyebrow">
@@ -53,6 +59,10 @@ export function Shell({ children }: { children: ReactNode }) {
               <h1>
                 {a.page === "Today"
                   ? tr("{name}’s little day", { name: a.activeChild.name })
+                  : a.page === "Analysis"
+                    ? tr("Analysis")
+                    : a.page === "My"
+                      ? tr("My")
                   : a.page === "Supplies"
                     ? tr("Ready for the everyday.")
                     : a.page === "Settings"
@@ -62,6 +72,10 @@ export function Shell({ children }: { children: ReactNode }) {
               <p>
                 {a.page === "Today"
                   ? tr(a.activeChild.caption)
+                  : a.page === "Analysis"
+                    ? tr("A look at your baby's recent days.")
+                    : a.page === "My"
+                      ? tr("Your family, records, and preferences.")
                   : a.page === "Supplies"
                     ? tr(
                         "Family supplies, with one less thing to keep in your head.",
@@ -78,7 +92,7 @@ export function Shell({ children }: { children: ReactNode }) {
               >
                 {tr("＋ Add a record")}
               </Button>
-            ) : a.page !== "Settings" ? (
+            ) : a.page === "Supplies" || a.page === "Record types" ? (
               <Button
                 className="primary"
                 onClick={() =>
@@ -113,6 +127,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <WorkspaceModal />
       <NursingMiniBar />
       <NursingTimer />
-    </>
+      {ios && <IosNavigation />}
+    </div>
   );
 }

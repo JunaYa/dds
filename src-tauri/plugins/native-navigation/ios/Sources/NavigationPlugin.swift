@@ -247,9 +247,50 @@ class NavigationPlugin: Plugin {
     private var navigation: UIView?
     private var header: UIView?
     private var session: String?
+    private var systemTabs: UIViewController?
 
     @objc override func load(webview: WKWebView) {
         self.webview = webview
+    }
+
+    @objc func attachTabs(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(SystemTabsOptions.self)
+        DispatchQueue.main.async {
+            guard #available(iOS 26.0, *) else {
+                invoke.resolve(["supported": false])
+                return
+            }
+            guard args.titles.count == 3, SystemTabs.pages.contains(args.page),
+                  let webview = self.webview, let host = webview.superview else {
+                invoke.reject("Invalid tabs or unavailable WebView")
+                return
+            }
+            (self.systemTabs as? SystemTabs)?.uninstall()
+            var responder: UIResponder? = webview.superview
+            while responder != nil && !(responder is UIViewController) { responder = responder?.next }
+            guard let parent = responder as? UIViewController else {
+                invoke.reject("WebView has no parent view controller")
+                return
+            }
+            let tabs = SystemTabs(webview: webview, options: args)
+            tabs.onSelect = { page in args.onSelect.send(["page": page] as JsonObject) }
+            tabs.install(in: parent, host: self.webview?.superview ?? host)
+            tabs.update(page: args.page, titles: args.titles, visible: args.visible, theme: args.theme)
+            self.systemTabs = tabs
+            self.session = args.session
+            invoke.resolve(["supported": true])
+        }
+    }
+
+    @objc func updateTabs(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(SystemTabsUpdate.self)
+        DispatchQueue.main.async {
+            if #available(iOS 26.0, *), self.session == args.session,
+               args.titles.count == 3, let tabs = self.systemTabs as? SystemTabs {
+                tabs.update(page: args.page, titles: args.titles, visible: args.visible, theme: args.theme)
+            }
+            invoke.resolve()
+        }
     }
 
     @objc func attach(_ invoke: Invoke) throws {
@@ -318,6 +359,8 @@ class NavigationPlugin: Plugin {
         let args = try invoke.parseArgs(DetachOptions.self)
         DispatchQueue.main.async {
             if self.session == args.session {
+                if #available(iOS 26.0, *) { (self.systemTabs as? SystemTabs)?.uninstall() }
+                self.systemTabs = nil
                 self.navigation?.removeFromSuperview()
                 self.navigation = nil
                 self.header?.removeFromSuperview()

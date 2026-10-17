@@ -1,0 +1,21 @@
+name: TabChecks
+options:
+  bundleIdPrefix: com.dds.checks
+  deploymentTarget:
+    iOS: '26.0'
+settings:
+  CODE_SIGNING_ALLOWED: NO
+targets:
+  TabChecks:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [Tests]
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+schemes:
+  TabChecks:
+    build:
+      targets:
+        TabChecks: all
+    test:
+      targets: [TabChecks]

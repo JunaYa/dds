@@ -2,6 +2,8 @@ import { Button } from "@vita/ui/button";
 import { typeName } from "../i18n/record-labels";
 import { useI18n } from "../i18n/useI18n";
 import { Settings } from "./Settings";
+import { Analysis } from "./Analysis";
+import { My } from "./My";
 import { Supplies } from "./Supplies";
 import { Types } from "./Types";
 import { Shell } from "../components/layout/Shell";
@@ -41,6 +43,10 @@ export default function Focus() {
           <LogTools />
           <Log title="Records" />
         </div>
+      ) : a.page === "Analysis" ? (
+        <Analysis />
+      ) : a.page === "My" ? (
+        <My />
       ) : a.page === "Supplies" ? (
         <Supplies />
       ) : a.page === "Settings" ? (

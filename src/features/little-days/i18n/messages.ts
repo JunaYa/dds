@@ -1,5 +1,17 @@
 // English phrases are stable message keys. Values are Simplified Chinese.
 export const messages: Record<string, string> = {
+  "Home records": "首页记录",
+  "Analysis": "分析",
+  "My": "我的",
+  "← My": "← 我的",
+  "Manage your records": "管理记录",
+  "A look at your baby's recent days.": "回顾宝宝最近的日常记录。",
+  "Your family, records, and preferences.": "管理宝宝、记录与个人偏好。",
+  "Last 7 days": "近 7 天",
+  "Days recorded": "已记录天数",
+  "Records by type": "按类型统计",
+  "Add care records on Home to see your baby's daily patterns here.": "在首页添加照护记录，即可在这里查看宝宝的日常概览。",
+  "Counts reflect saved entries for the selected child, not care recommendations.": "统计当前宝宝已保存的记录条目，仅供回顾，不作为照护建议。",
   "Options for {name}": "{name}选项",
   "Widget size": "组件尺寸",
   "Release to place here": "松开放在这里",
