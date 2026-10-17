@@ -13,7 +13,7 @@ import { useSystemTabs } from "./use-system-tabs";
 const tabs = [
   { page: "Today", label: "Journal", icon: Icons.bookOpen },
   { page: "Analysis", label: "Analysis", icon: Icons.barChart3 },
-  { page: "My", label: "My", icon: Icons.user },
+  { page: "My", label: "Profile", icon: Icons.user },
 ] as const;
 
 export function IosNavigation() {

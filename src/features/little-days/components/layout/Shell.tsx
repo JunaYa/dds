@@ -49,7 +49,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <main>
           {!ios && <MobileNavigation />}
           {ios && (a.page === "Supplies" || a.page === "Record types" || a.page === "Settings") && (
-            <Button variant="ghost" onClick={() => a.setPage("My")}>{tr("← My")}</Button>
+            <Button variant="ghost" onClick={() => a.setPage("My")}>{tr("← Profile")}</Button>
           )}
           <header className="page-heading">
             <div>
@@ -67,7 +67,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   : a.page === "Analysis"
                     ? tr("Analysis")
                     : a.page === "My"
-                      ? tr("My")
+                      ? tr("Profile")
                   : a.page === "Supplies"
                     ? tr("Ready for the everyday.")
                     : a.page === "Settings"

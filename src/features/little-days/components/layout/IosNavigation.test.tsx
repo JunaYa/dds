@@ -93,12 +93,12 @@ it("preserves the shared profile and scrolls after the destination has rendered"
     titlesAtScroll.push(screen.getByRole("heading", { level: 1 }).textContent ?? "");
   });
   const nav = within(screen.getByRole("navigation", { name: "Main navigation" }));
-  for (const destination of ["Analysis", "My", "Journal"]) {
+  for (const destination of ["Analysis", "Profile", "Journal"]) {
     fireEvent.click(nav.getByRole("button", { name: destination, exact: true }));
     expect(container.querySelector(".ios-profile")).toBe(profile);
     expect(screen.getByLabelText("Child", { exact: true })).toBe(picker);
   }
-  expect(titlesAtScroll).toEqual(["Analysis", "My", "Baby’s little day"]);
+  expect(titlesAtScroll).toEqual(["Analysis", "Profile", "Baby’s little day"]);
 });
 
 

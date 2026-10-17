@@ -2,8 +2,8 @@
 export const messages: Record<string, string> = {
   "Journal": "随记",
   "Analysis": "分析",
-  "My": "我的",
-  "← My": "← 我的",
+  "Profile": "我的",
+  "← Profile": "← 我的",
   "Manage your records": "管理记录",
   "A look at your baby's recent days.": "回顾宝宝最近的日常记录。",
   "Your family, records, and preferences.": "管理宝宝、记录与个人偏好。",
