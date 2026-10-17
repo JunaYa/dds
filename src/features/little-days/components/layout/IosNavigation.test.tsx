@@ -46,7 +46,7 @@ it("provides three iOS destinations and preserves access to management pages", (
   localStorage.setItem(LOCALE_KEY, "zh-CN");
   render(<App />);
   const nav = within(screen.getByRole("navigation", { name: "主导航" }));
-  expect(nav.getAllByRole("button").map(button => button.textContent)).toEqual(["首页记录", "分析", "我的"]);
+  expect(nav.getAllByRole("button").map(button => button.textContent)).toEqual(["随记", "分析", "我的"]);
   expect(screen.queryByRole("button", { name: "打开导航" })).not.toBeInTheDocument();
   fireEvent.click(nav.getByRole("button", { name: "分析", exact: true }));
   expect(screen.getByRole("heading", { name: "分析", level: 1 })).toBeInTheDocument();
@@ -56,7 +56,7 @@ it("provides three iOS destinations and preserves access to management pages", (
   expect(nav.getByRole("button", { name: "我的", exact: true })).toHaveAttribute("aria-current", "page");
   fireEvent.click(screen.getByRole("button", { name: "← 我的" }));
   expect(screen.getByRole("heading", { name: "我的", level: 1 })).toBeInTheDocument();
-  fireEvent.click(nav.getByRole("button", { name: "首页记录" }));
+  fireEvent.click(nav.getByRole("button", { name: "随记" }));
   expect(screen.getByText("120 mL")).toBeInTheDocument();
 });
 

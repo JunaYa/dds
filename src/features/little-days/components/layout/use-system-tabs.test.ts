@@ -27,9 +27,9 @@ it("synchronizes native selection, labels, modal visibility and cleanup", async 
   expect(navigate).toHaveBeenCalledWith("Analysis");
   act(() => native.channel!.onmessage({ page: "invalid" }));
   expect(navigate).toHaveBeenCalledTimes(1);
-  rerender({ blocked: true, titles: ["首页记录", "分析", "我的"], theme: "dark" });
+  rerender({ blocked: true, titles: ["随记", "分析", "我的"], theme: "dark" });
   await waitFor(() => expect(native.invoke).toHaveBeenCalledWith(
-    "plugin:native-navigation|updateTabs", expect.objectContaining({ visible: false, titles: ["首页记录", "分析", "我的"], theme: "dark" })));
+    "plugin:native-navigation|updateTabs", expect.objectContaining({ visible: false, titles: ["随记", "分析", "我的"], theme: "dark" })));
   act(() => native.channel!.onmessage({ page: "My" }));
   expect(navigate).toHaveBeenCalledTimes(1);
   unmount();
