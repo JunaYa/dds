@@ -92,7 +92,7 @@ export function Shell({ children }: { children: ReactNode }) {
             </div>
             {a.page === "Today" ? (
               <Button
-                className="primary"
+                className="primary home-add-record"
                 onClick={() => a.openRecord(a.types[0])}
               >
                 {tr("＋ Add a record")}

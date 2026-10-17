@@ -1,15 +1,23 @@
 import { beforeEach, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import App from "../../App";
 import { emptyWorkspace, today } from "../../domain/model";
 import { saveWorkspace } from "../../storage/workspace";
 import { LOCALE_KEY } from "../../storage/locale";
 
-const platform = vi.hoisted(() => ({ ios: true }));
+const platform = vi.hoisted(() => ({ ios: true, native: false, add: () => {} }));
+vi.mock("./use-system-tabs", () => ({
+  useSystemTabs: (_page: unknown, _titles: unknown, _blocked: unknown, _navigate: unknown,
+    _theme: unknown, action: { onAdd: () => void }) => {
+    platform.add = action.onAdd;
+    return platform.native;
+  },
+}));
 vi.mock("./ios-platform", () => ({ isIosApp: () => platform.ios }));
 
 beforeEach(() => {
   platform.ios = true;
+  platform.native = false;
   localStorage.clear();
   Object.defineProperty(window, "matchMedia", {
     writable: true,
@@ -91,4 +99,27 @@ it("preserves the shared profile and scrolls after the destination has rendered"
     expect(screen.getByLabelText("Child", { exact: true })).toBe(picker);
   }
   expect(titlesAtScroll).toEqual(["Analysis", "My", "Baby’s little day"]);
+});
+
+
+it("opens the native record chooser and hands the selected type to the record form", async () => {
+  platform.native = true;
+  render(<App />);
+  act(() => platform.add());
+  const chooser = await screen.findByRole("dialog", { name: "Capture a little moment" });
+  expect(within(chooser).getByRole("button", { name: "Feeding", exact: true })).toBeInTheDocument();
+  fireEvent.click(within(chooser).getByRole("button", { name: "Diaper", exact: true }));
+  const form = await screen.findByRole("dialog", { name: "A little moment to remember" });
+  expect(within(form).getByRole("combobox", { name: "Record type" })).toHaveValue("diaper");
+  fireEvent.click(within(form).getByRole("button", { name: "Cancel", exact: true }));
+  expect(screen.queryByRole("dialog", { name: "Capture a little moment" })).not.toBeInTheDocument();
+});
+
+it("dismisses the record chooser without opening a record", async () => {
+  platform.native = true;
+  render(<App />);
+  act(() => platform.add());
+  const chooser = await screen.findByRole("dialog", { name: "Capture a little moment" });
+  fireEvent.click(within(chooser).getByRole("button", { name: "Cancel", exact: true }));
+  expect(screen.queryByRole("dialog", { name: "A little moment to remember" })).not.toBeInTheDocument();
 });

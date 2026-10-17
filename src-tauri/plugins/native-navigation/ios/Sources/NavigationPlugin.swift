@@ -274,8 +274,9 @@ class NavigationPlugin: Plugin {
             }
             let tabs = SystemTabs(webview: webview, options: args)
             tabs.onSelect = { page in args.onSelect.send(["page": page] as JsonObject) }
+            tabs.onAdd = { args.onSelect.send(["action": "add-record"] as JsonObject) }
             tabs.install(in: parent, host: self.webview?.superview ?? host)
-            tabs.update(page: args.page, titles: args.titles, visible: args.visible, theme: args.theme)
+            tabs.update(page: args.page, titles: args.titles, visible: args.visible, theme: args.theme, addTitle: args.addTitle)
             self.systemTabs = tabs
             self.session = args.session
             invoke.resolve(["supported": true])
@@ -287,7 +288,7 @@ class NavigationPlugin: Plugin {
         DispatchQueue.main.async {
             if #available(iOS 26.0, *), self.session == args.session,
                args.titles.count == 3, let tabs = self.systemTabs as? SystemTabs {
-                tabs.update(page: args.page, titles: args.titles, visible: args.visible, theme: args.theme)
+                tabs.update(page: args.page, titles: args.titles, visible: args.visible, theme: args.theme, addTitle: args.addTitle)
             }
             invoke.resolve()
         }

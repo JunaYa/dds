@@ -3,12 +3,13 @@ import { Channel, invoke } from "@tauri-apps/api/core";
 
 export type SystemTab = "Today" | "Analysis" | "My";
 const command = "plugin:native-navigation|";
+type RecordAction = { title: string; onAdd: () => void };
 
 export function useSystemTabs(page: SystemTab, titles: string[], blocked: boolean,
-  onNavigate: (page: SystemTab) => void, theme: "light" | "dark" = "light") {
+  onNavigate: (page: SystemTab) => void, theme: "light" | "dark" = "light", recordAction?: RecordAction) {
   const [active, setActive] = useState(false);
-  const latest = useRef({ page, titles, blocked, onNavigate, theme });
-  latest.current = { page, titles, blocked, onNavigate, theme };
+  const latest = useRef({ page, titles, blocked, onNavigate, theme, recordAction });
+  latest.current = { page, titles, blocked, onNavigate, theme, recordAction };
   const sync = useRef<(() => void) | null>(null);
   const titleKey = JSON.stringify(titles);
 
@@ -22,7 +23,8 @@ export function useSystemTabs(page: SystemTab, titles: string[], blocked: boolea
       console.warn("Unable to detach system tabs", error);
     });
     const options = () => ({ session, page: latest.current.page,
-      titles: latest.current.titles, theme: latest.current.theme, visible: !latest.current.blocked });
+      titles: latest.current.titles, theme: latest.current.theme, visible: !latest.current.blocked,
+      addTitle: latest.current.recordAction?.title });
     const update = () => {
       if (!attached || disposed) return;
       queue = queue.then(async () => {
@@ -35,8 +37,12 @@ export function useSystemTabs(page: SystemTab, titles: string[], blocked: boolea
       });
     };
     sync.current = update;
-    const onSelect = new Channel<{ page: string }>();
-    onSelect.onmessage = ({ page: target }) => {
+    const onSelect = new Channel<{ page?: string; action?: string }>();
+    onSelect.onmessage = ({ page: target, action }) => {
+      if (!disposed && !latest.current.blocked && action === "add-record") {
+        latest.current.recordAction?.onAdd();
+        return;
+      }
       if (!disposed && !latest.current.blocked &&
         (target === "Today" || target === "Analysis" || target === "My")) {
         latest.current.onNavigate(target);
@@ -61,6 +67,6 @@ export function useSystemTabs(page: SystemTab, titles: string[], blocked: boolea
       });
     };
   }, []);
-  useEffect(() => { sync.current?.(); }, [page, blocked, titleKey, theme]);
+  useEffect(() => { sync.current?.(); }, [page, blocked, titleKey, theme, recordAction?.title]);
   return active;
 }

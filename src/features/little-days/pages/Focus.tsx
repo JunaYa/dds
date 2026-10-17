@@ -1,5 +1,3 @@
-import { Button } from "@vita/ui/button";
-import { typeName } from "../i18n/record-labels";
 import { useI18n } from "../i18n/useI18n";
 import { Settings } from "./Settings";
 import { Analysis } from "./Analysis";
@@ -7,7 +5,7 @@ import { My } from "./My";
 import { Supplies } from "./Supplies";
 import { Types } from "./Types";
 import { Shell } from "../components/layout/Shell";
-import { Icon } from "../components/common/Icon";
+import { RecordTypeChoices } from "../components/records/RecordTypeChoices";
 import { Log } from "../components/records/Log";
 import { LogTools } from "../components/records/LogTools";
 import { useApp } from "../hooks/useApp";
@@ -27,18 +25,7 @@ export default function Focus() {
               <h2>{tr("Capture a little moment")}</h2>
               <span>{tr("Choose a record to get started")}</span>
             </div>
-            <div className="focus-types">
-              {a.types.map((type) => (
-                <Button
-                  unstyled
-                  key={type.id}
-                  onClick={() => a.openRecord(type)}
-                >
-                  <Icon name={type.icon} />
-                  <span>{typeName(type, tr)}</span>
-                </Button>
-              ))}
-            </div>
+            <RecordTypeChoices />
           </section>
           <LogTools />
           <Log title="Records" />

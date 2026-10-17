@@ -2,11 +2,11 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { useSystemTabs } from "./use-system-tabs";
 
-const native = vi.hoisted(() => ({ invoke: vi.fn(), channel: null as null | { onmessage: (message: { page: string }) => void } }));
+const native = vi.hoisted(() => ({ invoke: vi.fn(), channel: null as null | { onmessage: (message: { page?: string; action?: string }) => void } }));
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: native.invoke,
   Channel: class {
-    onmessage = (_message: { page: string }) => {};
+    onmessage = (_message: { page?: string; action?: string }) => {};
     constructor() { native.channel = this; }
   },
 }));
@@ -61,4 +61,25 @@ it("restores web navigation and detaches if native synchronization fails", async
   await waitFor(() => expect(native.invoke).toHaveBeenCalledWith("plugin:native-navigation|detach", expect.anything()));
   expect(result.current).toBe(false);
   warning.mockRestore();
+});
+
+
+it("routes the native add action without switching tabs and ignores it while blocked", async () => {
+  const navigate = vi.fn();
+  const add = vi.fn();
+  const { rerender, unmount } = renderHook(({ blocked }) =>
+    useSystemTabs("My", ["Home", "Analysis", "My"], blocked, navigate, "dark", {
+      title: "添加记录", onAdd: add,
+    }), { initialProps: { blocked: false } });
+  await waitFor(() => expect(native.invoke).toHaveBeenCalledWith(
+    "plugin:native-navigation|updateTabs", expect.objectContaining({ addTitle: "添加记录" })));
+  act(() => native.channel!.onmessage({ action: "add-record" }));
+  expect(add).toHaveBeenCalledTimes(1);
+  expect(navigate).not.toHaveBeenCalled();
+  rerender({ blocked: true });
+  act(() => native.channel!.onmessage({ action: "add-record" }));
+  expect(add).toHaveBeenCalledTimes(1);
+  unmount();
+  act(() => native.channel!.onmessage({ action: "add-record" }));
+  expect(add).toHaveBeenCalledTimes(1);
 });

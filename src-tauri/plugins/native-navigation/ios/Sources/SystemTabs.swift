@@ -8,6 +8,7 @@ struct SystemTabsOptions: Decodable {
     let titles: [String]
     let visible: Bool
     let theme: String
+    let addTitle: String?
     let onSelect: Channel
 }
 
@@ -17,6 +18,7 @@ struct SystemTabsUpdate: Decodable {
     let titles: [String]
     let visible: Bool
     let theme: String
+    let addTitle: String?
 }
 
 // All tabs share one WebView. UIKit's default crossfade would fade out that same
@@ -78,6 +80,8 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
     private var requestedVisible = true
     private var keyboardVisible = false
     private let contentTransition = SharedWebViewTransition()
+    private let addController = UIViewController()
+    var onAdd: (() -> Void)?
     var onSelect: ((String) -> Void)?
 
     init(webview: WKWebView, options: SystemTabsOptions) {
@@ -95,6 +99,15 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
             controller.tabBarItem.accessibilityIdentifier = "little-days.tab.\(page)"
             return controller
         }
+        // The system search item supplies the separate trailing glass slot.
+        // Intercept selection so this slot performs an action without changing pages.
+        let addItem = UITabBarItem(tabBarSystemItem: .search, tag: Self.pages.count)
+        addItem.image = UIImage(systemName: "plus")
+        addItem.selectedImage = UIImage(systemName: "plus")
+        addItem.title = options.addTitle
+        addItem.accessibilityIdentifier = "little-days.add-record"
+        addController.tabBarItem = addItem
+        viewControllers?.append(addController)
         selectedIndex = Self.pages.firstIndex(of: options.page) ?? 0
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)),
             name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -146,15 +159,18 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
         removeFromParent()
     }
 
-    func update(page: String, titles: [String], visible: Bool, theme: String) {
+    func update(page: String, titles: [String], visible: Bool, theme: String, addTitle: String?) {
         if let index = Self.pages.firstIndex(of: page), selectedIndex != index {
             selectedIndex = index
             (selectedViewController as? WebTabPage)?.installWebView()
         }
-        for (index, controller) in (viewControllers ?? []).enumerated() {
+        for (index, controller) in (viewControllers ?? []).prefix(Self.pages.count).enumerated() {
             controller.tabBarItem.title = titles[index]
         }
         overrideUserInterfaceStyle = theme == "dark" ? .dark : .light
+        addController.tabBarItem.title = addTitle
+        addController.tabBarItem.accessibilityLabel = addTitle
+        addController.tabBarItem.isEnabled = addTitle != nil
         requestedVisible = visible
         updateVisibility()
     }
@@ -168,6 +184,14 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
                           animationControllerForTransitionFrom fromVC: UIViewController,
                           to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         contentTransition
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        guard viewController === addController else { return true }
+        if requestedVisible && !keyboardVisible && addController.tabBarItem.isEnabled {
+            onAdd?()
+        }
+        return false
     }
 
     @objc private func keyboardChanged(_ notification: Notification) {
