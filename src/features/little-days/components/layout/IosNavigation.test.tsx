@@ -80,7 +80,7 @@ it("hides bottom navigation while a record dialog is open and restores it on can
 it("keeps the existing navigation outside the native iOS app", () => {
   platform.ios = false;
   render(<App />);
-  expect(screen.queryByRole("button", { name: "Home records" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Journal" })).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Open navigation" })).toBeInTheDocument();
 });
 
@@ -93,7 +93,7 @@ it("preserves the shared profile and scrolls after the destination has rendered"
     titlesAtScroll.push(screen.getByRole("heading", { level: 1 }).textContent ?? "");
   });
   const nav = within(screen.getByRole("navigation", { name: "Main navigation" }));
-  for (const destination of ["Analysis", "My", "Home records"]) {
+  for (const destination of ["Analysis", "My", "Journal"]) {
     fireEvent.click(nav.getByRole("button", { name: destination, exact: true }));
     expect(container.querySelector(".ios-profile")).toBe(profile);
     expect(screen.getByLabelText("Child", { exact: true })).toBe(picker);

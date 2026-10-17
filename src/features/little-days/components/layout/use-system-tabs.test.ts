@@ -20,7 +20,7 @@ it("synchronizes native selection, labels, modal visibility and cleanup", async 
   const navigate = vi.fn();
   const { result, rerender, unmount } = renderHook(({ blocked, titles, theme }) =>
     useSystemTabs("Today", titles, blocked, navigate, theme), {
-    initialProps: { blocked: false, titles: ["Home records", "Analysis", "My"], theme: "light" as "light" | "dark" },
+    initialProps: { blocked: false, titles: ["Journal", "Analysis", "My"], theme: "light" as "light" | "dark" },
   });
   await waitFor(() => expect(result.current).toBe(true));
   act(() => native.channel!.onmessage({ page: "Analysis" }));

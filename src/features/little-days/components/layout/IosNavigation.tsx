@@ -11,7 +11,7 @@ import { useI18n } from "../../i18n/useI18n";
 import { useSystemTabs } from "./use-system-tabs";
 
 const tabs = [
-  { page: "Today", label: "Home records", icon: Icons.bookOpen },
+  { page: "Today", label: "Journal", icon: Icons.bookOpen },
   { page: "Analysis", label: "Analysis", icon: Icons.barChart3 },
   { page: "My", label: "My", icon: Icons.user },
 ] as const;

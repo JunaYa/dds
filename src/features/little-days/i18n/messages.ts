@@ -1,6 +1,6 @@
 // English phrases are stable message keys. Values are Simplified Chinese.
 export const messages: Record<string, string> = {
-  "Home records": "随记",
+  "Journal": "随记",
   "Analysis": "分析",
   "My": "我的",
   "← My": "← 我的",
