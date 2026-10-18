@@ -8,7 +8,7 @@ const pages: { page: Page; icon: string }[] = [
   { page: "Today", icon: "book" },
   { page: "Supplies", icon: "box" },
   { page: "Record types", icon: "spark" },
-  { page: "Settings", icon: "settings" },
+  { page: "My", icon: "settings" },
 ];
 
 export function PageNavigation({ onNavigate }: { onNavigate?: () => void }) {
@@ -20,7 +20,7 @@ export function PageNavigation({ onNavigate }: { onNavigate?: () => void }) {
         <Button
           unstyled
           type="button"
-          key={tr(page)}
+          key={tr(page === "My" ? "Profile" : page)}
           className={current === page ? "active" : undefined}
           aria-current={current === page ? "page" : undefined}
           onClick={() => {
@@ -29,7 +29,7 @@ export function PageNavigation({ onNavigate }: { onNavigate?: () => void }) {
           }}
         >
           <Icon name={icon} />
-          {tr(page)}
+          {tr(page === "My" ? "Profile" : page)}
         </Button>
       ))}
     </nav>

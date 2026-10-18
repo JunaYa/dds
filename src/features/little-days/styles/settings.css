@@ -235,3 +235,14 @@
 .backup-preview { scroll-margin-top: 130px; }
 
 .haptics-setting { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+.profile-groups { max-width: 760px; display: grid; gap: 28px; }
+.profile-group h2 { font-size: 14px; color: var(--muted-foreground); margin-bottom: 12px; }
+.profile-links { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--card); }
+.profile-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 72px; padding: 16px 20px; text-align: left; }
+.profile-link + .profile-link { border-top: 1px solid var(--border); }
+.profile-link strong, .profile-link small { display: block; }
+.profile-link strong { font-size: 16px; font-weight: 500; }
+.profile-link small { margin-top: 4px; font-size: 13px; color: var(--muted-foreground); line-height: 1.5; }
+.profile-link:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
+@media (hover: hover) { .profile-link:hover { background: var(--care-soft); } }

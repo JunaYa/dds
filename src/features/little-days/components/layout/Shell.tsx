@@ -1,3 +1,4 @@
+import { isProfileDetail } from "../../state/page-routing";
 import { useI18n } from "../../i18n/useI18n";
 import { type ReactNode } from "react";
 import { Button } from "@vita/ui/button";
@@ -48,7 +49,7 @@ export function Shell({ children }: { children: ReactNode }) {
         )}
         <main>
           {!ios && <MobileNavigation />}
-          {ios && (a.page === "Supplies" || a.page === "Record types" || a.page === "Settings") && (
+          {(isProfileDetail(a.page) || a.page === "Settings") && (
             <Button variant="ghost" onClick={() => a.setPage("My")}>{tr("← Profile")}</Button>
           )}
           <header className="page-heading">
@@ -68,6 +69,8 @@ export function Shell({ children }: { children: ReactNode }) {
                     ? tr("Analysis")
                     : a.page === "My"
                       ? tr("Profile")
+                  : ["Appearance", "Interaction", "Backup", "Storage"].includes(a.page)
+                    ? tr(({ Appearance: "Language and appearance", Interaction: "Interaction", Backup: "Backup and restore", Storage: "On this device" } as Record<string, string>)[a.page])
                   : a.page === "Supplies"
                     ? tr("Ready for the everyday.")
                     : a.page === "Settings"
@@ -85,7 +88,7 @@ export function Shell({ children }: { children: ReactNode }) {
                     ? tr(
                         "Family supplies, with one less thing to keep in your head.",
                       )
-                    : a.page === "Settings"
+                    : ["Settings", "Appearance", "Interaction", "Backup", "Storage"].includes(a.page)
                       ? tr("Small preferences for your everyday.")
                       : tr("Choose what matters. Build a record that fits.")}
               </p>

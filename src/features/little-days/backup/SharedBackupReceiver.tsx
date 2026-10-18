@@ -9,7 +9,7 @@ export async function dismissSharedBackup(id: string) {
   await invoke("plugin:native-navigation|dismissSharedBackup", { id });
 }
 export function SharedBackupReceiver() {
-  const { sharedBackup, setSharedBackup, setPage, modal, nursingOpen, child } = useApp();
+  const { sharedBackup, setSharedBackup, setPage, modal, nursingOpen } = useApp();
   useEffect(() => {
     if (!isTauri() || !isIosApp() || sharedBackup || modal || nursingOpen) return;
     let disposed = false;
@@ -24,7 +24,7 @@ export function SharedBackupReceiver() {
         const item = await invoke<SharedBackup | null>("plugin:native-navigation|nextSharedBackup");
         if (item && !disposed) {
           delivered = true;
-          setSharedBackup(item); setPage(child ? "My" : "Settings");
+          setSharedBackup(item); setPage("Backup");
         }
       } catch (error) { console.error("Could not read shared backup inbox", error); }
       finally { fetching = false; if (refreshAgain) { refreshAgain = false; void refresh(); } }
@@ -40,6 +40,6 @@ export function SharedBackupReceiver() {
       window.removeEventListener("focus", refresh);
       document.removeEventListener("visibilitychange", visibility);
     };
-  }, [sharedBackup, modal, nursingOpen, child, setPage, setSharedBackup]);
+  }, [sharedBackup, modal, nursingOpen, setPage, setSharedBackup]);
   return null;
 }

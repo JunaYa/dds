@@ -1,5 +1,18 @@
 // English phrases are stable message keys. Values are Simplified Chinese.
 export const messages: Record<string, string> = {
+  "Record management": "记录管理",
+  "Choose and customize what you record.": "选择并自定义记录内容。",
+  "Manage supplies and restocking.": "管理日常用品与补货。",
+  "Preferences": "偏好设置",
+  "Language and appearance": "语言与外观",
+  "Language, light mode and dark mode.": "设置语言、浅色与深色模式。",
+  "Interaction": "交互设置",
+  "Feedback and shortcuts for this device.": "设置当前设备的触感反馈与快捷操作。",
+  "Data and privacy": "数据与隐私",
+  "Backup and restore": "备份与恢复",
+  "Import, export, merge and recover your records.": "导入、导出、合并与恢复记录。",
+  "Learn where your records are stored.": "了解记录在设备上的保存方式。",
+
   "Haptic feedback": "触感反馈",
   "Feel a gentle tap when using controls. Enabled by default; availability depends on your device and system settings.": "操作按钮和切换选项时提供轻微触感。默认开启，实际反馈取决于设备能力与系统设置。",
   "Applied for this session, but could not save this preference.": "本次使用已生效，但未能保存此偏好。",

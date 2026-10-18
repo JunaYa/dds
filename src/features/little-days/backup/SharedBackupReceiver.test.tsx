@@ -17,7 +17,7 @@ it("delivers a retained backup on startup and navigates to Profile", async () =>
   mock.invoke.mockResolvedValue(item);
   render(<SharedBackupReceiver />);
   await waitFor(() => expect(mock.setSharedBackup).toHaveBeenCalledWith(item));
-  expect(mock.setPage).toHaveBeenCalledWith("My");
+  expect(mock.setPage).toHaveBeenCalledWith("Backup");
 });
 it("defers receipt until a record dialog is closed", async () => {
   mock.modal = {};

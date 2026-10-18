@@ -47,8 +47,7 @@ it("switches language before onboarding and restores it after remount", () => {
   expect(localStorage.getItem(LOCALE_KEY)).toBe("zh-CN");
   app.unmount();
   render(<App />);
-  expect(screen.getByLabelText("宝宝姓名")).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "设置" }));
+  expect(screen.getByRole("group", { name: "外观" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("radio", { name: "English" }));
   expect(screen.getByRole("group", { name: "Appearance" })).toBeInTheDocument();
   expect(document.documentElement.lang).toBe("en");
@@ -82,8 +81,9 @@ it("saves canonical choice values in Chinese and preserves records when switchin
   expect(screen.getByText("瓶喂")).toBeInTheDocument();
   const saved = localStorage.getItem(STORAGE_KEY);
   fireEvent.click(
-    screen.getAllByRole("button", { name: "设置", exact: true })[0],
+    screen.getAllByRole("button", { name: "我的", exact: true })[0],
   );
+  fireEvent.click(screen.getByRole("button", { name: "语言与外观" }));
   fireEvent.click(screen.getByRole("radio", { name: "English" }));
   expect(localStorage.getItem(STORAGE_KEY)).toBe(saved);
   fireEvent.click(

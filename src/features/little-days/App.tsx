@@ -17,7 +17,7 @@ import { QuickRecordOverlay } from "./quick-record/QuickRecordOverlay";
 function Workspace() {
   const { tr } = useI18n();
   const { data, activeChild, page, setPage } = useApp();
-  if (!activeChild && page === "Settings")
+  if (!activeChild && ["Settings", "Appearance", "Interaction", "Backup", "Storage"].includes(page))
     return (
       <main className="onboarding onboarding-settings">
         <Button
@@ -28,7 +28,7 @@ function Workspace() {
           {tr("← Back")}
         </Button>
         <h1>{tr("Settings")}</h1>
-        <Settings />
+        <Settings section={page === "Settings" ? undefined : page as "Appearance" | "Interaction" | "Backup" | "Storage"} />
       </main>
     );
   if (!data)

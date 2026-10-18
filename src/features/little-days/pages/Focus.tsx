@@ -36,6 +36,8 @@ export default function Focus() {
         <My />
       ) : a.page === "Supplies" ? (
         <Supplies />
+      ) : ["Appearance", "Interaction", "Backup", "Storage"].includes(a.page) ? (
+        <Settings section={a.page as "Appearance" | "Interaction" | "Backup" | "Storage"} />
       ) : a.page === "Settings" ? (
         <Settings />
       ) : (

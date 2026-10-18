@@ -65,7 +65,8 @@ it("requires confirmation for replacement and can restore the pre-import snapsho
   const original = fixture(); original.records[0].id = "older"; original.records[0].values.amount = 90;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(original));
   render(<App />);
-  fireEvent.click(screen.getAllByRole("button", { name: "Settings" })[0]);
+  fireEvent.click(screen.getAllByRole("button", { name: "Profile" })[0]);
+  fireEvent.click(screen.getByRole("button", { name: "Backup and restore" }));
   await choose();
   fireEvent.click(screen.getByRole("radio", { name: "Replace selected children’s records" }));
   expect(screen.getByRole("button", { name: "Confirm import" })).toBeDisabled();

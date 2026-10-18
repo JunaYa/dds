@@ -5,20 +5,20 @@ import { useI18n } from "../i18n/useI18n";
 import { ThemePicker } from "../components/settings/ThemePicker";
 import { ShortcutSettings } from "../quick-record/ShortcutSettings";
 
-export function Settings() {
+export function Settings({ section }: { section?: "Appearance" | "Interaction" | "Backup" | "Storage" }) {
   const { tr } = useI18n();
   return (
     <div className="settings-page">
-      <ShortcutSettings />
-      <HapticSettings />
-      <BackupSettings />
-      <section className="settings-section">
+      {(!section || section === "Interaction") && <ShortcutSettings />}
+      {(!section || section === "Interaction") && <HapticSettings />}
+      {(!section || section === "Backup") && <BackupSettings />}
+      {(!section || section === "Appearance") && <section className="settings-section">
         <LanguagePicker />
-      </section>
-      <section className="settings-section">
+      </section>}
+      {(!section || section === "Appearance") && <section className="settings-section">
         <ThemePicker />
-      </section>
-      <section
+      </section>}
+      {(!section || section === "Storage") && <section
         className="settings-section settings-storage"
         aria-labelledby="settings-storage-heading"
       >
@@ -35,7 +35,7 @@ export function Settings() {
             "Care records stay here, too. There is no cloud sync yet. Clearing app data or uninstalling removes your records.",
           )}
         </p>
-      </section>
+      </section>}
     </div>
   );
 }

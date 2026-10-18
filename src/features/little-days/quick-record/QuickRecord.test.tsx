@@ -118,7 +118,8 @@ it("uses the current local time on every opening while preserving other draft fi
 
 it("captures a custom shortcut and leaves the active shortcut intact on conflict", async () => {
   render(<App />);
-  fireEvent.click(screen.getAllByRole("button", { name: "Settings", exact: true })[0]);
+  fireEvent.click(screen.getAllByRole("button", { name: "Profile", exact: true })[0]);
+  fireEvent.click(await screen.findByRole("button", { name: "Interaction", exact: true }));
   const field = await screen.findByLabelText("Global shortcut");
   fireEvent.keyDown(field, { key: "k", code: "KeyK", ctrlKey: true, shiftKey: true });
   expect(field).toHaveValue("Ctrl + Shift + K");

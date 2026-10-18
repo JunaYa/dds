@@ -123,3 +123,19 @@ it("dismisses the record chooser without opening a record", async () => {
   fireEvent.click(within(chooser).getByRole("button", { name: "Cancel", exact: true }));
   expect(screen.queryByRole("dialog", { name: "A little moment to remember" })).not.toBeInTheDocument();
 });
+
+it("groups profile settings and opens only the selected child page", () => {
+  render(<App />);
+  fireEvent.click(screen.getByRole("button", { name: "Profile", exact: true }));
+  expect(screen.getByRole("heading", { name: "Data and privacy" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Export backup" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Backup and restore" }));
+  expect(window.location.hash).toBe("#/profile/backup");
+  expect(screen.getByRole("button", { name: "Export backup" })).toBeInTheDocument();
+  expect(screen.queryByRole("group", { name: "Appearance" })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Profile", exact: true })).toHaveAttribute("aria-current", "page");
+  fireEvent.click(screen.getByRole("button", { name: "← Profile" }));
+  fireEvent.click(screen.getByRole("button", { name: "Language and appearance" }));
+  expect(screen.getByRole("group", { name: "Appearance" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Export backup" })).not.toBeInTheDocument();
+});

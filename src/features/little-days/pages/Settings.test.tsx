@@ -25,7 +25,8 @@ afterEach(() => {
 });
 function openSettings() {
   render(<App />);
-  fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+  const entry = screen.queryByRole("button", { name: "Settings" });
+  if (entry) fireEvent.click(entry);
 }
 function choose(name: string) {
   fireEvent.click(screen.getByRole("radio", { name: new RegExp(`^${name}`) }));
@@ -76,7 +77,8 @@ it("exposes settings from the workspace without a record-creation action", () =>
   fireEvent.change(screen.getByLabelText("Child’s name"), { target: { value: "Test child" } });
   fireEvent.change(screen.getByLabelText("Birthday"), { target: { value: "2026-01-01" } });
   fireEvent.click(screen.getByRole("button", { name: "Add child" }));
-  fireEvent.click(screen.getAllByRole("button", { name: "Settings" })[0]);
+  fireEvent.click(screen.getAllByRole("button", { name: "Profile" })[0]);
+  fireEvent.click(screen.getByRole("button", { name: "Language and appearance" }));
   expect(screen.getByRole("group", { name: "Appearance" })).toBeInTheDocument();
   expect(screen.queryByRole("button", { name: /Create record type/ })).not.toBeInTheDocument();
 });

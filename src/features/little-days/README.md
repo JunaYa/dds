@@ -64,3 +64,7 @@ The synthetic cross-app iOS test is in `src-tauri/plugins/native-navigation/ios/
 ### Haptic feedback
 
 Profile settings offer a device-local haptic preference, enabled by default (`little-days.haptics`). Supported mobile environments use lightweight feedback on trusted control clicks and native tab/add actions. iOS uses UIImpactFeedbackGenerator; Android uses the WebView Vibration API with VIBRATE permission. Unsupported environments are silent and hide the setting. The toggle takes effect immediately even if preference storage fails, with a visible save error. System settings and hardware can suppress feedback. Scrolling, text entry, synthetic clicks and disabled controls do not trigger feedback; closely spaced events are throttled. This preference is not part of record backups.
+
+### Profile routes
+
+Profile groups record management, preferences, and data/privacy into child pages. Routes use hash URLs so native bundled assets support refresh and direct entry: `/profile/record-types`, `/profile/supplies`, `/profile/appearance`, `/profile/interaction`, `/profile/backup`, and `/profile/storage`. `state/page-routing.ts` synchronizes page state with browser history. iOS keeps Profile selected throughout these routes. Incoming shared backups open `/profile/backup`, including before a child has been created. The onboarding Settings entry remains available.

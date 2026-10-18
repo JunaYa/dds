@@ -1,7 +1,8 @@
+import { usePageRoute } from "../state/page-routing";
 import { planImport, type ImportOptions } from "../backup/backup";
 import { useI18n } from "../i18n/useI18n";
 import { isBuiltinField, typeName } from "../i18n/record-labels";
-import type { Page, Modal } from "../state/workspace-types";
+import type { Modal } from "../state/workspace-types";
 import { useEffect, useRef, useState } from "react";
 import {
   age,
@@ -42,7 +43,7 @@ export function useWorkspaceState() {
   const current = useRef(data);
   const raw = useRef(loaded.raw);
   const [error, setError] = useState(loaded.error);
-  const [page, setPage] = useState<Page>("Today");
+  const [page, setPage] = usePageRoute();
   const [range, setRange] = useState("all");
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState<Modal>(null);
