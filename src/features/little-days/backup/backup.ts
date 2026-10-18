@@ -5,13 +5,16 @@ import { parseCali } from "./cali";
 export const MAX_BACKUP_BYTES = 20 * 1024 * 1024;
 const backupSchema = z.object({ format: z.literal("little-days-backup"), version: z.literal(1), exportedAt: z.iso.datetime(), workspace: workspaceSchema });
 export function exportBackup(workspace: Workspace) {
-  return JSON.stringify(backupSchema.parse({ format: "little-days-backup", version: 1, exportedAt: new Date().toISOString(), workspace }), null, 2);
+  return JSON.stringify(backupSchema.parse({ format: "little-days-backup", version: 1, exportedAt: new Date().toISOString(), workspace: { ...workspace, sync: undefined, syncOwner: undefined } }), null, 2);
 }
 export function parseBackup(text: string): Workspace {
   if (new TextEncoder().encode(text).length > MAX_BACKUP_BYTES) throw new Error("Backup is too large (maximum 20 MB).");
   const value: unknown = JSON.parse(text);
   if (typeof value === "object" && value && "manifest" in value) return parseCali(value);
-  return backupSchema.parse(value).workspace;
+  const workspace = backupSchema.parse(value).workspace;
+  delete workspace.sync;
+  delete workspace.syncOwner;
+  return workspace;
 }
 
 // Existing identifiers win, including records edited locally after a previous import.

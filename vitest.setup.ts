@@ -4,4 +4,8 @@ import { afterEach, beforeEach } from 'vitest';
 
 afterEach(cleanup);
 
-beforeEach(() => window.history.replaceState(null, "", window.location.pathname));
+beforeEach(() => {
+  if (typeof window !== "undefined") {
+    window.history.replaceState(null, "", window.location.pathname);
+  }
+});

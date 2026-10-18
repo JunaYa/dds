@@ -1,3 +1,5 @@
+import { trackChanges } from "../sync/engine";
+import { deviceId } from "../sync/device";
 import { emptyWorkspace, workspaceSchema, type Workspace } from "../domain/model";
 
 export const STORAGE_KEY = "little-days.workspace.v1";
@@ -15,8 +17,14 @@ export function saveWorkspace(data: Workspace, expected: string | null) {
     throw new Error(
       "Records changed in another window. Reload before saving again.",
     );
+  const before = expected === null ? null : workspaceSchema.parse(JSON.parse(expected));
+  if (before?.sync) {
+    validated.sync = trackChanges(before, validated, deviceId());
+    validated.syncOwner = before.syncOwner;
+  }
   const raw = JSON.stringify(validated);
   localStorage.setItem(STORAGE_KEY, raw);
+  window.dispatchEvent(new Event("little-days-workspace-changed"));
   return raw;
 }
 
@@ -33,4 +41,14 @@ export function loadRecovery(): { savedAt: string; workspace: Workspace } | null
   const value = JSON.parse(raw);
   if (typeof value.savedAt !== "string" || Number.isNaN(Date.parse(value.savedAt))) throw new Error("Invalid recovery backup");
   return { savedAt: value.savedAt, workspace: workspaceSchema.parse(value.workspace) };
+}
+
+export function saveSyncedWorkspace(data: Workspace, expected: string | null) {
+  const validated = workspaceSchema.parse(data);
+  if (localStorage.getItem(STORAGE_KEY) !== expected) throw Error("Records changed in another window. Reload before saving again.");
+  if (expected) localStorage.setItem("little-days.before-sync.v1", expected);
+  const raw = JSON.stringify(validated);
+  localStorage.setItem(STORAGE_KEY, raw);
+  window.dispatchEvent(new Event("little-days-workspace-changed"));
+  return raw;
 }

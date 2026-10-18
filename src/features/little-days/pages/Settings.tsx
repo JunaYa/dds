@@ -1,3 +1,5 @@
+import { Button } from "@vita/ui/button";
+import { useApp } from "../hooks/useApp";
 import { HapticSettings } from "../haptics/HapticFeedback";
 import { BackupSettings } from "../backup/BackupSettings";
 import { LanguagePicker } from "../components/settings/LanguagePicker";
@@ -7,8 +9,10 @@ import { ShortcutSettings } from "../quick-record/ShortcutSettings";
 
 export function Settings({ section }: { section?: "Appearance" | "Interaction" | "Backup" | "Storage" }) {
   const { tr } = useI18n();
+  const { setPage } = useApp();
   return (
     <div className="settings-page">
+      {!section && <Button variant="outline" onClick={() => setPage("Cloud")}>{tr("Cloud sync")}</Button>}
       {(!section || section === "Interaction") && <ShortcutSettings />}
       {(!section || section === "Interaction") && <HapticSettings />}
       {(!section || section === "Backup") && <BackupSettings />}
@@ -32,7 +36,7 @@ export function Settings({ section }: { section?: "Appearance" | "Interaction" |
         </div>
         <p>
           {tr(
-            "Care records stay here, too. There is no cloud sync yet. Clearing app data or uninstalling removes your records.",
+            "Records are stored on this device. Optional cloud sync is managed separately in Profile. Export a backup before clearing app data or uninstalling.",
           )}
         </p>
       </section>}

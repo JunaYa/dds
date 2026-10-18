@@ -246,3 +246,9 @@
 .profile-link small { margin-top: 4px; font-size: 13px; color: var(--muted-foreground); line-height: 1.5; }
 .profile-link:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
 @media (hover: hover) { .profile-link:hover { background: var(--care-soft); } }
+
+.cloud-settings p { margin: 12px 0; line-height: 1.6; color: var(--muted-foreground); }
+.cloud-authorization { display: grid; justify-items: start; gap: 12px; padding: 16px 0; }
+.sync-conflict { border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 16px 0; min-width: 0; }
+.sync-conflict label { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; }
+.sync-conflict pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 13px; max-height: 220px; overflow: auto; }

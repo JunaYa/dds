@@ -68,3 +68,7 @@ Profile settings offer a device-local haptic preference, enabled by default (`li
 ### Profile routes
 
 Profile groups record management, preferences, and data/privacy into child pages. Routes use hash URLs so native bundled assets support refresh and direct entry: `/profile/record-types`, `/profile/supplies`, `/profile/appearance`, `/profile/interaction`, `/profile/backup`, and `/profile/storage`. `state/page-routing.ts` synchronizes page state with browser history. iOS keeps Profile selected throughout these routes. Incoming shared backups open `/profile/backup`, including before a child has been created. The onboarding Settings entry remains available.
+
+### Cloud synchronization
+
+Profile → Data and privacy → Cloud sync connects iCloud Documents or Alipan. The synchronization engine tracks entity versions and deletion tombstones, preserves concurrent edits for explicit resolution, and keeps active timers local. See [cloud synchronization setup and limits](../../../docs/cloud-sync.md) before enabling a provider in a signed build. Live account testing requires registered provider configuration; local tests do not establish connectivity.

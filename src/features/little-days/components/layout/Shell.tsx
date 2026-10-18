@@ -69,8 +69,8 @@ export function Shell({ children }: { children: ReactNode }) {
                     ? tr("Analysis")
                     : a.page === "My"
                       ? tr("Profile")
-                  : ["Appearance", "Interaction", "Backup", "Storage"].includes(a.page)
-                    ? tr(({ Appearance: "Language and appearance", Interaction: "Interaction", Backup: "Backup and restore", Storage: "On this device" } as Record<string, string>)[a.page])
+                  : ["Appearance", "Interaction", "Backup", "Storage", "Cloud"].includes(a.page)
+                    ? tr(({ Appearance: "Language and appearance", Interaction: "Interaction", Backup: "Backup and restore", Storage: "On this device", Cloud: "Cloud sync" } as Record<string, string>)[a.page])
                   : a.page === "Supplies"
                     ? tr("Ready for the everyday.")
                     : a.page === "Settings"
@@ -88,7 +88,7 @@ export function Shell({ children }: { children: ReactNode }) {
                     ? tr(
                         "Family supplies, with one less thing to keep in your head.",
                       )
-                    : ["Settings", "Appearance", "Interaction", "Backup", "Storage"].includes(a.page)
+                    : ["Settings", "Appearance", "Interaction", "Backup", "Storage", "Cloud"].includes(a.page)
                       ? tr("Small preferences for your everyday.")
                       : tr("Choose what matters. Build a record that fits.")}
               </p>
@@ -128,7 +128,7 @@ export function Shell({ children }: { children: ReactNode }) {
             )}
           </div>
           <footer className="app-footer">
-            {tr("Saved on this device · No cloud sync")}
+            {tr("Saved on this device")}
           </footer>
         </main>
       </div>

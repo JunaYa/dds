@@ -5,7 +5,7 @@ export const pagePaths: Record<Page, string> = {
   Today: "/journal", Analysis: "/analysis", My: "/profile",
   Supplies: "/profile/supplies", "Record types": "/profile/record-types",
   Settings: "/settings", Appearance: "/profile/appearance",
-  Interaction: "/profile/interaction", Backup: "/profile/backup", Storage: "/profile/storage",
+  Interaction: "/profile/interaction", Backup: "/profile/backup", Storage: "/profile/storage", Cloud: "/profile/cloud",
 };
 export function pageFromHash(hash: string): Page {
   return (Object.keys(pagePaths) as Page[]).find(page => `#${pagePaths[page]}` === hash) ?? "Today";

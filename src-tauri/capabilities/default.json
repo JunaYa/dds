@@ -5,6 +5,7 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
+    "cloud-sync:default",
     "opener:default",
     "dialog:allow-save",
     "fs:allow-write-file"

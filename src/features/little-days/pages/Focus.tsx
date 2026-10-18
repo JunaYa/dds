@@ -1,3 +1,4 @@
+import { CloudSettings } from "../sync/CloudSettings";
 import { useI18n } from "../i18n/useI18n";
 import { Settings } from "./Settings";
 import { Analysis } from "./Analysis";
@@ -32,6 +33,8 @@ export default function Focus() {
         </div>
       ) : a.page === "Analysis" ? (
         <Analysis />
+      ) : a.page === "Cloud" ? (
+        <CloudSettings />
       ) : a.page === "My" ? (
         <My />
       ) : a.page === "Supplies" ? (

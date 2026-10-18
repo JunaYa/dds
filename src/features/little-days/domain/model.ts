@@ -1,3 +1,4 @@
+import { syncStateSchema } from "../sync/schema";
 import { translator, type Translate } from "../i18n/translate";
 import { z } from "zod";
 
@@ -81,6 +82,8 @@ export const sessionSchema = z.object({
 export const workspaceSchema = z
   .object({
     version: z.literal(1),
+    sync: syncStateSchema.optional(),
+    syncOwner: z.string().optional(),
     children: z.array(childSchema),
     child: z.string(),
     types: z.array(typeSchema).min(1),

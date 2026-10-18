@@ -16,7 +16,7 @@ import {
   type Supply,
   type Workspace,
 } from "../domain/model";
-import { loadWorkspace, saveWorkspace, saveImportWorkspace, loadRecovery } from "../storage/workspace";
+import { loadWorkspace, saveWorkspace, saveImportWorkspace, loadRecovery, saveSyncedWorkspace, STORAGE_KEY } from "../storage/workspace";
 import {
   nursingSeconds,
   pauseOrResumeSession,
@@ -69,8 +69,8 @@ export function useWorkspaceState() {
     try {
       const next = change(current.current);
       raw.current = keepRecovery ? saveImportWorkspace(next, current.current, raw.current) : saveWorkspace(next, raw.current);
-      current.current = next;
-      setData(next);
+      current.current = JSON.parse(raw.current);
+      setData(current.current);
       setError("");
       setNotice(message);
       setRemoved(null);
@@ -83,6 +83,35 @@ export function useWorkspaceState() {
       );
       return false;
     }
+  }
+  const editing = useRef(false);
+  editing.current = !!modal || nursingOpen;
+  useEffect(() => {
+    const reload = () => {
+      if (editing.current) return;
+      try {
+        const next = loadWorkspace();
+        raw.current = next.raw; current.current = next.data; setData(next.data);
+      } catch { setError("Could not read changes saved on this device."); }
+    };
+    const storage = (event: StorageEvent) => { if (event.key === STORAGE_KEY || event.key === null) reload(); };
+    window.addEventListener("little-days-workspace-changed", reload);
+    window.addEventListener("storage", storage);
+    return () => { window.removeEventListener("little-days-workspace-changed", reload); window.removeEventListener("storage", storage); };
+  }, []);
+  useEffect(() => {
+    if (modal || nursingOpen || !current.current) return;
+    try {
+      if (localStorage.getItem(STORAGE_KEY) !== raw.current) {
+        const next = loadWorkspace(); raw.current = next.raw; current.current = next.data; setData(next.data);
+      }
+    } catch { setError("Could not read changes saved on this device."); }
+  }, [modal, nursingOpen]);
+  function syncSnapshot() { return { data: current.current, raw: raw.current }; }
+  function acceptSync(next: Workspace, expected: string | null) {
+    if (modal || nursingOpen || current.current?.session || raw.current !== expected) throw Error("Finish the current edit or timer before syncing.");
+    raw.current = saveSyncedWorkspace(next, expected);
+    current.current = next; setData(next);
   }
   const child = data?.child ?? "";
   const children = data?.children ?? [];
@@ -357,6 +386,8 @@ export function useWorkspaceState() {
     activeChild,
     page,
     setPage,
+    syncSnapshot,
+    acceptSync,
     range,
     setRange,
     query,

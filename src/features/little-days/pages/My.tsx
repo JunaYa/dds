@@ -15,6 +15,7 @@ const groups: { title: string; items: { page: Page; title: string; description: 
     { page: "Interaction", title: "Interaction", description: "Feedback and shortcuts for this device." },
   ] },
   { title: "Data and privacy", items: [
+    { page: "Cloud", title: "Cloud sync", description: "Keep your devices up to date." },
     { page: "Backup", title: "Backup and restore", description: "Import, export, merge and recover your records." },
     { page: "Storage", title: "On this device", description: "Learn where your records are stored." },
   ] },

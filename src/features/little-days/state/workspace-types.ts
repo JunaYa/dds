@@ -1,6 +1,6 @@
 import { type CareRecord, type RecordType, type Supply } from "../domain/model";
 
-export type Page = "Today" | "Analysis" | "My" | "Supplies" | "Record types" | "Settings" | "Appearance" | "Interaction" | "Backup" | "Storage";
+export type Page = "Today" | "Analysis" | "My" | "Supplies" | "Record types" | "Settings" | "Appearance" | "Interaction" | "Backup" | "Storage" | "Cloud";
 export type Modal =
   | {
       kind: "record";

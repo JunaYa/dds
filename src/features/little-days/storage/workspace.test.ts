@@ -70,3 +70,18 @@ it("keeps a recoverable snapshot before an import and rejects stale writes befor
   expect(localStorage.getItem(RECOVERY_KEY)).toBe(snapshot);
   expect(loadWorkspace().data).toEqual(after);
 });
+
+it("stores sync metadata with edits and preserves the current account during restore", async () => {
+  const { trackChanges, materialize } = await import("../sync/engine");
+  const { saveSyncedWorkspace } = await import("./workspace");
+  const data = emptyWorkspace();
+  data.children = [{ id: "baby", name: "Baby", birthday: "2026-01-01" }]; data.child = "baby";
+  data.syncOwner = "icloud:current";
+  data.sync = trackChanges(null, data, "10000000-0000-4000-8000-000000000001");
+  localStorage.clear();
+  const raw = saveSyncedWorkspace(data, null);
+  const changed = structuredClone(data); changed.children[0].name = "Updated"; changed.syncOwner = "icloud:previous";
+  const next = JSON.parse(saveWorkspace(changed, raw));
+  expect(next.syncOwner).toBe("icloud:current");
+  expect(materialize(next, next.sync).children[0].name).toBe("Updated");
+});
