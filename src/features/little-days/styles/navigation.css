@@ -32,7 +32,14 @@
   margin-inline: auto;
   padding-inline: max(44px, env(safe-area-inset-left)) max(44px, env(safe-area-inset-right));
 }
-.ios-profile .child-picker { margin: 0; }
+.ios-profile .child-picker,
+.mobile-profile .child-picker {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
 .ios-bottom-navigation {
   position: fixed;
   z-index: 20;
@@ -124,7 +131,6 @@
   }
   .mobile-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
   .mobile-profile { flex: 1; min-width: 0; }
-  .mobile-profile .child-picker { margin: 0; padding: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .page-navigation button, .navigation-drawer[data-slot="sheet-popup"] { transition: none; }

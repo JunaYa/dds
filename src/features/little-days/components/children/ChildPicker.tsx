@@ -9,9 +9,7 @@ export function ChildPicker() {
   const a = useApp();
   return (
     <div className="child-picker">
-      <span className="avatar">{a.activeChild?.initial}</span>
       <label>
-        <small>{tr("RECORDING FOR")}</small>
         <NativeSelect
           aria-label={tr("Child")}
           value={a.child}
