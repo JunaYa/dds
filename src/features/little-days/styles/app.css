@@ -243,21 +243,23 @@ main {
   height: 42px;
 }
 .segmented {
-  display: flex;
-  gap: 3px;
-  padding: 3px;
+  gap: 2px;
+  padding: 4px;
+  border: 0;
   border-radius: 8px;
   background: var(--background);
   flex-shrink: 0;
 }
 .segmented button {
+  min-height: 34px;
   font-size: 12px;
   background: transparent;
   border: 0;
   border-radius: 6px;
   padding: 0 12px;
 }
-.segmented button[aria-pressed="true"] {
+.segmented [data-slot="segment-indicator"] {
+  border-radius: 6px;
   background: var(--card);
   box-shadow: 0 1px 3px #0001;
 }

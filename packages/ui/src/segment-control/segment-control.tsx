@@ -7,6 +7,7 @@
 import { Toggle as TogglePrimitive } from '@base-ui/react/toggle'
 import { ToggleGroup as ToggleGroupPrimitive } from '@base-ui/react/toggle-group'
 import type * as React from 'react'
+import { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@vita/ui/tooltip'
 import { cn } from '../lib/utils'
 
@@ -79,6 +80,7 @@ export function SegmentControl({
   value,
   variant = 'icon',
 }: SegmentControlProps) {
+  const [pointerMotion, setPointerMotion] = useState(false)
   const currentValue = value || items[0]?.value || ''
   const activeIndex = Math.max(
     0,
@@ -95,6 +97,8 @@ export function SegmentControl({
 
   return (
     <ToggleGroupPrimitive
+      onPointerDownCapture={() => setPointerMotion(true)}
+      onKeyDownCapture={() => setPointerMotion(false)}
       className={cn(
         'relative border border-border bg-muted',
         isText
@@ -112,8 +116,10 @@ export function SegmentControl({
     >
       <span
         aria-hidden="true"
+        data-slot="segment-indicator"
         className={cn(
-          'pointer-events-none absolute top-1/2 bg-card shadow-xs transition-transform duration-200 ease-out dark:bg-input',
+          'pointer-events-none absolute top-1/2 bg-card shadow-xs dark:bg-input',
+          pointerMotion && 'motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-[cubic-bezier(0.65,0,0.35,1)]',
           isText ? styles.radius : styles.item
         )}
         style={{
@@ -127,7 +133,7 @@ export function SegmentControl({
           <TogglePrimitive
             aria-label={accessibleLabelFor(item)}
             className={cn(
-              'relative z-10 inline-flex items-center justify-center font-medium transition-colors',
+              'relative z-10 inline-flex items-center justify-center font-medium',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
               styles.radius,
               styles.textItem,
@@ -149,7 +155,7 @@ export function SegmentControl({
                 <TogglePrimitive
                   aria-label={accessibleLabelFor(item)}
                   className={cn(
-                    'relative z-10 inline-flex items-center justify-center transition-colors',
+                    'relative z-10 inline-flex items-center justify-center',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     styles.item,
                     styles.iconSize,

@@ -1,4 +1,4 @@
-import { Button } from "@vita/ui/button";
+import { SegmentControl } from "@vita/ui/segment-control";
 import { useI18n } from "../../i18n/useI18n";
 import { Input } from "@vita/ui/input";
 import { useApp } from "../../hooks/useApp";
@@ -8,21 +8,16 @@ export function LogTools() {
   const a = useApp();
   return (
     <div className="log-tools">
-      <div className="segmented">
-        {[
-          ["today", "Today"],
-          ["all", "All records"],
-        ].map(([id, label]) => (
-          <Button
-            unstyled
-            key={id}
-            aria-pressed={a.range === id}
-            onClick={() => a.setRange(id)}
-          >
-            {tr(label)}
-          </Button>
-        ))}
-      </div>
+      <SegmentControl
+        className="segmented"
+        variant="text"
+        value={a.range}
+        onValueChange={a.setRange}
+        items={[
+          { value: "today", label: tr("Today") },
+          { value: "all", label: tr("All records") },
+        ]}
+      />
       <Input
         nativeInput
         aria-label={tr("Search records")}
