@@ -50,6 +50,21 @@ pub fn run() {
             quick_record::present_quick_record,
         ])
         .manage(Mutex::new(AppState::default()))
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|_app, _event| {
+            #[cfg(target_os = "ios")]
+            if let tauri::RunEvent::Opened { urls } = _event {
+                let app = _app.clone();
+                tauri::async_runtime::spawn_blocking(move || {
+                    use tauri::Emitter;
+                    for url in urls {
+                        if let Err(error) = tauri_plugin_native_navigation::capture_backup(&app, url.to_string()) {
+                            eprintln!("Could not receive shared backup: {error}");
+                        }
+                    }
+                    let _ = app.emit("backup-inbox-changed", ());
+                });
+            }
+        });
 }

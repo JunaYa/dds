@@ -1,3 +1,5 @@
+import { HapticFeedback } from "./haptics/HapticFeedback";
+import { SharedBackupReceiver } from "./backup/SharedBackupReceiver";
 import { Button } from "@vita/ui/button";
 import { LocaleProvider } from "./i18n/LocaleProvider";
 import { useI18n } from "./i18n/useI18n";
@@ -72,6 +74,8 @@ export default function LittleDays() {
       <ThemeProvider>
         <WorkspaceProvider>
           <QuickRecordProvider>
+            <HapticFeedback />
+            <SharedBackupReceiver />
             <Workspace />
             <QuickRecordOverlay />
           </QuickRecordProvider>

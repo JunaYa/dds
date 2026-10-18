@@ -87,6 +87,8 @@ export function RecordForm({
           time,
           note,
           nursing: record?.nursing,
+          photos: record?.photos,
+          source: record?.source,
         }, !inline);
         if (saved && inline) {
           setValues({});
@@ -126,6 +128,7 @@ export function RecordForm({
           </Button>
         </div>
       )}
+      {record?.photos?.map((photo, index) => <img className="record-photo" key={index} src={photo} alt={tr("Record photo")} />)}
       {record?.nursing && (
         <dl className="nursing-record-details">
           <div>

@@ -1,3 +1,4 @@
+import { feedback } from "../../haptics/feedback";
 import { useEffect, useRef, useState } from "react";
 import { Channel, invoke } from "@tauri-apps/api/core";
 
@@ -40,11 +41,13 @@ export function useSystemTabs(page: SystemTab, titles: string[], blocked: boolea
     const onSelect = new Channel<{ page?: string; action?: string }>();
     onSelect.onmessage = ({ page: target, action }) => {
       if (!disposed && !latest.current.blocked && action === "add-record") {
+        if (latest.current.recordAction) feedback();
         latest.current.recordAction?.onAdd();
         return;
       }
       if (!disposed && !latest.current.blocked &&
         (target === "Today" || target === "Analysis" || target === "My")) {
+        if (target !== latest.current.page) feedback();
         latest.current.onNavigate(target);
       }
     };

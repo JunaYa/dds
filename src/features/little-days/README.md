@@ -39,3 +39,28 @@ Language settings live in `components/settings/LanguagePicker.tsx`. `storage/loc
 Keep the locale Context, provider component, and `useI18n` hook in separate modules, as with theme state. This keeps the Context identity stable when React Fast Refresh replaces the provider. Missing providers must fail explicitly rather than returning an English default with a no-op language switch.
 
 Shared controls are imported through `@vita/ui`. Record time, birthday, and date fields use `DateTimePicker`; nursing's time columns use `WheelPicker`. Their implementation and tests live in `packages/ui`, while record values and translations remain here. See the root `AGENTS.md` and `packages/ui/README.md` for component ownership and the `pnpm check:ui` boundary check.
+
+## Backups
+
+Profile → Import and export (also available in Settings before adding a child) exports a versioned `little-days-backup` JSON document. It contains all child profiles, types, records, imported photos/source metadata, supplies, and the timer snapshot. Language and appearance remain device preferences. iOS exports through the system share sheet (Save to Files); desktop/Android use the native save dialog; browsers download JSON.
+
+Import previews additions before saving through the workspace's existing atomic storage commit. Merge mode keeps local versions of duplicate identifiers and remaps conflicting record types. Users can map incoming children to existing profiles, replace all records for selected children, or create separate new profiles. Replacement requires explicit confirmation and never affects other children. Imports do not resume timers; an active local timer must be finished before importing. Files are limited to 20 MB; storage quota and concurrent-window errors leave existing data unchanged.
+
+`backup/cali.ts` supports Cali Baby portable backup version 1. It maps feeding, pumping, diapers, growth, sleep, vaccinations, temperature, sun exposure and bath records; nonempty unsupported collections reject the entire import. Event milliseconds are converted using the source timezone, with nursing sides converted to seconds and durations to minutes. Raw source fields and JPEG/PNG note photos survive export and record edits. Imported IDs are namespaced so repeated imports are idempotent. This is a one-way adapter: exported files use Little days format, not Cali format.
+
+Run `pnpm exec vitest run src/features/little-days/backup`. Set `CALI_BACKUP_PATH` to a local `.calibabybackup` path to run the optional 44-record compatibility check; personal backup files must not be committed as fixtures.
+
+
+### Receiving iOS shares
+
+`Info.ios.plist` registers document handling for Cali and Little days backups. The `public.data` fallback allows files from third-party apps with different UTIs; actual import is restricted to backup extensions, format, version, size and schema. The system's Open in / Copy to Little days action launches the app directly, without a share extension or App Group.
+
+`RunEvent::Opened` forwards file URLs to the native inbox, which acquires security-scoped access, copies at most 20 MB per file into app-private storage, and releases access. The inbox retains up to five pending files plus a queue-full notice. Cold and warm starts read the same inbox. Files are removed only after explicit cancellation or successful import, not when a preview is shown. Dialogs and the nursing timer defer automatic navigation until closed.
+
+Before an import, `saveImportWorkspace` validates the change and saves the previous workspace under `little-days.before-import.v1`. If snapshot creation or the workspace write fails, existing workspace data stays intact. The latest snapshot can be exported or restored; restoration saves the current data as the new recovery snapshot. Device storage clearing/uninstall removes both workspace and recovery data, so exported copies remain useful.
+
+The synthetic cross-app iOS test is in `src-tauri/plugins/native-navigation/ios/ShareUITests`. It checks the share destination, cold-start preview and persistence across relaunch without importing fixture records into the workspace.
+
+### Haptic feedback
+
+Profile settings offer a device-local haptic preference, enabled by default (`little-days.haptics`). Supported mobile environments use lightweight feedback on trusted control clicks and native tab/add actions. iOS uses UIImpactFeedbackGenerator; Android uses the WebView Vibration API with VIBRATE permission. Unsupported environments are silent and hide the setting. The toggle takes effect immediately even if preference storage fails, with a visible save error. System settings and hardware can suppress feedback. Scrolling, text entry, synthetic clicks and disabled controls do not trigger feedback; closely spaced events are throttled. This preference is not part of record backups.

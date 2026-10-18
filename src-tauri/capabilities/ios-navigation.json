@@ -3,5 +3,5 @@
   "description": "Native Liquid Glass navigation for the iOS main window",
   "platforms": ["iOS"],
   "windows": ["main"],
-  "permissions": ["native-navigation:allow-navigation"]
+  "permissions": ["native-navigation:allow-navigation", "native-navigation:allow-haptics", "native-navigation:allow-export-backup", "native-navigation:allow-backup-inbox"]
 }

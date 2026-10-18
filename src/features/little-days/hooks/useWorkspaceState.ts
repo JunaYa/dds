@@ -1,3 +1,4 @@
+import { planImport, type ImportOptions } from "../backup/backup";
 import { useI18n } from "../i18n/useI18n";
 import { isBuiltinField, typeName } from "../i18n/record-labels";
 import type { Page, Modal } from "../state/workspace-types";
@@ -14,7 +15,7 @@ import {
   type Supply,
   type Workspace,
 } from "../domain/model";
-import { loadWorkspace, saveWorkspace } from "../storage/workspace";
+import { loadWorkspace, saveWorkspace, saveImportWorkspace, loadRecovery } from "../storage/workspace";
 import {
   nursingSeconds,
   pauseOrResumeSession,
@@ -36,6 +37,7 @@ export function useWorkspaceState() {
       };
     }
   });
+  const [sharedBackup, setSharedBackup] = useState<{ id: string; name: string; text?: string; error?: string } | null>(null);
   const [data, setData] = useState(loaded.data);
   const current = useRef(data);
   const raw = useRef(loaded.raw);
@@ -60,11 +62,12 @@ export function useWorkspaceState() {
   function commit(
     change: (state: Workspace) => Workspace,
     message: string | { typeId: string } = "",
+    keepRecovery = false,
   ) {
     if (!current.current) return false;
     try {
       const next = change(current.current);
-      raw.current = saveWorkspace(next, raw.current);
+      raw.current = keepRecovery ? saveImportWorkspace(next, current.current, raw.current) : saveWorkspace(next, raw.current);
       current.current = next;
       setData(next);
       setError("");
@@ -331,6 +334,17 @@ export function useWorkspaceState() {
       : types.find((type) => type.id === notice.typeId);
   return {
     data,
+    sharedBackup, setSharedBackup,
+    importBackup: (incoming: Workspace, options: ImportOptions) => commit(s => {
+      if (s.session) throw new Error("Finish the current timer before importing.");
+      return planImport(s, incoming, options).workspace;
+    }, "Backup imported", true),
+    restoreBackup: () => commit(s => {
+      if (s.session) throw new Error("Finish the current timer before restoring.");
+      const recovery = loadRecovery();
+      if (!recovery) throw new Error("No recovery backup");
+      return { ...recovery.workspace, session: null };
+    }, "Backup restored", true),
     error,
     day,
     children,

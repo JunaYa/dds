@@ -57,3 +57,16 @@ it("keeps paused timers fixed and formats local wall time", () => {
   expect(elapsedSeconds({ started: null, elapsed: 12 }, 50000)).toBe(12);
   expect(localDateTime(new Date(2026, 8, 19, 7, 5))).toBe("2026-09-19T07:05");
 });
+
+import { loadRecovery, RECOVERY_KEY, saveImportWorkspace } from "./workspace";
+it("keeps a recoverable snapshot before an import and rejects stale writes before replacing the snapshot", () => {
+  const before = emptyWorkspace();
+  const raw = saveWorkspace(before, null);
+  const after = { ...before, children: [{ id: "baby", name: "Baby", birthday: "2026-01-01" }], child: "baby" };
+  saveImportWorkspace(after, before, raw);
+  expect(loadRecovery()?.workspace).toEqual(before);
+  const snapshot = localStorage.getItem(RECOVERY_KEY);
+  expect(() => saveImportWorkspace(before, after, raw)).toThrow("another window");
+  expect(localStorage.getItem(RECOVERY_KEY)).toBe(snapshot);
+  expect(loadWorkspace().data).toEqual(after);
+});

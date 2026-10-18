@@ -28,7 +28,10 @@ export const typeSchema = z.object({
   description: z.string(),
   fields: z.array(fieldSchema).min(1),
 });
+const sourceSchema = z.object({ format: z.string(), data: z.record(z.string(), z.json()) });
 export const recordSchema = z.object({
+  source: sourceSchema.optional(),
+  photos: z.array(z.string().regex(/^data:image\/(?:jpeg|png);base64,[A-Za-z0-9+/]+={0,2}$/)).optional(),
   id,
   child: id,
   type: id,
@@ -48,6 +51,7 @@ export const recordSchema = z.object({
   ),
 });
 export const childSchema = z.object({
+  source: sourceSchema.optional(),
   id,
   name: z.string().trim().min(1),
   birthday: date,

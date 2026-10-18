@@ -24,6 +24,7 @@ export function RecordRow({ record }: { record: CareRecord }) {
         <strong>{typeName(type, tr)}</strong>
         <span>{summary(record, type, tr)}</span>
         {record.note && <p>{record.note}</p>}
+        {record.photos?.map((photo, index) => <img className="record-photo" key={index} src={photo} alt={tr("Record photo")} loading="lazy" />)}
       </Button>
       <Button
         unstyled

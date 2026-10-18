@@ -5,6 +5,7 @@ import { useSystemTabs } from "./use-system-tabs";
 const native = vi.hoisted(() => ({ invoke: vi.fn(), channel: null as null | { onmessage: (message: { page?: string; action?: string }) => void } }));
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: native.invoke,
+  isTauri: () => false,
   Channel: class {
     onmessage = (_message: { page?: string; action?: string }) => {};
     constructor() { native.channel = this; }

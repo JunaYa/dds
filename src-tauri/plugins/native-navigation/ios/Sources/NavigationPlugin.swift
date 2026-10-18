@@ -2,6 +2,11 @@ import Tauri
 import UIKit
 import WebKit
 
+private struct ExportBackupOptions: Decodable {
+    let name: String
+    let text: String
+}
+
 private enum JournalPage: String, Decodable, CaseIterable {
     case today, board, library, types
 
@@ -243,6 +248,13 @@ private final class GlassNavigation: UIVisualEffectView {
 }
 
 class NavigationPlugin: Plugin {
+    @objc public func hapticFeedback(_ invoke: Invoke) throws {
+        DispatchQueue.main.async {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            invoke.resolve()
+        }
+    }
+
     private weak var webview: WKWebView?
     private var navigation: UIView?
     private var header: UIView?
@@ -251,6 +263,53 @@ class NavigationPlugin: Plugin {
 
     @objc override func load(webview: WKWebView) {
         self.webview = webview
+    }
+
+    @objc func captureBackup(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(CaptureBackupOptions.self)
+        do { try BackupInbox.capture(args.url); invoke.resolve() }
+        catch { invoke.reject(error.localizedDescription) }
+    }
+    @objc func nextSharedBackup(_ invoke: Invoke) throws {
+        if let item = try BackupInbox.next() {
+            var result: JsonObject = ["id": item.id, "name": item.name]
+            if let text = item.text { result["text"] = text }
+            if let error = item.error { result["error"] = error }
+            invoke.resolve(result)
+        } else { invoke.resolve() }
+    }
+    @objc func dismissSharedBackup(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(DismissBackupOptions.self)
+        try BackupInbox.dismiss(args.id)
+        invoke.resolve()
+    }
+
+    @objc func exportBackup(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(ExportBackupOptions.self)
+        DispatchQueue.main.async {
+            do {
+                let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                let file = directory.appendingPathComponent(URL(fileURLWithPath: args.name).lastPathComponent)
+                try args.text.write(to: file, atomically: true, encoding: .utf8)
+                let controller = UIActivityViewController(activityItems: [file], applicationActivities: nil)
+                controller.completionWithItemsHandler = { _, completed, _, error in
+                    try? FileManager.default.removeItem(at: directory)
+                    if let error { invoke.reject(error.localizedDescription) }
+                    else { invoke.resolve(["saved": completed]) }
+                }
+                var responder: UIResponder? = self.webview
+                while responder != nil && !(responder is UIViewController) { responder = responder?.next }
+                guard let host = responder as? UIViewController, host.presentedViewController == nil else {
+                    try? FileManager.default.removeItem(at: directory)
+                    invoke.reject("Cannot present export sheet")
+                    return
+                }
+                controller.popoverPresentationController?.sourceView = host.view
+                controller.popoverPresentationController?.sourceRect = CGRect(x: host.view.bounds.midX, y: host.view.bounds.maxY - 80, width: 1, height: 1)
+                host.present(controller, animated: true)
+            } catch { invoke.reject(error.localizedDescription) }
+        }
     }
 
     @objc func attachTabs(_ invoke: Invoke) throws {

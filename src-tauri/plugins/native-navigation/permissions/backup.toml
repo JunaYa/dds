@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "allow-export-backup"
+description = "Export a backup through the iOS system share sheet."
+commands.allow = ["exportBackup"]
+
+[[permission]]
+identifier = "allow-backup-inbox"
+description = "Read and dismiss files explicitly shared to this app."
+commands.allow = ["nextSharedBackup", "dismissSharedBackup"]

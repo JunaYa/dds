@@ -1,3 +1,5 @@
+import { HapticSettings } from "../haptics/HapticFeedback";
+import { BackupSettings } from "../backup/BackupSettings";
 import { LanguagePicker } from "../components/settings/LanguagePicker";
 import { useI18n } from "../i18n/useI18n";
 import { ThemePicker } from "../components/settings/ThemePicker";
@@ -8,6 +10,8 @@ export function Settings() {
   return (
     <div className="settings-page">
       <ShortcutSettings />
+      <HapticSettings />
+      <BackupSettings />
       <section className="settings-section">
         <LanguagePicker />
       </section>

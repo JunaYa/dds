@@ -2,3 +2,8 @@
 identifier = "allow-navigation"
 description = "Allows the main journal to attach, synchronize and detach its native navigation."
 commands.allow = ["attach", "update", "detach", "attachTabs", "updateTabs"]
+
+[[permission]]
+identifier = "allow-haptics"
+description = "Allows light interaction feedback on supported iOS devices."
+commands.allow = ["hapticFeedback"]

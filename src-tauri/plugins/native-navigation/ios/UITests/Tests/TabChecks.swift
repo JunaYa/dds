@@ -1,5 +1,24 @@
 import XCTest
 final class TabChecks: XCTestCase {
+    func testBackupExport() {
+        let app = XCUIApplication(bundleIdentifier: "com.dds.app")
+        app.launch()
+        let profile = app.buttons["little-days.tab.My"]
+        XCTAssertTrue(profile.waitForExistence(timeout: 20))
+        profile.tap()
+        let export = app.webViews.buttons.matching(NSPredicate(format: "label IN %@", ["Export backup", "导出备份"])).firstMatch
+        XCTAssertTrue(export.waitForExistence(timeout: 5))
+        if !export.isHittable { app.webViews.firstMatch.swipeUp() }
+        export.tap()
+        let save = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@ OR label CONTAINS %@", "Save to Files", "存储到")).firstMatch
+        XCTAssertTrue(save.waitForExistence(timeout: 10))
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "Backup export sheet"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+        app.terminate()
+    }
+
     func testAddRecordAction() {
         let app = XCUIApplication(bundleIdentifier: "com.dds.app")
         app.launch()

@@ -1,0 +1,29 @@
+name: ShareHost
+options:
+  bundleIdPrefix: com.dds.testing
+  deploymentTarget:
+    iOS: '16.4'
+settings:
+  CODE_SIGNING_ALLOWED: NO
+targets:
+  ShareHost:
+    type: application
+    platform: iOS
+    sources: [Sources]
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_UILaunchScreen_Generation: YES
+  ShareHostTests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [Tests]
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+schemes:
+  ShareHost:
+    build:
+      targets:
+        ShareHost: all
+        ShareHostTests: all
+    test:
+      targets: [ShareHostTests]
