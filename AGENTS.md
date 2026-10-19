@@ -1,5 +1,7 @@
 # Shared UI components
 
+- Read [RULES.md](RULES.md) before implementation; UI changes also follow [design constraints](docs/conventions/design.md).
+
 - Before adding or changing UI, check `packages/ui` and `packages/iconography` for an existing component. Import through the package's public exports (`@vita/ui/...`); do not import package source paths.
 - Application code under `src/` composes shared controls. Use the shared Button, Input, Textarea, Select/NativeSelect, DateTimePicker, dialogs, and other available primitives instead of raw interactive elements or direct third-party primitive imports.
 - Use `NativeInput` from `@vita/ui/input` for native radio, range, and file controls that need caller-owned geometry. Use `NativeSelect` when native option children and platform selection behavior are needed; use the compound Select for custom menus.
