@@ -3,6 +3,7 @@
 import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog'
 import * as React from 'react'
 import { Button } from '../button/button'
+import { useOverlayPresentation } from '../overlay/overlay-provider'
 import { cn } from '../lib/utils'
 
 export const AlertDialogCreateHandle: typeof AlertDialogPrimitive.createHandle =
@@ -34,12 +35,14 @@ export function AlertDialogBackdrop({
   className,
   ...props
 }: AlertDialogPrimitive.Backdrop.Props): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <AlertDialogPrimitive.Backdrop
       className={cn(
         'fixed inset-0 z-[var(--z-layer-modal)] bg-black/32 backdrop-blur-sm transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0',
         className
       )}
+      data-overlay-platform={presentation["data-overlay-platform"]}
       data-slot="alert-dialog-backdrop"
       {...props}
     />
@@ -50,12 +53,14 @@ export function AlertDialogViewport({
   className,
   ...props
 }: AlertDialogPrimitive.Viewport.Props): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <AlertDialogPrimitive.Viewport
       className={cn(
         'fixed inset-0 z-[var(--z-layer-modal)] grid grid-rows-[1fr_auto_3fr] justify-items-center p-4',
         className
       )}
+      {...presentation}
       data-slot="alert-dialog-viewport"
       {...props}
     />

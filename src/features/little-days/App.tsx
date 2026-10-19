@@ -1,3 +1,5 @@
+import { OverlayProvider } from "@vita/ui/overlay";
+import { isIosApp } from "./components/layout/ios-platform";
 import { SyncProvider } from "./sync/SyncProvider";
 import { CloudSettings } from "./sync/CloudSettings";
 import { HapticFeedback } from "./haptics/HapticFeedback";
@@ -72,6 +74,7 @@ function Workspace() {
 }
 export default function LittleDays() {
   return (
+    <OverlayProvider platform={isIosApp() ? "ios" : "default"}>
     <LocaleProvider>
       <ThemeProvider>
         <WorkspaceProvider>
@@ -86,5 +89,6 @@ export default function LittleDays() {
         </WorkspaceProvider>
       </ThemeProvider>
     </LocaleProvider>
+    </OverlayProvider>
   );
 }

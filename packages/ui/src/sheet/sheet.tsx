@@ -8,6 +8,7 @@ import type React from 'react'
 
 import { Button } from '../button/button'
 import { ScrollArea } from '../scroll-area/scroll-area'
+import { useOverlayPresentation } from '../overlay/overlay-provider'
 import { cn } from '../lib/utils'
 
 export const Sheet: typeof SheetPrimitive.Root = SheetPrimitive.Root
@@ -26,12 +27,14 @@ export function SheetBackdrop({
   className,
   ...props
 }: SheetPrimitive.Backdrop.Props): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <SheetPrimitive.Backdrop
       className={cn(
         'fixed inset-0 z-[var(--z-layer-window)] bg-black/32 backdrop-blur-sm transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0',
         className
       )}
+      data-overlay-platform={presentation["data-overlay-platform"]}
       data-slot="sheet-backdrop"
       {...props}
     />
@@ -47,6 +50,7 @@ export function SheetViewport({
   side?: 'right' | 'left' | 'top' | 'bottom'
   variant?: 'default' | 'inset'
 }): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <SheetPrimitive.Viewport
       className={cn(
@@ -58,6 +62,7 @@ export function SheetViewport({
         variant === 'inset' && 'sm:p-4',
         className
       )}
+      {...presentation}
       data-slot="sheet-viewport"
       {...props}
     />

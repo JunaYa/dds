@@ -89,7 +89,9 @@
     "./layout/section": "./src/layout/section.tsx",
     "./layout/section-header": "./src/layout/section-header.tsx",
     "./stack": "./src/stack.tsx",
-    "./accordion": "./src/accordion/index.ts"
+    "./accordion": "./src/accordion/index.ts",
+    "./overlay": "./src/overlay/overlay-provider.tsx",
+    "./overlay/styles.css": "./src/overlay/overlay.css"
   },
   "files": [
     "src"

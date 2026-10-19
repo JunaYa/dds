@@ -7,6 +7,7 @@ import { XIcon } from 'lucide-react'
 import type React from 'react'
 import { Button } from '../button/button'
 import { ScrollArea } from '../scroll-area/scroll-area'
+import { useOverlayPresentation } from '../overlay/overlay-provider'
 import { cn } from '../lib/utils'
 
 export const DialogCreateHandle: typeof DialogPrimitive.createHandle = DialogPrimitive.createHandle
@@ -27,12 +28,14 @@ export function DialogBackdrop({
   className,
   ...props
 }: DialogPrimitive.Backdrop.Props): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <DialogPrimitive.Backdrop
       className={cn(
         'fixed inset-0 z-[var(--z-layer-modal)] bg-black/32 backdrop-blur-sm transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0',
         className
       )}
+      data-overlay-platform={presentation["data-overlay-platform"]}
       data-slot="dialog-backdrop"
       {...props}
     />
@@ -43,12 +46,14 @@ export function DialogViewport({
   className,
   ...props
 }: DialogPrimitive.Viewport.Props): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <DialogPrimitive.Viewport
       className={cn(
         'fixed inset-0 z-[var(--z-layer-modal)] grid grid-rows-[1fr_auto_3fr] justify-items-center p-4',
         className
       )}
+      {...presentation}
       data-slot="dialog-viewport"
       {...props}
     />

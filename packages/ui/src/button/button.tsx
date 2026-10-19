@@ -91,6 +91,7 @@ function Button({
       aria-busy={loading ? true : ariaBusy}
       aria-disabled={loading || undefined}
       data-slot="button"
+      data-variant={variant}
       data-loading={loading ? '' : undefined}
       disabled={Boolean(loading || disabled)}
       {...buttonProps}

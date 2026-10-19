@@ -7,3 +7,6 @@
 @import "./features/little-days/styles/record-dialog.css";
 @source "./**/*.{ts,tsx}";
 @import "./features/little-days/quick-record/quick-record.css";
+
+@import "@vita/ui/overlay/styles.css";
+@import "./features/little-days/styles/ios-overlays.css";

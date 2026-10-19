@@ -5,6 +5,7 @@ import { Button } from '../button/button'
 import { Calendar } from '../calendar/calendar'
 import { Input } from '../input/input'
 import { Popover, PopoverPopup, PopoverTrigger } from '../popover/popover'
+import { useOverlayPresentation } from '../overlay/overlay-provider'
 import { cn } from '../lib/utils'
 
 export type DateTimePickerProps = Omit<
@@ -64,6 +65,7 @@ export function DateTimePicker({
   placeholder,
   ...props
 }: DateTimePickerProps) {
+  const presentation = useOverlayPresentation()
   const [internal, setInternal] = useState(defaultValue)
   const current = value ?? internal
   const selected = parse(current, mode)
@@ -107,6 +109,26 @@ export function DateTimePicker({
     if (disabled || readOnly) return
     if (value === undefined) setInternal(next)
     onValueChange?.(next)
+  }
+  if (presentation['data-overlay-platform'] === 'ios') {
+    return <Input
+      nativeInput
+      {...props}
+      className={className}
+      type={mode === 'date' ? 'date' : 'datetime-local'}
+      value={current}
+      min={min}
+      max={max}
+      disabled={disabled}
+      readOnly={readOnly}
+      lang={locale}
+      ref={(node) => {
+        input.current = node
+        if (typeof ref === 'function') return ref(node)
+        if (ref) ref.current = node
+      }}
+      onChange={(event) => change(event.target.value)}
+    />
   }
   return (
     <div

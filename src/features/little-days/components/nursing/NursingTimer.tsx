@@ -69,7 +69,7 @@ export function NursingTimer() {
           className="nursing-backdrop"
           data-instant={instant || undefined}
         />
-        <DialogViewport className={`nursing-viewport ${theme}`}>
+        <DialogViewport data-overlay-fullscreen="" className={`nursing-viewport ${theme}`}>
           <DialogPrimitive.Popup
             className="nursing-screen"
             lang={locale}

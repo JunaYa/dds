@@ -1,3 +1,4 @@
+import { isIosApp } from "../layout/ios-platform";
 import { Button } from "@vita/ui/button";
 import { useI18n } from "../../i18n/useI18n";
 import { useState } from "react";
@@ -54,9 +55,10 @@ export function WorkspaceModal() {
             <Button
               unstyled
               aria-label={tr("Close dialog")}
+              className={isIosApp() ? "ios-dialog-close" : undefined}
               onClick={() => a.setModal(null)}
             >
-              ×
+              {isIosApp() ? tr("Cancel") : "×"}
             </Button>
           </div>
           <DialogDescription>

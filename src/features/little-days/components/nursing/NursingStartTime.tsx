@@ -178,6 +178,8 @@ export function NursingStartTime({
         <DialogBackdrop className="nursing-time-backdrop" />
         <DialogViewport className="nursing-time-viewport">
           <DialogPrimitive.Popup
+            data-slot="dialog-popup"
+            initialFocus={false}
             className={`nursing-confirm nursing-time-sheet ${theme}`}
           >
             <StartTimeForm time={time} onClose={() => onOpenChange(false)} />
