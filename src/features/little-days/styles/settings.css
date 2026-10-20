@@ -224,7 +224,7 @@
 .backup-preview { padding: 20px; margin-top: 20px; border: 1px solid var(--border); border-radius: 16px; }
 .backup-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .record-photo { display: block; width: 120px; max-width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin: 8px 0; }
-.record-form .record-photo { width: auto; height: auto; max-height: 320px; object-fit: contain; }
+.record-form .record-photo { width: min(100%, 320px); height: auto; aspect-ratio: 4 / 3; object-fit: contain; background: var(--muted); }
 
 .backup-modes { border: 0; padding: 0; margin: 20px 0; }
 .backup-modes label, .backup-confirm { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; line-height: 1.5; }

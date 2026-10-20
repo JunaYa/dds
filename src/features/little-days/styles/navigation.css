@@ -22,7 +22,7 @@
 .ios-profile {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-layer-sticky);
   padding-top: max(20px, env(safe-area-inset-top));
   padding-bottom: 12px;
   background: var(--card);
@@ -42,7 +42,7 @@
 }
 .ios-bottom-navigation {
   position: fixed;
-  z-index: 20;
+  z-index: var(--z-layer-header);
   inset: auto 0 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -69,7 +69,6 @@
 .ios-bottom-navigation button[aria-current="page"] {
   color: var(--primary);
   background: var(--accent);
-  font-weight: 650;
 }
 .ios-bottom-navigation button:focus-visible { outline: 2px solid var(--ring); outline-offset: -3px; }
 .ios-bottom-navigation button:active { background: var(--accent); }

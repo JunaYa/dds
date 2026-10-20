@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { Button, buttonVariants } from './button'
 
 /**
@@ -51,4 +51,20 @@ describe('@vita/ui Button', () => {
     expect(className).toContain('w-24')
     expect(className).toContain('border-border')
   })
+})
+
+
+it('keeps the label in the layout and accessible while preventing duplicate submission', () => {
+  const submit = vi.fn()
+  const { rerender } = render(<Button loading onClick={submit}>Save this record</Button>)
+  const button = screen.getByRole('button', { name: 'Save this record' })
+  expect(button).toHaveAttribute('aria-busy', 'true')
+  expect(button).toBeDisabled()
+  expect(screen.getByText('Save this record')).not.toHaveClass('sr-only')
+  fireEvent.click(button)
+  expect(submit).not.toHaveBeenCalled()
+  rerender(<Button onClick={submit}>Save this record</Button>)
+  expect(button).toBeEnabled()
+  fireEvent.click(button)
+  expect(submit).toHaveBeenCalledOnce()
 })

@@ -31,9 +31,6 @@ button:disabled {
   opacity: 0.42;
   cursor: default;
 }
-button:active:not(:disabled) {
-  transform: scale(0.98);
-}
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,

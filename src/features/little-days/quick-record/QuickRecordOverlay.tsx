@@ -77,7 +77,7 @@ function Recorder({ night, onToggleNight }: { night: boolean; onToggleNight: () 
         <Sheet open={!choosing} onOpenChange={(open) => { if (!open) setChoosing(true); }}>
           <SheetPopup ref={sheet} side="bottom" className="quick-record-sheet" showCloseButton={false}
             portalProps={{ container: recorder, keepMounted: true }}
-            initialFocus={() => sheet.current?.querySelector<HTMLElement>(".record-fields input, .record-fields select, .record-fields textarea, .growth-fields input") ?? true}
+            initialFocus={() => matchMedia("(pointer: coarse)").matches ? false : sheet.current?.querySelector<HTMLElement>(".record-fields input, .record-fields select, .record-fields textarea, .growth-fields input") ?? true}
             finalFocus={() => grid.current?.querySelector<HTMLButtonElement>('[aria-current="true"]') ?? false}>
             {type && <div className="quick-recorder-form">
               <header className="quick-record-sheet-heading">

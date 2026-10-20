@@ -11,7 +11,7 @@ const TILE_SIZING =
   "h-24 w-24 min-w-0 flex-col gap-2 whitespace-normal rounded-xl px-3 py-3 text-center text-xs leading-tight [&_svg:not([class*='size-'])]:size-5"
 
 const buttonVariants = cva(
-  "group/button relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-transparent bg-clip-padding font-medium outline-none transition-[background-color,color,border-color,box-shadow,opacity,translate] pointer-coarse:after:absolute pointer-coarse:after:top-1/2 pointer-coarse:after:left-1/2 pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 pointer-coarse:after:-translate-x-1/2 pointer-coarse:after:-translate-y-1/2 pointer-coarse:after:content-[''] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "group/button relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-transparent bg-clip-padding font-medium outline-none transition-[background-color,color,border-color,box-shadow,opacity,translate] pointer-coarse:after:absolute pointer-coarse:after:top-1/2 pointer-coarse:after:left-1/2 pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 pointer-coarse:after:-translate-x-1/2 pointer-coarse:after:-translate-y-1/2 pointer-coarse:after:content-[''] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 motion-safe:active:not-aria-[haspopup]:translate-y-px motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -87,7 +87,7 @@ function Button({
 
   return (
     <ButtonPrimitive
-      className={unstyled ? className : cn(buttonVariants({ variant, size, className }))}
+      className={unstyled ? cn(loading && 'relative', className) : cn(buttonVariants({ variant, size, className }))}
       aria-busy={loading ? true : ariaBusy}
       aria-disabled={loading || undefined}
       data-slot="button"
@@ -100,10 +100,10 @@ function Button({
         <>
           <Loader2Icon
             aria-hidden="true"
-            className="pointer-events-none size-4 animate-spin"
+            className="pointer-events-none absolute left-1/2 top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 animate-spin motion-reduce:animate-none"
             data-slot="button-loading-indicator"
           />
-          <span className="sr-only">{children}</span>
+          <span className="inline-flex items-center justify-center gap-[inherit] opacity-0" style={{ flexDirection: 'inherit' }}>{children}</span>
         </>
       ) : (
         children

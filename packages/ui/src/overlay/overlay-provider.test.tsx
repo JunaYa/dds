@@ -1,3 +1,4 @@
+import { Sheet, SheetPopup, SheetTitle } from '../sheet/sheet'
 import { act, cleanup, render } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { OverlayProvider } from './overlay-provider'
@@ -37,4 +38,12 @@ it('leaves desktop layout to existing styles', () => {
   const container = document.querySelector('[data-slot="dialog-viewport"]')
   expect(container).toHaveAttribute('data-overlay-platform', 'default')
   expect(container).not.toHaveAttribute('style')
+})
+
+
+it.each(['left', 'right', 'top', 'bottom'] as const)('preserves the requested %s sheet direction on iOS', side => {
+  render(<OverlayProvider platform="ios"><Sheet open>
+    <SheetPopup side={side}><SheetTitle>Actions</SheetTitle></SheetPopup>
+  </Sheet></OverlayProvider>)
+  expect(document.querySelector('[data-slot="sheet-viewport"]')).toHaveAttribute('data-side', side)
 })

@@ -36,7 +36,7 @@ export function RecordForm({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
-    if (focusContent) {
+    if (focusContent && !matchMedia("(pointer: coarse)").matches) {
       formRef.current?.querySelector<HTMLElement>(
         '.record-fields input, .record-fields select, .record-fields textarea, .growth-fields input',
       )?.focus({ preventScroll: true });
@@ -128,7 +128,7 @@ export function RecordForm({
           </Button>
         </div>
       )}
-      {record?.photos?.map((photo, index) => <img className="record-photo" key={index} src={photo} alt={tr("Record photo")} />)}
+      {record?.photos?.map((photo, index) => <img width={320} height={240} className="record-photo" key={index} src={photo} alt={tr("Record photo")} />)}
       {record?.nursing && (
         <dl className="nursing-record-details">
           <div>

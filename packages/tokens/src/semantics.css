@@ -118,3 +118,6 @@
   --light: var(--surface-light-1);
   --dark: var(--surface-dark-1);
 }
+
+/* Stable dimming behind modal surfaces in either theme. */
+:root { --overlay-backdrop: rgb(0 0 0 / 32%); }
