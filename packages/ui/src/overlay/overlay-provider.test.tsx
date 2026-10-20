@@ -15,6 +15,8 @@ it('propagates iOS presentation through dialog and alert portals', () => {
   expect(document.querySelector('[data-slot="dialog-viewport"]')).toHaveAttribute('data-overlay-platform', 'ios')
   expect(document.querySelector('[data-slot="alert-dialog-viewport"]')).toHaveAttribute('data-overlay-platform', 'ios')
   expect(document.querySelector('[data-slot="dialog-backdrop"]')).toHaveAttribute('data-overlay-platform', 'ios')
+  expect(document.querySelector('[data-slot="dialog-popup"] [data-slot="overlay-grabber"]')).not.toBeNull()
+  expect(document.querySelector('[data-slot="alert-dialog-popup"] [data-slot="overlay-grabber"]')).toBeNull()
 })
 
 it('tracks the visible viewport when the keyboard opens and removes subscriptions', () => {
@@ -38,6 +40,7 @@ it('leaves desktop layout to existing styles', () => {
   const container = document.querySelector('[data-slot="dialog-viewport"]')
   expect(container).toHaveAttribute('data-overlay-platform', 'default')
   expect(container).not.toHaveAttribute('style')
+  expect(document.querySelector('[data-slot="overlay-grabber"]')).toBeNull()
 })
 
 
@@ -46,4 +49,10 @@ it.each(['left', 'right', 'top', 'bottom'] as const)('preserves the requested %s
     <SheetPopup side={side}><SheetTitle>Actions</SheetTitle></SheetPopup>
   </Sheet></OverlayProvider>)
   expect(document.querySelector('[data-slot="sheet-viewport"]')).toHaveAttribute('data-side', side)
+  expect(Boolean(document.querySelector('[data-slot="overlay-grabber"]'))).toBe(side === 'bottom')
+})
+
+it('can omit the grabber for full-screen flows on iOS', () => {
+  render(<OverlayProvider platform="ios"><Dialog open><DialogPopup showGrabber={false}><DialogTitle>Recorder</DialogTitle></DialogPopup></Dialog></OverlayProvider>)
+  expect(document.querySelector('[data-slot="overlay-grabber"]')).toBeNull()
 })

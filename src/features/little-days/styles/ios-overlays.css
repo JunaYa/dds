@@ -4,10 +4,10 @@
 }
 [data-overlay-platform="ios"] .care-dialog > [data-slot="dialog-header"] {
   position: sticky;
-  top: 0;
+  top: 28px;
   z-index: 2;
   margin: 0 -20px;
-  padding: 18px 20px 14px;
+  padding: 0 20px 14px;
   background: var(--popover);
   border-bottom: 1px solid var(--border);
 }
@@ -17,12 +17,23 @@
   font-weight: 600;
 }
 [data-overlay-platform="ios"] .dialog-heading .ios-dialog-close {
-  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
   min-width: 44px;
   min-height: 44px;
-  padding: 0 4px;
-  font-size: 17px;
-  color: var(--primary);
+  padding: 0;
+  border-radius: 50%;
+  color: var(--muted-foreground);
+}
+[data-overlay-platform="ios"] .dialog-heading .ios-dialog-close svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+}
+[data-overlay-platform="ios"] .dialog-heading .ios-dialog-close:active {
+  background: var(--muted);
 }
 [data-overlay-platform="ios"] .care-dialog .form-actions {
   position: sticky;
@@ -42,8 +53,8 @@
 }
 [data-overlay-platform="ios"] .dialog-heading {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  gap: 8px;
 }
 [data-overlay-platform="ios"] .dialog-heading .ios-dialog-close {
   grid-column: 1;
@@ -52,4 +63,7 @@
 [data-overlay-platform="ios"] .dialog-heading [data-slot="dialog-title"] {
   grid-column: 2;
   grid-row: 1;
+  text-align: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }

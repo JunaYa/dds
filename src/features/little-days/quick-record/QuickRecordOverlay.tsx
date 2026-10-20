@@ -101,7 +101,7 @@ export function QuickRecordOverlay() {
   const night = nightPreference ?? isNight(new Date());
   return (
     <Dialog open={open}>
-      <DialogPopup className={`quick-recorder-popup${night ? " dark quick-recorder-night" : ""}`} style={{ scale: 'none', opacity: 1 }} showCloseButton={false} bottomStickOnMobile={false}
+      <DialogPopup className={`quick-recorder-popup${night ? " dark quick-recorder-night" : ""}`} style={{ scale: 'none', opacity: 1 }} showCloseButton={false} showGrabber={false} bottomStickOnMobile={false}
         onKeyDown={(event) => {
           // Let the drag sensor receive arrows, Space and Escape before the modal handles them.
           if (event.currentTarget.querySelector('[data-dragging]')) event.preventBaseUIHandler();

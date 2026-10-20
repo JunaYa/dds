@@ -1,4 +1,42 @@
 /* Platform presentation is inherited through React context, including portals. */
+[data-slot="overlay-grabber"] {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  flex: 0 0 28px;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  width: 100%;
+  background: var(--popover);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+[data-slot="overlay-grabber"] > span {
+  width: 36px;
+  height: 5px;
+  border-radius: var(--radius-full, 999px);
+  background: color-mix(in srgb, var(--muted-foreground) 45%, transparent);
+}
+[data-overlay-platform="ios"]:is([data-slot="dialog-viewport"]:not([data-overlay-fullscreen]), [data-slot="sheet-viewport"][data-side="bottom"]) > :is([data-slot="dialog-popup"], [data-slot="sheet-popup"])[data-overlay-dragging] {
+  translate: 0 var(--overlay-drag-offset);
+  transition: none;
+}
+[data-slot="overlay-grabber"]:active { cursor: grabbing; }
+[data-overlay-platform="ios"] [data-slot="dialog-header"],
+[data-overlay-platform="ios"][data-side="bottom"] [data-slot="sheet-header"] {
+  padding-top: 0;
+}
+[data-overlay-platform="ios"] > [data-slot="dialog-popup"] [data-slot="dialog-header"] > [data-slot="dialog-title"],
+[data-overlay-platform="ios"][data-side="bottom"] [data-slot="sheet-header"] > [data-slot="sheet-title"],
+[data-overlay-platform="ios"][data-side="bottom"] > [data-slot="sheet-popup"] > [data-slot="sheet-title"] {
+  padding-inline: 44px;
+  text-align: center;
+  min-height: 44px;
+  align-content: center;
+}
 [data-overlay-platform="ios"] {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   overscroll-behavior: contain;

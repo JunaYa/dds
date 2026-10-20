@@ -9,6 +9,7 @@ import type React from 'react'
 import { Button } from '../button/button'
 import { ScrollArea } from '../scroll-area/scroll-area'
 import { useOverlayPresentation } from '../overlay/overlay-provider'
+import { OverlayGrabber } from '../overlay/overlay-grabber'
 import { cn } from '../lib/utils'
 
 export const Sheet: typeof SheetPrimitive.Root = SheetPrimitive.Root
@@ -86,6 +87,7 @@ export function SheetPopup({
   closeProps?: SheetPrimitive.Close.Props
   portalProps?: SheetPrimitive.Portal.Props
 }): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <SheetPortal {...portalProps}>
       <SheetBackdrop />
@@ -108,11 +110,12 @@ export function SheetPopup({
           data-slot="sheet-popup"
           {...props}
         >
+          {presentation['data-overlay-platform'] === 'ios' && side === 'bottom' && <OverlayGrabber />}
           {children}
           {showCloseButton && (
             <SheetPrimitive.Close
               aria-label="Close"
-              className="absolute end-2 top-2"
+              className={presentation['data-overlay-platform'] === 'ios' && side === 'bottom' ? 'absolute start-3 top-7 size-11 rounded-full' : 'absolute end-2 top-2'}
               render={
                 <Button size="icon" variant="ghost">
                   <XIcon />

@@ -8,6 +8,7 @@ import type React from 'react'
 import { Button } from '../button/button'
 import { ScrollArea } from '../scroll-area/scroll-area'
 import { useOverlayPresentation } from '../overlay/overlay-provider'
+import { OverlayGrabber } from '../overlay/overlay-grabber'
 import { cn } from '../lib/utils'
 
 export const DialogCreateHandle: typeof DialogPrimitive.createHandle = DialogPrimitive.createHandle
@@ -64,6 +65,7 @@ export function DialogPopup({
   className,
   children,
   showCloseButton = true,
+  showGrabber = true,
   bottomStickOnMobile = true,
   closeLabel = 'Close',
   closeProps,
@@ -72,12 +74,14 @@ export function DialogPopup({
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
+  showGrabber?: boolean
   bottomStickOnMobile?: boolean
   closeLabel?: string
   closeProps?: DialogPrimitive.Close.Props
   portalProps?: DialogPrimitive.Portal.Props
   backdropProps?: DialogPrimitive.Backdrop.Props
 }): React.ReactElement {
+  const presentation = useOverlayPresentation()
   return (
     <DialogPortal {...portalProps}>
       <DialogBackdrop {...backdropProps} />
@@ -94,11 +98,12 @@ export function DialogPopup({
           data-slot="dialog-popup"
           {...props}
         >
+          {showGrabber && presentation['data-overlay-platform'] === 'ios' && <OverlayGrabber />}
           {children}
           {showCloseButton && (
             <DialogPrimitive.Close
               aria-label={closeLabel}
-              className="absolute end-2 top-2"
+              className={presentation['data-overlay-platform'] === 'ios' ? 'absolute start-3 top-7 size-11 rounded-full' : 'absolute end-2 top-2'}
               render={<Button size="icon" variant="ghost" />}
               {...closeProps}
             >

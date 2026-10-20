@@ -138,13 +138,14 @@
 
 .ios-record-chooser[data-slot="sheet-popup"] {
   max-height: min(80dvh, 640px);
-  padding: 24px max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  padding: 0 max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   border-radius: 24px 24px 0 0;
   background: var(--card);
   overflow-y: auto;
   gap: 12px;
 }
-.ios-record-chooser [data-slot="sheet-title"] { padding-right: 36px; }
+.ios-record-chooser [data-slot="sheet-title"] { padding-inline: 44px; text-align: center; }
+.ios-record-chooser [data-slot="overlay-grabber"] { margin-bottom: -12px; }
 .ios-record-chooser .focus-types {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

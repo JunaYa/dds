@@ -73,6 +73,13 @@ it("hides bottom navigation while a record dialog is open and restores it on can
   render(<App />);
   fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   expect(screen.queryByRole("navigation", { name: "Main navigation" })).not.toBeInTheDocument();
+  const close = screen.getByRole("button", { name: "Close dialog" });
+  expect(close.querySelector("svg")).not.toBeNull();
+  expect(close.textContent).toBe("");
+  expect(document.querySelector('.care-dialog [data-slot="overlay-grabber"]')).not.toBeNull();
+  fireEvent.click(close);
+  expect(screen.getByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   fireEvent.click(screen.getByRole("button", { name: "Cancel", exact: true }));
   expect(screen.getByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
 });
