@@ -5,10 +5,7 @@ import { useId, useMemo, useState } from "react";
 import { Button } from "@vita/ui/button";
 import {
   Dialog,
-  DialogPortal,
-  DialogBackdrop,
-  DialogViewport,
-  DialogPrimitive,
+  DialogPopup,
   DialogTitle,
   DialogDescription,
 } from "@vita/ui/dialog";
@@ -84,8 +81,7 @@ function StartTimeForm({
         if (a.editSessionTime(draft)) onClose();
       }}
     >
-      <div className="nursing-sheet-handle" aria-hidden="true" />
-      <header className="nursing-time-heading">
+      <header className="nursing-time-heading" data-overlay-drag-region>
         <Button type="button" variant="ghost" onClick={onClose}>
           {tr("Cancel")}
         </Button>
@@ -174,18 +170,16 @@ export function NursingStartTime({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogPortal>
-        <DialogBackdrop className="nursing-time-backdrop" />
-        <DialogViewport className="nursing-time-viewport">
-          <DialogPrimitive.Popup
-            data-slot="dialog-popup"
-            initialFocus={false}
-            className={`nursing-confirm nursing-time-sheet ${theme}`}
-          >
-            <StartTimeForm time={time} onClose={() => onOpenChange(false)} />
-          </DialogPrimitive.Popup>
-        </DialogViewport>
-      </DialogPortal>
+      <DialogPopup
+        showCloseButton={false}
+        bottomStickOnMobile={false}
+        backdropProps={{ className: "nursing-time-backdrop" }}
+        viewportProps={{ className: "nursing-time-viewport" }}
+        initialFocus={false}
+        className={`nursing-confirm nursing-time-sheet ${theme}`}
+      >
+        <StartTimeForm time={time} onClose={() => onOpenChange(false)} />
+      </DialogPopup>
     </Dialog>
   );
 }

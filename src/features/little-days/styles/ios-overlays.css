@@ -1,6 +1,10 @@
 [data-overlay-platform="ios"] > .care-dialog {
+  --overlay-content-inset: 20px;
   padding: 0 20px max(20px, env(safe-area-inset-bottom)) !important;
   max-height: 100%;
+}
+[data-overlay-platform="ios"] .quick-record-sheet {
+  --overlay-content-inset: 24px;
 }
 [data-overlay-platform="ios"] .care-dialog > [data-slot="dialog-header"] {
   position: sticky;

@@ -51,6 +51,7 @@
 - 复用共享弹层的 portal、遮罩、焦点管理、关闭和退出动画，提供标题及必要说明。关闭时保留退出动画所需内容，参考 WorkspaceModal 生命周期，不先清空再淡出。
 - 当前工作区由 `@vita/ui/overlay` 的 OverlayProvider 选择 ios / default 展示；平台逻辑留在已有适配层。共享结构样式在 `packages/ui/src/overlay/`，业务外观在 `styles/ios-overlays.css`，不在每个表单复制平台检测。
 - 移动端键盘出现时输入和提交区可见且可滚动，复用 visualViewport 适配。触屏打开弹层不强制唤起键盘，桌面保留键盘焦点路径。
+- iOS 拖拽条继承弹层表面，不单独绘制另一种背景；通用手势由共享弹层处理。业务表单的固定操作栏标记 `data-overlay-footer`，让聚焦字段避开遮挡。全屏流程通过 viewport 的 `data-overlay-fullscreen` 显式退出 Sheet 布局。审查与页面覆盖见 [iOS 弹层审查](ios-overlay-review.md)。
 
 ## 布局、导航和平台能力
 

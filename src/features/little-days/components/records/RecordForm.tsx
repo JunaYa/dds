@@ -241,7 +241,7 @@ export function RecordForm({
           </small>
         </div>
       )}
-      <div className="form-actions">
+      <div className="form-actions" data-overlay-footer>
         {record ? (
           <Button
             unstyled

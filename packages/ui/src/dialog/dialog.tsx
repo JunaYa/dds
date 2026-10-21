@@ -71,6 +71,7 @@ export function DialogPopup({
   closeProps,
   portalProps,
   backdropProps,
+  viewportProps,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
@@ -80,13 +81,15 @@ export function DialogPopup({
   closeProps?: DialogPrimitive.Close.Props
   portalProps?: DialogPrimitive.Portal.Props
   backdropProps?: DialogPrimitive.Backdrop.Props
+  viewportProps?: DialogPrimitive.Viewport.Props & { 'data-overlay-fullscreen'?: string }
 }): React.ReactElement {
   const presentation = useOverlayPresentation()
   return (
     <DialogPortal {...portalProps}>
       <DialogBackdrop {...backdropProps} />
       <DialogViewport
-        className={cn(bottomStickOnMobile && 'max-sm:grid-rows-[1fr_auto] max-sm:p-0 max-sm:pt-12')}
+        {...viewportProps}
+        className={cn(bottomStickOnMobile && 'max-sm:grid-rows-[1fr_auto] max-sm:p-0 max-sm:pt-12', viewportProps?.className)}
       >
         <DialogPrimitive.Popup
           className={cn(

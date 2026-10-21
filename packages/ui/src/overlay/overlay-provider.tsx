@@ -19,6 +19,35 @@ export function OverlayProvider({ platform = 'default', children }: { platform?:
       visual.removeEventListener('scroll', update)
     }
   }, [platform])
+  useEffect(() => {
+    if (platform !== 'ios') return
+    let frame: number | undefined
+    const reveal = () => {
+      if (frame !== undefined) cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const input = document.activeElement
+        if (!(input instanceof HTMLElement) || !input.matches('input, textarea, select, [contenteditable="true"]')) return
+        const popup = input.closest<HTMLElement>('[data-slot="dialog-popup"], [data-slot="sheet-popup"]')
+        if (!popup) return
+        const bounds = popup.getBoundingClientRect()
+        const header = popup.querySelector<HTMLElement>('[data-slot="dialog-header"], [data-slot="sheet-header"], [data-overlay-drag-region]')
+        const footer = popup.querySelector<HTMLElement>('[data-slot="dialog-footer"], [data-slot="sheet-footer"], [data-overlay-footer]')
+        const top = Math.max(bounds.top, header?.getBoundingClientRect().bottom ?? bounds.top) + 12
+        const bottom = Math.min(bounds.bottom, footer?.getBoundingClientRect().top ?? bounds.bottom) - 12
+        if (bottom <= top) return
+        const field = input.getBoundingClientRect()
+        // Scroll only this popup; scrolling the document shifts the page behind the sheet.
+        if (field.bottom > bottom) popup.scrollTop += field.bottom - bottom
+        else if (field.top < top) popup.scrollTop -= top - field.top
+      })
+    }
+    reveal()
+    document.addEventListener('focusin', reveal)
+    return () => {
+      document.removeEventListener('focusin', reveal)
+      if (frame !== undefined) cancelAnimationFrame(frame)
+    }
+  }, [platform, viewport])
   return <OverlayContext.Provider value={{ platform, viewport }}>{children}</OverlayContext.Provider>
 }
 

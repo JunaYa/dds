@@ -1,43 +1,73 @@
 import { Dialog } from '@base-ui/react/dialog'
-import { useRef, type PointerEvent } from 'react'
+import { useEffect, useRef } from 'react'
 
-/** Drag dismissal uses the dialog's close path so cancellation and focus restoration still apply. */
+/** Keep dismissal on the dialog's close path, including cancellation and focus restoration. */
 export function OverlayGrabber() {
   const close = useRef<HTMLButtonElement>(null)
-  const drag = useRef<{ id: number; start: number; offset: number; popup: HTMLElement } | null>(null)
+  const handle = useRef<HTMLDivElement>(null)
 
-  function reset(event: PointerEvent<HTMLDivElement>, dismiss = false) {
-    const current = drag.current
-    if (!current || current.id !== event.pointerId) return
-    drag.current = null
-    current.popup.removeAttribute('data-overlay-dragging')
-    current.popup.style.removeProperty('--overlay-drag-offset')
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId)
+  useEffect(() => {
+    const parent = handle.current?.closest<HTMLElement>('[data-slot="dialog-popup"], [data-slot="sheet-popup"]')
+    if (!parent) return
+    const popup = parent
+    let drag: { id: number; start: number; offset: number; time: number; velocity: number } | null = null
+
+    function restore() {
+      popup.removeAttribute('data-overlay-dragging')
+      popup.style.removeProperty('--overlay-drag-offset')
     }
-    if (dismiss && current.offset >= 80) close.current?.click()
-  }
+    function start(event: PointerEvent) {
+      if (!event.isPrimary || event.button !== 0 || drag || !(event.target instanceof Element)) return
+      if (event.target.closest('button, a, input, textarea, select, [role="button"], [contenteditable="true"]')) return
+      const region = event.target.closest('[data-slot="overlay-grabber"], [data-slot="dialog-header"], [data-slot="sheet-header"], [data-slot="sheet-title"], [data-overlay-drag-region]')
+      if (!region || region.closest('[data-slot="dialog-popup"], [data-slot="sheet-popup"]') !== popup) return
+      popup.style.removeProperty('--overlay-dismiss-distance')
+      drag = { id: event.pointerId, start: event.clientY, offset: 0, time: performance.now(), velocity: 0 }
+      popup.setPointerCapture(event.pointerId)
+    }
+    function move(event: PointerEvent) {
+      if (!drag || drag.id !== event.pointerId) return
+      const now = performance.now()
+      const offset = Math.max(0, event.clientY - drag.start)
+      const elapsed = now - drag.time
+      drag.velocity = elapsed > 0 ? (offset - drag.offset) / elapsed : 0
+      drag.offset = offset
+      drag.time = now
+      popup.setAttribute('data-overlay-dragging', '')
+      popup.style.setProperty('--overlay-drag-offset', `${offset}px`)
+    }
+    function finish(event: PointerEvent) {
+      if (!drag || drag.id !== event.pointerId) return
+      const current = drag
+      drag = null
+      if (popup.hasPointerCapture(event.pointerId)) popup.releasePointerCapture(event.pointerId)
+      const threshold = Math.min(120, Math.max(64, popup.getBoundingClientRect().height * 0.25))
+      const flick = current.offset >= 48 && current.velocity >= 0.6 && performance.now() - current.time < 80
+      if (event.type === 'pointerup' && (current.offset >= threshold || flick)) {
+        // Preserve the current painted position until the ending style takes over.
+        popup.style.setProperty('--overlay-dismiss-distance', `${Math.max(popup.getBoundingClientRect().height, current.offset) + 32}px`)
+        close.current?.click()
+      }
+      restore()
+    }
+    popup.addEventListener('pointerdown', start)
+    popup.addEventListener('pointermove', move)
+    popup.addEventListener('pointerup', finish)
+    popup.addEventListener('pointercancel', finish)
+    popup.addEventListener('lostpointercapture', finish)
+    return () => {
+      popup.removeEventListener('pointerdown', start)
+      popup.removeEventListener('pointermove', move)
+      popup.removeEventListener('pointerup', finish)
+      popup.removeEventListener('pointercancel', finish)
+      popup.removeEventListener('lostpointercapture', finish)
+      restore()
+      popup.style.removeProperty('--overlay-dismiss-distance')
+    }
+  }, [])
 
   return <>
-    <div data-slot="overlay-grabber" aria-hidden="true"
-      onPointerDown={event => {
-        if (!event.isPrimary || event.button !== 0 || drag.current) return
-        const popup = event.currentTarget.closest<HTMLElement>('[data-slot="dialog-popup"], [data-slot="sheet-popup"]')
-        if (!popup) return
-        drag.current = { id: event.pointerId, start: event.clientY, offset: 0, popup }
-        event.currentTarget.setPointerCapture(event.pointerId)
-      }}
-      onPointerMove={event => {
-        const current = drag.current
-        if (!current || current.id !== event.pointerId) return
-        current.offset = Math.max(0, event.clientY - current.start)
-        current.popup.setAttribute('data-overlay-dragging', '')
-        current.popup.style.setProperty('--overlay-drag-offset', `${current.offset}px`)
-      }}
-      onPointerUp={event => reset(event, true)}
-      onPointerCancel={event => reset(event)}
-      onLostPointerCapture={event => reset(event)}
-    ><span /></div>
+    <div ref={handle} data-slot="overlay-grabber" aria-hidden="true"><span /></div>
     <Dialog.Close ref={close} hidden tabIndex={-1} aria-hidden="true" />
   </>
 }

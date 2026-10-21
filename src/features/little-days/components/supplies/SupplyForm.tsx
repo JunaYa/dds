@@ -93,7 +93,7 @@ export function SupplyForm({ supply }: { supply?: Supply }) {
           </div>
         </>
       )}
-      <div className="form-actions">
+      <div className="form-actions" data-overlay-footer>
         <Button variant="ghost" type="button" onClick={() => a.setModal(null)}>
           {tr("Cancel")}
         </Button>

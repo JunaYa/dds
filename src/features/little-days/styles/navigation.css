@@ -137,6 +137,8 @@
 }
 
 .ios-record-chooser[data-slot="sheet-popup"] {
+  --overlay-surface: var(--card);
+  --overlay-content-inset: max(20px, env(safe-area-inset-left));
   max-height: min(80dvh, 640px);
   padding: 0 max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   border-radius: 24px 24px 0 0;

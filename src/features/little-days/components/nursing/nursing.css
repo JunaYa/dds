@@ -588,14 +588,6 @@
 .nursing-time-backdrop[data-ending-style] {
   transition-duration: 200ms;
 }
-.nursing-sheet-handle {
-  width: 34px;
-  height: 4px;
-  margin: 7px auto 0;
-  border-radius: 99px;
-  background: var(--muted-foreground);
-  opacity: 0.45;
-}
 .nursing-time-heading {
   display: grid;
   grid-template-columns: 70px 1fr 70px;

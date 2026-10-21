@@ -1,9 +1,10 @@
 import { Sheet, SheetPopup, SheetTitle } from '../sheet/sheet'
-import { act, cleanup, render } from '@testing-library/react'
+import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { OverlayProvider } from './overlay-provider'
 import { Dialog, DialogPopup, DialogTitle } from '../dialog/dialog'
 import { AlertDialog, AlertDialogPopup, AlertDialogTitle } from '../alert-dialog/alert-dialog'
+import { Textarea } from '../textarea/textarea'
 
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 
@@ -53,6 +54,28 @@ it.each(['left', 'right', 'top', 'bottom'] as const)('preserves the requested %s
 })
 
 it('can omit the grabber for full-screen flows on iOS', () => {
-  render(<OverlayProvider platform="ios"><Dialog open><DialogPopup showGrabber={false}><DialogTitle>Recorder</DialogTitle></DialogPopup></Dialog></OverlayProvider>)
+  render(<OverlayProvider platform="ios"><Dialog open><DialogPopup showGrabber={false} viewportProps={{ 'data-overlay-fullscreen': '', className: 'full-screen' }}><DialogTitle>Recorder</DialogTitle></DialogPopup></Dialog></OverlayProvider>)
   expect(document.querySelector('[data-slot="overlay-grabber"]')).toBeNull()
+  expect(document.querySelector('[data-slot="dialog-viewport"]')).toHaveAttribute('data-overlay-fullscreen')
+  expect(document.querySelector('[data-slot="dialog-viewport"]')).toHaveClass('full-screen')
+})
+
+it('reveals the focused field above a sticky action bar without scrolling the document', () => {
+  let paint: FrameRequestCallback | undefined
+  vi.stubGlobal('requestAnimationFrame', vi.fn(callback => { paint = callback; return 1 }))
+  vi.stubGlobal('cancelAnimationFrame', vi.fn())
+  render(<OverlayProvider platform="ios"><Dialog open><DialogPopup>
+    <DialogTitle>Edit</DialogTitle><Textarea aria-label="Notes" />
+    <div data-overlay-footer>Save</div>
+  </DialogPopup></Dialog></OverlayProvider>)
+  const popup = screen.getByRole('dialog')
+  const input = screen.getByLabelText('Notes')
+  const footer = popup.querySelector<HTMLElement>('[data-overlay-footer]')!
+  vi.spyOn(popup, 'getBoundingClientRect').mockReturnValue({ top: 100, bottom: 500 } as DOMRect)
+  vi.spyOn(footer, 'getBoundingClientRect').mockReturnValue({ top: 400, bottom: 500 } as DOMRect)
+  vi.spyOn(input, 'getBoundingClientRect').mockReturnValue({ top: 380, bottom: 460 } as DOMRect)
+  input.focus()
+  act(() => paint?.(0))
+  expect(popup.scrollTop).toBe(72)
+  expect(document.documentElement.scrollTop).toBe(0)
 })

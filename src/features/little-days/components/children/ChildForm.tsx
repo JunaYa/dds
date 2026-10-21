@@ -41,7 +41,7 @@ export function ChildForm() {
           onValueChange={setBirthday}
         />
       </div>
-      <div className="form-actions">
+      <div className="form-actions" data-overlay-footer>
         <Button
           type="submit"
           className="primary"

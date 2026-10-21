@@ -80,7 +80,7 @@ function Recorder({ night, onToggleNight }: { night: boolean; onToggleNight: () 
             initialFocus={() => matchMedia("(pointer: coarse)").matches ? false : sheet.current?.querySelector<HTMLElement>(".record-fields input, .record-fields select, .record-fields textarea, .growth-fields input") ?? true}
             finalFocus={() => grid.current?.querySelector<HTMLButtonElement>('[aria-current="true"]') ?? false}>
             {type && <div className="quick-recorder-form">
-              <header className="quick-record-sheet-heading">
+              <header className="quick-record-sheet-heading" data-overlay-drag-region>
                 <SheetTitle>{typeName(type, tr)}</SheetTitle>
                 <Button variant="ghost" onClick={() => setChoosing(true)}>{tr("Close form")} <kbd>Esc</kbd></Button>
               </header>
@@ -102,6 +102,7 @@ export function QuickRecordOverlay() {
   return (
     <Dialog open={open}>
       <DialogPopup className={`quick-recorder-popup${night ? " dark quick-recorder-night" : ""}`} style={{ scale: 'none', opacity: 1 }} showCloseButton={false} showGrabber={false} bottomStickOnMobile={false}
+        viewportProps={{ 'data-overlay-fullscreen': '' }}
         onKeyDown={(event) => {
           // Let the drag sensor receive arrows, Space and Escape before the modal handles them.
           if (event.currentTarget.querySelector('[data-dragging]')) event.preventBaseUIHandler();
