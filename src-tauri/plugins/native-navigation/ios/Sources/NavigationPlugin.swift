@@ -265,6 +265,23 @@ class NavigationPlugin: Plugin {
         self.webview = webview
     }
 
+    @objc func nextSiriRequest(_ invoke: Invoke) throws {
+        do {
+            if let item = try SiriInbox.next() {
+                var result: JsonObject = ["id": item.id, "kind": item.kind,
+                    "time": ISO8601DateFormatter().string(from: item.time)]
+                if let amount = item.amount { result["amount"] = amount }
+                if let diaper = item.diaper { result["diaper"] = diaper }
+                invoke.resolve(result)
+            } else { invoke.resolve() }
+        } catch { invoke.reject(error.localizedDescription) }
+    }
+    @objc func dismissSiriRequest(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(DismissBackupOptions.self)
+        do { try SiriInbox.dismiss(args.id); invoke.resolve() }
+        catch { invoke.reject(error.localizedDescription) }
+    }
+
     @objc func captureBackup(_ invoke: Invoke) throws {
         let args = try invoke.parseArgs(CaptureBackupOptions.self)
         do { try BackupInbox.capture(args.url); invoke.resolve() }

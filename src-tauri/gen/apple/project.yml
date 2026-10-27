@@ -10,6 +10,7 @@ configs:
 settingGroups:
   app:
     base:
+      SWIFT_VERSION: "5.0"
       PRODUCT_NAME: dds
       PRODUCT_BUNDLE_IDENTIFIER: com.dds.app
 targetTemplates:
@@ -29,6 +30,7 @@ targets:
     platform: iOS
     sources:
       - path: Sources
+      - path: ../../plugins/native-navigation/ios/Sources/SiriInbox.swift
       - path: Assets.xcassets
       - path: Externals
       - path: dds_iOS

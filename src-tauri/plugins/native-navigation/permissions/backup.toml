@@ -7,3 +7,8 @@ commands.allow = ["exportBackup"]
 identifier = "allow-backup-inbox"
 description = "Read and dismiss files explicitly shared to this app."
 commands.allow = ["nextSharedBackup", "dismissSharedBackup"]
+
+[[permission]]
+identifier = "allow-siri-inbox"
+description = "Read and acknowledge Siri recording requests."
+commands.allow = ["nextSiriRequest", "dismissSiriRequest"]

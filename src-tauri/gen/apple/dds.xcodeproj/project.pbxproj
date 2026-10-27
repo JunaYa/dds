@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A10000000000000000000001 /* RecordIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000002; };
+		A10000000000000000000003 /* SiriInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000004; };
 		19D561A83A8799F2DF445903 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22FDA780A7ACB298E5DE51BD /* UIKit.framework */; };
 		2EB76E06C2376D5ADA1B40B9 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 87F6A2EC8EA6D443FAF3BB00 /* assets */; };
 		44AB0E7ED3104E0F58EEDA20 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27B85DCD83E164829DE37F6E /* MetalKit.framework */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A10000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/dds/RecordIntents.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../../plugins/native-navigation/ios/Sources/SiriInbox.swift; sourceTree = SOURCE_ROOT; };
 		1C5C547CB11FEA8C49C3919D /* dds_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = dds_iOS.entitlements; sourceTree = "<group>"; };
 		1DBA5BDB0B98E4D2451D1DC7 /* tray.rs */ = {isa = PBXFileReference; lastKnownFileType = text; path = tray.rs; sourceTree = "<group>"; };
 		22FDA780A7ACB298E5DE51BD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -85,6 +89,8 @@
 		7E16A390AA34356E7D87C17B /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A10000000000000000000002,
+				A10000000000000000000004,
 				A301C105F3374351D61BB620 /* dds */,
 			);
 			path = Sources;
@@ -256,6 +262,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D52514090DA687DD11519CE /* main.mm in Sources */,
+				A10000000000000000000001,
+				A10000000000000000000003,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

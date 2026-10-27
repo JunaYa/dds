@@ -1,5 +1,11 @@
 // English phrases are stable message keys. Values are Simplified Chinese.
 export const messages: Record<string, string> = {
+  "Confirm Siri record": "确认 Siri 记录",
+  "Choose a child and check the details before saving.": "请选择宝宝，核对内容后保存。",
+  "Choose a child": "请选择宝宝",
+  "Could not read Siri requests. Reopen the app to retry.": "无法读取 Siri 请求，请重新打开应用重试。",
+  "Could not dismiss this request. Try again.": "无法关闭此请求，请重试。",
+  "This record type has changed. Create this record manually.": "此记录类型已修改，请手动新建记录。",
   "Export pre-sync recovery copy": "导出同步前的恢复副本",
   "No pre-sync recovery copy is available yet.": "目前还没有同步前的恢复副本。",
   "Cloud sync": "云同步",

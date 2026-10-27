@@ -62,21 +62,6 @@ export function Shell({ children }: { children: ReactNode }) {
                 })}{" "}
                 <span>•</span> {a.activeChild.age}
               </div>
-              <h1>
-                {a.page === "Today"
-                  ? tr("{name}’s little day", { name: a.activeChild.name })
-                  : a.page === "Analysis"
-                    ? tr("Analysis")
-                    : a.page === "My"
-                      ? tr("Profile")
-                  : ["Appearance", "Interaction", "Backup", "Storage", "Cloud"].includes(a.page)
-                    ? tr(({ Appearance: "Language and appearance", Interaction: "Interaction", Backup: "Backup and restore", Storage: "On this device", Cloud: "Cloud sync" } as Record<string, string>)[a.page])
-                  : a.page === "Supplies"
-                    ? tr("Ready for the everyday.")
-                    : a.page === "Settings"
-                      ? tr("Make yourself at home.")
-                      : tr("Make room for your routine.")}
-              </h1>
               <p>
                 {a.page === "Today"
                   ? tr(a.activeChild.caption)

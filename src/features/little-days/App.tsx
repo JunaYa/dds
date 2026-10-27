@@ -1,3 +1,4 @@
+import { SiriRecordReceiver } from "./siri/SiriRecordReceiver";
 import { OverlayProvider } from "@vita/ui/overlay";
 import { isIosApp } from "./components/layout/ios-platform";
 import { SyncProvider } from "./sync/SyncProvider";
@@ -82,6 +83,7 @@ export default function LittleDays() {
           <QuickRecordProvider>
             <HapticFeedback />
             <SharedBackupReceiver />
+            <SiriRecordReceiver />
             <Workspace />
             <QuickRecordOverlay />
           </QuickRecordProvider>

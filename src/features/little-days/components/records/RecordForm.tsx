@@ -24,6 +24,7 @@ export function RecordForm({
   inline = false,
   focusContent = false,
   defaultTime,
+  draft,
   onComplete,
 }: {
   type: RecordType;
@@ -32,6 +33,7 @@ export function RecordForm({
   inline?: boolean;
   focusContent?: boolean;
   defaultTime?: Date;
+  draft?: Pick<CareRecord, "values" | "time" | "source">;
   onComplete?: () => void;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -46,8 +48,8 @@ export function RecordForm({
   const dateInputId = useId();
   const a = useApp(),
     [typeId, setTypeId] = useState(initialType.id),
-    [values, setValues] = useState<Values>(record?.values || {}),
-    [time, setTime] = useState(() => record?.time || localDateTime(defaultTime)),
+    [values, setValues] = useState<Values>(record?.values || draft?.values || {}),
+    [time, setTime] = useState(() => record?.time || draft?.time || localDateTime(defaultTime)),
     [note, setNote] = useState(record?.note || "");
   useEffect(() => {
     if (defaultTime && !record) setTime(localDateTime(defaultTime));
@@ -88,7 +90,7 @@ export function RecordForm({
           note,
           nursing: record?.nursing,
           photos: record?.photos,
-          source: record?.source,
+          source: record?.source || draft?.source,
         }, !inline);
         if (saved && inline) {
           setValues({});
