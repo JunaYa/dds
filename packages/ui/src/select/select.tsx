@@ -247,6 +247,9 @@ export { SelectPrimitive, SelectPopup as SelectContent }
 /** Native select for platform pickers, standard form validation, and option children. */
 export function NativeSelect({
   className,
+  onPointerDown,
+  onKeyDown,
+  onBlur,
   ...props
 }: React.ComponentProps<'select'>): React.ReactElement {
   return (
@@ -257,6 +260,18 @@ export function NativeSelect({
         className
       )}
       {...props}
+      onPointerDown={event => {
+        onPointerDown?.(event)
+        if (!event.defaultPrevented) event.currentTarget.dataset.focusOrigin = 'pointer'
+      }}
+      onKeyDown={event => {
+        delete event.currentTarget.dataset.focusOrigin
+        onKeyDown?.(event)
+      }}
+      onBlur={event => {
+        delete event.currentTarget.dataset.focusOrigin
+        onBlur?.(event)
+      }}
     />
   )
 }

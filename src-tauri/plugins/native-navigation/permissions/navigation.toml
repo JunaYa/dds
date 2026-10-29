@@ -7,3 +7,8 @@ commands.allow = ["attach", "update", "detach", "attachTabs", "updateTabs"]
 identifier = "allow-haptics"
 description = "Allows light interaction feedback on supported iOS devices."
 commands.allow = ["hapticFeedback"]
+
+[[permission]]
+identifier = "allow-modal-interaction"
+description = "Temporarily constrains WebView scroll and zoom gestures while a modal is open."
+commands.allow = ["setModalInteraction"]

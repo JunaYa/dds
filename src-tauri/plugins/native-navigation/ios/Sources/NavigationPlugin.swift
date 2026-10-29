@@ -260,9 +260,23 @@ class NavigationPlugin: Plugin {
     private var header: UIView?
     private var session: String?
     private var systemTabs: UIViewController?
+    private var modalInteraction: ModalInteraction?
 
     @objc override func load(webview: WKWebView) {
         self.webview = webview
+        modalInteraction = ModalInteraction(scrollView: webview.scrollView)
+    }
+
+    @objc func setModalInteraction(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(ModalInteractionOptions.self)
+        DispatchQueue.main.async {
+            guard let interaction = self.modalInteraction else {
+                invoke.reject("WebView is not available")
+                return
+            }
+            interaction.update(session: args.session, active: args.active)
+            invoke.resolve()
+        }
     }
 
     @objc func nextSiriRequest(_ invoke: Invoke) throws {

@@ -40,6 +40,10 @@
   border-radius: 0;
   background: transparent;
 }
+.ios-profile .child-picker select[data-focus-origin="pointer"]:focus {
+  outline: none;
+  box-shadow: none;
+}
 .ios-bottom-navigation {
   position: fixed;
   z-index: var(--z-layer-header);

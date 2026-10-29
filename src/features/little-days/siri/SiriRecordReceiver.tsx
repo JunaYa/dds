@@ -78,7 +78,7 @@ export function SiriRecordReceiver() {
         {saved ? <p role="status">{tr("Record saved")}</p> : !draft || !type ? (
           <p role="alert">{tr("This record type has changed. Create this record manually.")}</p>
         ) : <>
-          <label>{tr("Child")}
+          <label className="form-field">{tr("Child")}
             <NativeSelect value={child} onChange={e => setChild(e.target.value)}>
               <option value="">{tr("Choose a child")}</option>
               {a.children.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}

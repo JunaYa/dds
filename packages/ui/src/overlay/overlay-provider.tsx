@@ -29,6 +29,7 @@ export function OverlayProvider({ platform = 'default', children }: { platform?:
         if (!(input instanceof HTMLElement) || !input.matches('input, textarea, select, [contenteditable="true"]')) return
         const popup = input.closest<HTMLElement>('[data-slot="dialog-popup"], [data-slot="sheet-popup"]')
         if (!popup) return
+        popup.scrollLeft = 0
         const bounds = popup.getBoundingClientRect()
         const header = popup.querySelector<HTMLElement>('[data-slot="dialog-header"], [data-slot="sheet-header"], [data-overlay-drag-region]')
         const footer = popup.querySelector<HTMLElement>('[data-slot="dialog-footer"], [data-slot="sheet-footer"], [data-overlay-footer]')
@@ -48,6 +49,18 @@ export function OverlayProvider({ platform = 'default', children }: { platform?:
       if (frame !== undefined) cancelAnimationFrame(frame)
     }
   }, [platform, viewport])
+  useEffect(() => {
+    if (platform !== 'ios') return
+    const constrainHorizontalScroll = (event: Event) => {
+      const target = event.target
+      if (target instanceof HTMLElement && target.scrollLeft !== 0 &&
+          target.matches('[data-slot="dialog-popup"], [data-slot="sheet-popup"], [data-slot="alert-dialog-popup"]')) {
+        target.scrollLeft = 0
+      }
+    }
+    document.addEventListener('scroll', constrainHorizontalScroll, true)
+    return () => document.removeEventListener('scroll', constrainHorizontalScroll, true)
+  }, [platform])
   return <OverlayContext.Provider value={{ platform, viewport }}>{children}</OverlayContext.Provider>
 }
 

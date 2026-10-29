@@ -21,3 +21,5 @@ If changing this standalone test runner repeatedly, uninstall only `com.dds.chec
 `ModalChecks.testSheetGesturesAndKeyboard` opens the record chooser, checks a short title drag and a dismissing drag, opens a diaper form, focuses its notes, and cancels without saving records. It also checks that the focused field stays between the header and action bar. It saves chooser, editor, and keyboard screenshots in the result bundle. Add `-only-testing:TabChecks/ModalChecks` to the xcodebuild command to run only this flow.
 
 For the software keyboard case, make sure the full keyboard is visible in Simulator (I/O → Keyboard → Toggle Software Keyboard); the small input accessory bar alone does not verify keyboard occlusion. Inspect the exported keyboard attachment as well as the test assertions.
+
+Modal checks also swipe horizontally and pinch in both directions, checking that title width and horizontal position stay fixed. `ModalChecks.testSiriModalZoomAndPan` covers the Siri confirmation form and cancels without saving. It skips when there is no queued Siri request; use a synthetic request on a test simulator for this case.

@@ -28,6 +28,18 @@ final class ModalChecks: XCTestCase {
         capture(app, "Sheet - horizontal stability")
     }
 
+    private func checkZoomStability(_ element: XCUIElement, in app: XCUIApplication) {
+        let original = element.frame
+        app.webViews.firstMatch.pinch(withScale: 1.6, velocity: 0.8)
+        XCTAssertEqual(element.frame.width, original.width, accuracy: 1,
+                       "Pinching must not scale modal content")
+        XCTAssertEqual(element.frame.midX, original.midX, accuracy: 1,
+                       "Pinching must not pan the WebView behind the modal")
+        app.webViews.firstMatch.pinch(withScale: 0.7, velocity: -0.8)
+        XCTAssertEqual(element.frame.width, original.width, accuracy: 1)
+        capture(app, "Sheet - pinch stability")
+    }
+
     func testSheetGesturesAndKeyboard() {
         let app = XCUIApplication(bundleIdentifier: "com.dds.app")
         app.launch()
@@ -39,6 +51,7 @@ final class ModalChecks: XCTestCase {
         capture(app, "Chooser - unified surface")
         checkHorizontalStability(title, in: app)
         checkHorizontalStability(text(app, ["Choose a record to get started", "选择记录类型开始"]), in: app)
+        checkZoomStability(title, in: app)
 
         let start = title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 0, dy: 20)), withVelocity: .slow, thenHoldForDuration: 0.3)
@@ -54,6 +67,7 @@ final class ModalChecks: XCTestCase {
         XCTAssertTrue(close.waitForExistence(timeout: 5))
         capture(app, "Editor - centered title")
         checkHorizontalStability(text(app, ["A little moment to remember", "记录一个小瞬间"]), in: app)
+        checkZoomStability(text(app, ["A little moment to remember", "记录一个小瞬间"]), in: app)
         let notes = app.webViews.textViews.firstMatch
         XCTAssertTrue(notes.exists)
         if !notes.isHittable { app.webViews.firstMatch.swipeUp() }
@@ -70,6 +84,23 @@ final class ModalChecks: XCTestCase {
         close.tap()
         XCTAssertTrue(addRecord.waitForExistence(timeout: 5))
         XCTAssertTrue(addRecord.isHittable)
+        app.terminate()
+    }
+
+    func testSiriModalZoomAndPan() throws {
+        let app = XCUIApplication(bundleIdentifier: "com.dds.app")
+        app.launch()
+        let title = text(app, ["Confirm Siri record", "确认 Siri 记录"])
+        guard title.waitForExistence(timeout: 5) else {
+            app.terminate()
+            throw XCTSkip("Queue a synthetic Siri request on the test simulator first")
+        }
+        checkHorizontalStability(title, in: app)
+        checkZoomStability(title, in: app)
+        capture(app, "Siri confirmation - fixed viewport")
+        button(app, ["Cancel", "取消"]).tap()
+        let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: title)
+        XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 5), .completed)
         app.terminate()
     }
 }

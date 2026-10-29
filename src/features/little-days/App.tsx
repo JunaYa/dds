@@ -1,4 +1,5 @@
 import { SiriRecordReceiver } from "./siri/SiriRecordReceiver";
+import { useIosModalInteraction } from "./components/layout/use-ios-modal-interaction";
 import { OverlayProvider } from "@vita/ui/overlay";
 import { isIosApp } from "./components/layout/ios-platform";
 import { SyncProvider } from "./sync/SyncProvider";
@@ -74,6 +75,7 @@ function Workspace() {
   return <Focus />;
 }
 export default function LittleDays() {
+  useIosModalInteraction();
   return (
     <OverlayProvider platform={isIosApp() ? "ios" : "default"}>
     <LocaleProvider>

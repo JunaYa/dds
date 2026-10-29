@@ -1,5 +1,5 @@
 import { Sheet, SheetPopup, SheetTitle } from '../sheet/sheet'
-import { act, cleanup, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { OverlayProvider } from './overlay-provider'
 import { Dialog, DialogPopup, DialogTitle } from '../dialog/dialog'
@@ -7,6 +7,16 @@ import { AlertDialog, AlertDialogPopup, AlertDialogTitle } from '../alert-dialog
 import { Textarea } from '../textarea/textarea'
 
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
+
+it('rejects focus-induced horizontal offsets without changing vertical scrolling', () => {
+  render(<OverlayProvider platform="ios"><Dialog open><DialogPopup><DialogTitle>Edit</DialogTitle></DialogPopup></Dialog></OverlayProvider>)
+  const popup = screen.getByRole('dialog')
+  popup.scrollTop = 90
+  popup.scrollLeft = 160
+  fireEvent.scroll(popup)
+  expect(popup.scrollLeft).toBe(0)
+  expect(popup.scrollTop).toBe(90)
+})
 
 it('propagates iOS presentation through dialog and alert portals', () => {
   render(<OverlayProvider platform="ios">
