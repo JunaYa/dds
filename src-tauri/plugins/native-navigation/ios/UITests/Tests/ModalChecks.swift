@@ -16,6 +16,18 @@ final class ModalChecks: XCTestCase {
         add(attachment)
     }
 
+    private func checkHorizontalStability(_ element: XCUIElement, in app: XCUIApplication) {
+        let originalX = element.frame.midX
+        for delta in [CGVector(dx: 100, dy: -15), CGVector(dx: -100, dy: -15)] {
+            let start = element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            start.press(forDuration: 0.05, thenDragTo: start.withOffset(delta),
+                        withVelocity: .slow, thenHoldForDuration: 0.3)
+            XCTAssertEqual(element.frame.midX, originalX, accuracy: 1,
+                           "Horizontal or diagonal swipes must not move the sheet content sideways")
+        }
+        capture(app, "Sheet - horizontal stability")
+    }
+
     func testSheetGesturesAndKeyboard() {
         let app = XCUIApplication(bundleIdentifier: "com.dds.app")
         app.launch()
@@ -25,6 +37,8 @@ final class ModalChecks: XCTestCase {
         let title = text(app, ["Capture a little moment", "记下一个小瞬间"])
         XCTAssertTrue(title.waitForExistence(timeout: 5))
         capture(app, "Chooser - unified surface")
+        checkHorizontalStability(title, in: app)
+        checkHorizontalStability(text(app, ["Choose a record to get started", "选择记录类型开始"]), in: app)
 
         let start = title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 0, dy: 20)), withVelocity: .slow, thenHoldForDuration: 0.3)
@@ -39,6 +53,7 @@ final class ModalChecks: XCTestCase {
         let close = button(app, ["Close dialog", "关闭弹框"])
         XCTAssertTrue(close.waitForExistence(timeout: 5))
         capture(app, "Editor - centered title")
+        checkHorizontalStability(text(app, ["A little moment to remember", "记录一个小瞬间"]), in: app)
         let notes = app.webViews.textViews.firstMatch
         XCTAssertTrue(notes.exists)
         if !notes.isHittable { app.webViews.firstMatch.swipeUp() }
