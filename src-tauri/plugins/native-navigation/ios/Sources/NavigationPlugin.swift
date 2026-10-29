@@ -264,6 +264,7 @@ class NavigationPlugin: Plugin {
 
     @objc override func load(webview: WKWebView) {
         self.webview = webview
+        webview.scrollView.showsVerticalScrollIndicator = false
         modalInteraction = ModalInteraction(scrollView: webview.scrollView)
     }
 

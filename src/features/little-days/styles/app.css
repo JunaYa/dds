@@ -14,6 +14,14 @@
 body {
   margin: 0;
 }
+html[data-native-app="true"],
+html[data-native-app="true"] body {
+  scrollbar-width: none;
+}
+html[data-native-app="true"]::-webkit-scrollbar,
+html[data-native-app="true"] body::-webkit-scrollbar {
+  display: none;
+}
 button,
 input,
 textarea,
