@@ -17,7 +17,7 @@ export function ChildPicker() {
         >
           {a.children.map((c) => (
             <option key={c.id} value={c.id}>
-              {c.name} · {age(c.birthday, new Date(), tr)}
+              {c.name} · {age(c.birthday, new Date(`${a.day}T12:00`), tr)}
             </option>
           ))}
         </NativeSelect>

@@ -123,7 +123,7 @@ export function useWorkspaceState() {
   const activeChild = selected
     ? {
         ...selected,
-        age: age(selected.birthday, new Date(), tr),
+        age: age(selected.birthday, new Date(`${day}T12:00`), tr),
         initial: selected.name.slice(0, 1),
         caption: "The little moments, remembered.",
       }

@@ -170,34 +170,7 @@ export function localDateTime(now = new Date()) {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 export const today = () => localDateTime().slice(0, 10);
-export function age(
-  birthday: string,
-  now = new Date(),
-  tr: Translate = translator("en"),
-) {
-  const born = new Date(`${birthday}T00:00`);
-  const months = Math.max(
-    0,
-    (now.getFullYear() - born.getFullYear()) * 12 +
-      now.getMonth() -
-      born.getMonth() -
-      (now.getDate() < born.getDate() ? 1 : 0),
-  );
-  const years = Math.floor(months / 12);
-  const remainder = months % 12;
-  const monthText = (count: number) =>
-    count === 1 ? tr("1 month") : tr("{count} months", { count });
-  const yearText =
-    years === 1 ? tr("1 year") : tr("{count} years", { count: years });
-  return months < 12
-    ? monthText(months)
-    : remainder
-      ? tr("{years}, {months}", {
-          years: yearText,
-          months: monthText(remainder),
-        })
-      : yearText;
-}
+export { formatAge as age } from "./age";
 export function elapsedSeconds(
   session: Pick<Session, "started" | "elapsed">,
   now = Date.now(),
