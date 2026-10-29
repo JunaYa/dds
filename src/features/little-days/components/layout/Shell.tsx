@@ -1,6 +1,7 @@
 import { isProfileDetail } from "../../state/page-routing";
 import { useI18n } from "../../i18n/useI18n";
 import { type ReactNode } from "react";
+import { Toast } from "@vita/ui/toast";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
 import { PageNavigation } from "./PageNavigation";
@@ -104,17 +105,12 @@ export function Shell({ children }: { children: ReactNode }) {
           <SaveError />
           <SessionBanner />
           {children}
-          <div className="notice" role="status">
-            {a.notice}
-            {a.undo && (
-              <Button unstyled onClick={a.undo}>
-                {tr("Undo")}
-              </Button>
-            )}
-          </div>
-          <footer className="app-footer">
-            {tr("Saved on this device")}
-          </footer>
+          {a.notice && (
+            <Toast key={a.noticeId} onDismiss={a.dismissNotice} duration={a.undo ? 8000 : 5000}>
+              <span>{a.notice}</span>
+              {a.undo && <Button variant="ghost" onClick={a.undo}>{tr("Undo")}</Button>}
+            </Toast>
+          )}
         </main>
       </div>
       <WorkspaceModal />

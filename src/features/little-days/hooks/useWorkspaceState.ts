@@ -3,7 +3,7 @@ import { planImport, type ImportOptions } from "../backup/backup";
 import { useI18n } from "../i18n/useI18n";
 import { isBuiltinField, typeName } from "../i18n/record-labels";
 import type { Modal } from "../state/workspace-types";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   age,
   summary,
@@ -49,6 +49,8 @@ export function useWorkspaceState() {
   const [modal, setModal] = useState<Modal>(null);
   const [nursingOpen, setNursingOpen] = useState(false);
   const [notice, setNotice] = useState<string | { typeId: string }>("");
+  const [noticeId, setNoticeId] = useState(0);
+  const dismissNotice = useCallback(() => setNotice(""), []);
   const [removed, setRemoved] = useState<CareRecord | null>(null);
   const [day, setDay] = useState(today);
   useEffect(() => {
@@ -73,6 +75,7 @@ export function useWorkspaceState() {
       setData(current.current);
       setError("");
       setNotice(message);
+      setNoticeId((id) => id + 1);
       setRemoved(null);
       return true;
     } catch (cause) {
@@ -221,6 +224,7 @@ export function useWorkspaceState() {
   ) {
     if (current.current?.session) {
       setNotice("Finish the active timer before starting another.");
+      setNoticeId((id) => id + 1);
       return false;
     }
     const now = Date.now();
@@ -394,6 +398,8 @@ export function useWorkspaceState() {
     setQuery,
     modal,
     setModal,
+    noticeId,
+    dismissNotice,
     notice:
       typeof notice === "string"
         ? tr(notice)

@@ -1,0 +1,23 @@
+.vita-toast-region {
+  position: fixed;
+  inset: calc(env(safe-area-inset-top, 0px) + 16px) 16px auto;
+  z-index: var(--z-layer-toast);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.vita-toast {
+  max-width: min(100%, 420px);
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  pointer-events: auto;
+}

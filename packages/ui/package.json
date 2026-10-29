@@ -8,6 +8,7 @@
     "./widget-board": "./src/widget-board/widget-board.tsx",
     "./ascii-loader": "./src/ascii-loaders/index.tsx",
     "./button": "./src/button/button.tsx",
+    "./toast": "./src/toast/toast.tsx",
     "./alert": "./src/alert/alert.tsx",
     "./card": "./src/card/card.tsx",
     "./checkbox": "./src/checkbox/checkbox.tsx",
