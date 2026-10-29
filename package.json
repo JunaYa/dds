@@ -18,10 +18,13 @@
     "build:desktop": "tauri build",
     "init:ios": "tauri ios init --ci",
     "dev:ios": "tauri ios dev",
+    "start:ios:sim": "xcrun simctl launch booted com.dds.app",
+    "start:ios:device": "xcrun devicectl device process launch --device \"JunaYa的iPhone\" com.junaya.littledays.dev",
     "build:ios": "tauri ios build",
     "build:ios:sim": "node scripts/build-ios-simulator.mjs",
     "init:android": "node scripts/init-android.mjs",
     "dev:android": "node scripts/android.mjs dev",
+    "start:android:device": "adb -d shell am start -W -n com.dds.app/.MainActivity",
     "build:android": "node scripts/android.mjs build"
   },
   "dependencies": {

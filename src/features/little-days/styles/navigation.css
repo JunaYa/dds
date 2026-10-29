@@ -132,7 +132,17 @@
   .ios-profile-content {
     padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
   }
-  .mobile-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .mobile-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-layer-sticky);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: calc(-1 * max(20px, env(safe-area-inset-top))) -16px 12px;
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 12px max(16px, env(safe-area-inset-left));
+    background: var(--card);
+  }
   .mobile-profile { flex: 1; min-width: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
