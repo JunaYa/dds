@@ -15,7 +15,7 @@ export function Log({
   const { tr, locale } = useI18n();
   const a = useApp();
   const [limit, setLimit] = useState(12);
-  useEffect(() => setLimit(12), [a.child, a.range, a.query, a.recordDay]);
+  useEffect(() => setLimit(12), [a.child, a.range, a.recordDay]);
   const groups = new Map<string, typeof a.visible>();
   for (const record of a.visible.slice(0, limit)) {
     const date = record.time.slice(0, 10);
@@ -38,11 +38,7 @@ export function Log({
           <Icon name="book" size={32} />
           <h3>{tr("A little space for the next thing.")}</h3>
           <p>
-            {a.query
-              ? tr("Try another search or add a new moment.")
-              : tr(
-                  "Feeding, sleep, changes — your child’s moments will appear here.",
-                )}
+            {tr("Feeding, sleep, changes — your child’s moments will appear here.")}
           </p>
           <Button onClick={() => a.openRecord(a.types[0])}>
             {tr("Add a record")}

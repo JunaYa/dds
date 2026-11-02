@@ -242,12 +242,6 @@ main {
   align-items: center;
   margin-bottom: 24px;
 }
-.log-tools > [data-slot="input-control"] {
-  max-width: 230px;
-}
-.log-tools input {
-  height: 42px;
-}
 .segmented {
   gap: 2px;
   padding: 4px;
@@ -779,9 +773,6 @@ main {
   .log-tools {
     flex-direction: column;
     align-items: stretch;
-  }
-  .log-tools > [data-slot="input-control"] {
-    max-width: none;
   }
   .session-banner {
     flex-wrap: wrap;

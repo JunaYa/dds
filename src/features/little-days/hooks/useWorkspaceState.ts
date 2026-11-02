@@ -6,7 +6,6 @@ import type { Modal } from "../state/workspace-types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   age,
-  summary,
   elapsedSeconds,
   localDateTime,
   today,
@@ -45,7 +44,6 @@ export function useWorkspaceState() {
   const [error, setError] = useState(loaded.error);
   const [page, setPage] = usePageRoute();
   const [range, setRange] = useState("all");
-  const [query, setQuery] = useState("");
   const [modal, setModal] = useState<Modal>(null);
   const [nursingOpen, setNursingOpen] = useState(false);
   const [notice, setNotice] = useState<string | { typeId: string }>("");
@@ -135,20 +133,7 @@ export function useWorkspaceState() {
     : null;
   const childRecords = records.filter((r) => r.child === child);
   const visible = childRecords
-    .filter((record) => {
-      const type = types.find((item) => item.id === record.type);
-      const text = [
-        type?.name,
-        type && typeName(type, tr),
-        type && summary(record, type, tr),
-        record.note,
-        ...Object.values(record.values),
-      ].join(" ");
-      return (
-        (range === "all" || record.time.startsWith(recordDay)) &&
-        text.toLowerCase().includes(query.toLowerCase())
-      );
-    })
+    .filter((record) => range === "all" || record.time.startsWith(recordDay))
     .sort((a, b) => b.time.localeCompare(a.time));
   const openRecord = (type: RecordType, record: CareRecord | null = null) =>
     setModal({ kind: "record", type, record, child });
@@ -398,8 +383,6 @@ export function useWorkspaceState() {
     acceptSync,
     range,
     setRange,
-    query,
-    setQuery,
     modal,
     setModal,
     noticeId,

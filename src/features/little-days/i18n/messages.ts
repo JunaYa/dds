@@ -281,12 +281,9 @@ export const messages: Record<string, string> = {
   "{count} records": "{count} 条记录",
   "1 record": "1 条记录",
   "A little space for the next thing.": "为下一个小瞬间留个位置。",
-  "Try another search or add a new moment.": "试试其他关键词，或添加新记录。",
   "Feeding, sleep, changes — your child’s moments will appear here.":
     "喂养、睡眠、换尿布——宝宝的日常将在这里呈现。",
   "Show 12 more records": "再显示 12 条记录",
-  "Search records": "搜索记录",
-  "Find a record…": "查找记录…",
   "Edit {name} at {time}": "编辑 {time} 的{name}",
   "Record type": "记录类型",
   When: "记录时间",

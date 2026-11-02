@@ -41,10 +41,7 @@ it("filters the selected child's local day without resetting historical queries 
   expect(result.current.day).toBe("2026-10-31");
   expect(result.current.recordDay).toBe("2026-10-29");
   expect(result.current.visible.map(record => record.id)).toEqual(["past"]);
-  act(() => result.current.setQuery("absent"));
-  expect(result.current.visible).toHaveLength(0);
   act(() => {
-    result.current.setQuery("");
     result.current.setRange("all");
   });
   expect(result.current.visible.map(record => record.id)).toEqual(["current", "past"]);

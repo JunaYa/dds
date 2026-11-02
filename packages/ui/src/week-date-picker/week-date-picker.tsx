@@ -3,6 +3,7 @@ import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react
 import { enUS, zhCN } from 'react-day-picker/locale'
 import { Button } from '../button/button'
 import { Calendar } from '../calendar/calendar'
+import { cn } from '../lib/utils'
 import { Popover, PopoverPopup, PopoverTrigger } from '../popover/popover'
 
 function localDate(value: Date): string {
@@ -26,11 +27,17 @@ export interface WeekDatePickerProps {
 
 export function WeekDatePicker({ value, today, selected = true, locale, onValueChange, labels }: WeekDatePickerProps) {
   const [open, setOpen] = useState(false)
+  const [pointerMotion, setPointerMotion] = useState(false)
   const date = new Date(`${value}T12:00:00`)
   const monday = offsetDate(date, -((date.getDay() + 6) % 7))
   const days = Array.from({ length: 7 }, (_, index) => offsetDate(monday, index))
   return (
-    <div data-slot="week-date-picker" className="w-full min-w-0">
+    <div
+      data-slot="week-date-picker"
+      className="w-full min-w-0"
+      onPointerDownCapture={() => setPointerMotion(true)}
+      onKeyDownCapture={() => setPointerMotion(false)}
+    >
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger render={<Button variant="ghost" />} aria-label={labels.chooseDate}>
@@ -62,15 +69,32 @@ export function WeekDatePicker({ value, today, selected = true, locale, onValueC
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-0.5" role="group" aria-label={labels.chooseDate}>
+      <div className="relative isolate grid grid-cols-7 gap-0.5" role="group" aria-label={labels.chooseDate}>
+        <span
+          key={localDate(monday)}
+          aria-hidden="true"
+          data-slot="week-date-indicator"
+          className={cn(
+            'pointer-events-none absolute inset-y-0 left-0 -z-10 rounded-2xl bg-foreground',
+            pointerMotion && selected && 'motion-safe:transition-transform motion-safe:duration-180 motion-safe:ease-[cubic-bezier(0.65,0,0.35,1)]',
+          )}
+          style={{
+            width: 'calc((100% - 6 * var(--spacing) * 0.5) / 7)',
+            transform: `translateX(calc(${(date.getDay() + 6) % 7} * (100% + var(--spacing) * 0.5)))`,
+            visibility: selected ? 'visible' : 'hidden',
+          }}
+        />
         {days.map((day) => {
           const key = localDate(day)
           const active = selected && key === value
           return (
             <Button
               key={key}
-              variant={active ? 'default' : 'ghost'}
-              className="h-auto min-h-20 min-w-0 flex-col gap-2 rounded-2xl px-0 py-3 font-medium tabular-nums"
+              variant="ghost"
+              className={cn(
+                'h-auto min-h-20 min-w-0 flex-col gap-2 rounded-2xl px-0 py-3 font-medium tabular-nums transition-none motion-safe:active:not-aria-[haspopup]:translate-y-0',
+                active && 'text-background hover:bg-transparent hover:text-background',
+              )}
               aria-label={day.toLocaleDateString(locale, { dateStyle: 'full' })}
               aria-pressed={active}
               aria-current={key === today ? 'date' : undefined}
