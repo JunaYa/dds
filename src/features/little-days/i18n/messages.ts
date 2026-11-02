@@ -1,5 +1,9 @@
 // English phrases are stable message keys. Values are Simplified Chinese.
 export const messages: Record<string, string> = {
+  "By date": "按日期",
+  "Previous week": "上一周",
+  "Next week": "下一周",
+  "Choose record date": "选择记录日期",
   "Confirm Siri record": "确认 Siri 记录",
   "Choose a child and check the details before saving.": "请选择宝宝，核对内容后保存。",
   "Choose a child": "请选择宝宝",

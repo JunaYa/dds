@@ -15,7 +15,7 @@ export function Log({
   const { tr, locale } = useI18n();
   const a = useApp();
   const [limit, setLimit] = useState(12);
-  useEffect(() => setLimit(12), [a.child, a.range, a.query]);
+  useEffect(() => setLimit(12), [a.child, a.range, a.query, a.recordDay]);
   const groups = new Map<string, typeof a.visible>();
   for (const record of a.visible.slice(0, limit)) {
     const date = record.time.slice(0, 10);

@@ -53,6 +53,8 @@ export function useWorkspaceState() {
   const dismissNotice = useCallback(() => setNotice(""), []);
   const [removed, setRemoved] = useState<CareRecord | null>(null);
   const [day, setDay] = useState(today);
+  const [selectedRecordDay, setRecordDay] = useState<string | null>(null);
+  const recordDay = selectedRecordDay ?? day;
   useEffect(() => {
     const refresh = () => setDay(today());
     const timer = window.setInterval(refresh, 30000);
@@ -143,7 +145,7 @@ export function useWorkspaceState() {
         ...Object.values(record.values),
       ].join(" ");
       return (
-        (range === "all" || record.time.startsWith(day)) &&
+        (range === "all" || record.time.startsWith(recordDay)) &&
         text.toLowerCase().includes(query.toLowerCase())
       );
     })
@@ -381,6 +383,8 @@ export function useWorkspaceState() {
     }, "Backup restored", true),
     error,
     day,
+    recordDay,
+    setRecordDay,
     children,
     types,
     records,

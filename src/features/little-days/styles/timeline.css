@@ -4,6 +4,7 @@
 .quick-records .focus-types { gap: 10px; }
 .quick-records .focus-types button { min-width: 88px; min-height: 76px; }
 .journal .log-tools { margin-bottom: 28px; }
+.journal-week { margin-bottom: 28px; }
 .timeline-day { margin-bottom: 28px; }
 .timeline-date { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 24px 0 20px; font-size: 14px; }
 .timeline-date > span { color: var(--care-text); font-size: 12px; font-weight: 400; }
