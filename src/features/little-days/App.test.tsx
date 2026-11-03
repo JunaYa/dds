@@ -123,8 +123,10 @@ it("keeps a timer with its original child and supports delete with Undo", async 
   await user.click(
     screen.getByRole("button", { name: "Start live feeding timer" }),
   );
+  expect(screen.queryByRole("button", { name: "Add child", exact: true })).not.toBeInTheDocument();
+  await user.click(screen.getAllByRole("button", { name: "Profile", exact: true })[0]);
   await user.click(
-    screen.getAllByRole("button", { name: "Add child", exact: true })[0],
+    within(screen.getByRole("region", { name: "Record management" })).getByRole("button", { name: "Add child", exact: true }),
   );
   const dialog = within(screen.getByRole("dialog"));
   await user.type(dialog.getByLabelText("Child’s name"), "Sibling");
@@ -132,6 +134,7 @@ it("keeps a timer with its original child and supports delete with Undo", async 
     target: { value: "2025-01-01" },
   });
   await user.click(dialog.getByRole("button", { name: "Add child" }));
+  await user.click(screen.getAllByRole("button", { name: "Today", exact: true })[0]);
   await user.click(screen.getByRole("button", { name: "Finish & save" }));
   expect(loadWorkspace().data.records[0].child).toBe(firstChild);
   expect(screen.getByText("0 records")).toBeInTheDocument();

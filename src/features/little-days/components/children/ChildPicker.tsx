@@ -1,4 +1,3 @@
-import { Button } from "@vita/ui/button";
 import { NativeSelect } from "@vita/ui/select";
 import { useI18n } from "../../i18n/useI18n";
 import { useApp } from "../../hooks/useApp";
@@ -22,14 +21,6 @@ export function ChildPicker() {
           ))}
         </NativeSelect>
       </label>
-      <Button
-        unstyled
-        className="add-child"
-        aria-label={tr("Add child")}
-        onClick={() => a.setModal({ kind: "child" })}
-      >
-        ＋
-      </Button>
     </div>
   );
 }

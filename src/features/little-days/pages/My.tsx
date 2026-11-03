@@ -21,13 +21,19 @@ const groups: { title: string; items: { page: Page; title: string; description: 
   ] },
 ];
 export function My() {
-  const { setPage } = useApp();
+  const { setPage, setModal } = useApp();
   const { tr } = useI18n();
   const { status } = useQuickRecord();
   return <div className="profile-groups">
     {groups.map(group => <section className="profile-group" key={group.title} aria-label={tr(group.title)}>
       <h2>{tr(group.title)}</h2>
       <div className="profile-links">
+        {group.title === "Record management" && (
+          <Button unstyled className="profile-link" aria-label={tr("Add child")} onClick={() => setModal({ kind: "child" })}>
+            <span><strong>{tr("Add child")}</strong></span>
+            <span aria-hidden="true">›</span>
+          </Button>
+        )}
         {group.items.filter(item => item.page !== "Interaction" || supportsHaptics() || status?.supported).map(item =>
           <Button unstyled className="profile-link" aria-label={tr(item.title)} key={item.page} onClick={() => setPage(item.page)}>
             <span><strong>{tr(item.title)}</strong><small>{tr(item.description)}</small></span>
