@@ -1,4 +1,5 @@
 import { SegmentControl } from "@vita/ui/segment-control";
+import { Icons } from "@vita/ui/icons";
 import { WeekDatePicker } from "@vita/ui/week-date-picker";
 import { useI18n } from "../../i18n/useI18n";
 import { useApp } from "../../hooks/useApp";
@@ -10,13 +11,14 @@ export function LogTools() {
     <>
       <div className="log-tools">
         <SegmentControl
-          className="segmented"
-          variant="text"
+          className="record-range"
+          variant="icon"
+          size="lg"
           value={a.range}
           onValueChange={a.setRange}
           items={[
-            { value: "today", label: tr("By date") },
-            { value: "all", label: tr("All records") },
+            { value: "today", label: tr("By date"), icon: <Icons.calendar aria-hidden="true" /> },
+            { value: "all", label: tr("All records"), icon: <Icons.list aria-hidden="true" /> },
           ]}
         />
       </div>
