@@ -1,6 +1,7 @@
 import { useApp } from "../hooks/useApp";
 import { useI18n } from "../i18n/useI18n";
 import { typeName } from "../i18n/record-labels";
+import { RecordActivity } from "../components/records/RecordActivity";
 
 export function Analysis() {
   const { childRecords, types, day } = useApp();
@@ -15,6 +16,7 @@ export function Analysis() {
   const recordedDays = new Set(recent.map(record => record.time.slice(0, 10))).size;
   return (
     <section className="analysis-page" aria-labelledby="analysis-period">
+      <RecordActivity records={childRecords} day={day} />
       <h2 id="analysis-period">{tr("Last 7 days")}</h2>
       <p className="analysis-period">{start.toLocaleDateString(locale)} – {new Date(`${day}T12:00:00`).toLocaleDateString(locale)}</p>
       <dl className="analysis-summary">

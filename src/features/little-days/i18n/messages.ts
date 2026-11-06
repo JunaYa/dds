@@ -1,5 +1,13 @@
 // English phrases are stable message keys. Values are Simplified Chinese.
 export const messages: Record<string, string> = {
+  "Record activity": "记录足迹",
+  "Records by day": "每日记录",
+  "{count} saved records across {days} days in the last 90 days.": "最近 90 天，已保存 {count} 条记录，覆盖 {days} 天。",
+  "Open daily details for exact counts.": "展开每日明细可查看准确数量。",
+  "Records per day": "每日记录数量",
+  "Blank days mean no saved records, not no care activity.": "空白日期表示没有保存的记录，不代表没有照护活动。",
+  "Show daily details": "查看每日明细",
+  "Hide daily details": "收起每日明细",
   "By date": "按日期",
   "Previous week": "上一周",
   "Next week": "下一周",

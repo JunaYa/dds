@@ -90,6 +90,25 @@
 .analysis-breakdown dl > div { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
 .analysis-breakdown dd { font-variant-numeric: tabular-nums; }
 .analysis-note { margin-top: 24px; font-size: 13px; line-height: 1.6; }
+.record-activity { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.record-activity-summary { margin-top: 8px; color: var(--muted-foreground); font-size: 14px; }
+.record-activity-map { display: block; width: 100%; max-width: 600px; height: auto; margin-block: 20px 8px; }
+.record-activity .activity-label { fill: var(--muted-foreground); font-size: 13px; }
+.record-activity [data-level="0"] { fill: var(--muted); background: var(--muted); }
+.record-activity [data-level="1"] { fill: color-mix(in oklab, var(--primary) 25%, var(--muted)); background: color-mix(in oklab, var(--primary) 25%, var(--muted)); }
+.record-activity [data-level="2"] { fill: color-mix(in oklab, var(--primary) 50%, var(--muted)); background: color-mix(in oklab, var(--primary) 50%, var(--muted)); }
+.record-activity [data-level="3"] { fill: color-mix(in oklab, var(--primary) 75%, var(--muted)); background: color-mix(in oklab, var(--primary) 75%, var(--muted)); }
+.record-activity [data-level="4"] { fill: var(--primary); background: var(--primary); }
+.record-activity-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.record-activity-legend { display: flex; flex-wrap: wrap; gap: 10px; }
+.record-activity-legend > span { display: inline-flex; align-items: center; gap: 4px; }
+.record-activity-legend i { width: 12px; height: 12px; border-radius: 2px; }
+.record-activity-note { margin-block: 12px 4px; font-size: 13px; color: var(--muted-foreground); }
+.record-activity-details { max-height: 320px; overflow: auto; }
+.record-activity-details table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.record-activity-details th, .record-activity-details td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: start; }
+.record-activity-details tbody th { font-weight: 400; }
+.record-activity-details td { text-align: end; }
 .page-navigation button {
   min-height: 44px;
   width: 100%;
