@@ -15,22 +15,22 @@ name = "dds_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.6.3", features = [] }
+tauri-build = { version = "2.7.4", features = [] }
 
 [dependencies]
 tauri-plugin-cloud-sync = { path = "plugins/cloud-sync" }
-tauri = { version = "2.11.6", features = [] }
-tauri-plugin-opener = "2.5.5"
-tauri-plugin-dialog = "2.7.3"
-tauri-plugin-fs = "2.5.2"
+tauri = { version = "2.12.5", features = [] }
+tauri-plugin-opener = "2.7.2"
+tauri-plugin-dialog = "2.8.4"
+tauri-plugin-fs = "2.7.1"
 serde = { version = "1.0.229", features = ["derive"] }
-serde_json = "1.0.151"
+serde_json = "1.0.154"
 tracing = "0.1.44"
 chrono = "0.4.45"
-uuid = { version = "1.26.1", features = ["v4"] }
+uuid = { version = "1.29.2", features = ["v4"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri = { version = "2.11.6", features = ["tray-icon"] }
+tauri = { version = "2.12.5", features = ["tray-icon"] }
 tauri-plugin-global-shortcut = "=2.3.0"
 
 [target.'cfg(target_os = "ios")'.dependencies]
