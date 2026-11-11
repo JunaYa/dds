@@ -1,6 +1,7 @@
 import Tauri
 import UIKit
 import WebKit
+import WidgetKit
 
 private struct ExportBackupOptions: Decodable {
     let name: String
@@ -248,6 +249,39 @@ private final class GlassNavigation: UIVisualEffectView {
 }
 
 class NavigationPlugin: Plugin {
+    @objc func updateWidgetSnapshot(_ invoke: Invoke) throws {
+        let snapshot = try invoke.parseArgs(RecentRecordSnapshot.self)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        let data = try encoder.encode(snapshot)
+        let file = try RecentRecordSnapshot.file()
+        if (try? Data(contentsOf: file)) != data {
+            try data.write(to: file, options: .atomic)
+            if #available(iOS 17.0, *) {
+                WidgetCenter.shared.reloadTimelines(ofKind: RecentRecordSnapshot.kind)
+            }
+        }
+        invoke.resolve()
+    }
+
+    @objc func nextWidgetRequest(_ invoke: Invoke) throws {
+        if let request = try RecentRecordRequest.next() {
+            invoke.resolve(["id": request.id, "child": request.child, "type": request.type])
+        } else { invoke.resolve() }
+    }
+
+    @objc func dismissWidgetRequest(_ invoke: Invoke) throws {
+        let args = try invoke.parseArgs(DismissBackupOptions.self)
+        try RecentRecordRequest.dismiss(args.id)
+        invoke.resolve()
+    }
+
+    @objc private func widgetRequested() {
+        DispatchQueue.main.async {
+            self.webview?.evaluateJavaScript("window.dispatchEvent(new Event('little-days-widget-request'))")
+        }
+    }
+
     @objc public func hapticFeedback(_ invoke: Invoke) throws {
         DispatchQueue.main.async {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -265,6 +299,8 @@ class NavigationPlugin: Plugin {
 
     @objc override func load(webview: WKWebView) {
         self.webview = webview
+        NotificationCenter.default.removeObserver(self, name: .init("little-days-widget-request"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(widgetRequested), name: .init("little-days-widget-request"), object: nil)
         pageBackground = WebViewBackground(webview: webview)
         webview.scrollView.bounces = false
         webview.scrollView.showsVerticalScrollIndicator = false

@@ -1,4 +1,5 @@
 import { SiriRecordReceiver } from "./siri/SiriRecordReceiver";
+import { RecentRecordBridge } from "./widget/RecentRecordBridge";
 import { useIosModalInteraction } from "./components/layout/use-ios-modal-interaction";
 import { OverlayProvider } from "@vita/ui/overlay";
 import { isIosApp } from "./components/layout/ios-platform";
@@ -86,6 +87,7 @@ export default function LittleDays() {
             <HapticFeedback />
             <SharedBackupReceiver />
             <SiriRecordReceiver />
+            <RecentRecordBridge />
             <Workspace />
             <QuickRecordOverlay />
           </QuickRecordProvider>

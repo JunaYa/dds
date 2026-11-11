@@ -7,12 +7,15 @@ fileGroups: [../../src]
 configs:
   debug: debug
   release: release
+settings:
+  base:
+    DDS_APP_IDENTIFIER: com.dds.app
 settingGroups:
   app:
     base:
       SWIFT_VERSION: "5.0"
       PRODUCT_NAME: dds
-      PRODUCT_BUNDLE_IDENTIFIER: com.dds.app
+      PRODUCT_BUNDLE_IDENTIFIER: $(DDS_APP_IDENTIFIER)
 targetTemplates:
   app:
     type: application
@@ -25,11 +28,30 @@ targetTemplates:
     settings:
       groups: [app]
 targets:
+  RecentRecord:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - RecentRecord/OpenRecentRecord.swift
+      - RecentRecord/RecentRecordWidget.swift
+      - ../../plugins/native-navigation/ios/Sources/RecentRecordSnapshot.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(DDS_APP_IDENTIFIER).RecentRecord
+        INFOPLIST_FILE: RecentRecord/Info.plist
+        CODE_SIGN_ENTITLEMENTS: RecentRecord/RecentRecord.entitlements
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 0.1.0
   dds_iOS:
     type: application
     platform: iOS
     sources:
       - path: Sources
+      - path: RecentRecord/OpenRecentRecord.swift
+      - path: ../../plugins/native-navigation/ios/Sources/RecentRecordSnapshot.swift
       - path: ../../plugins/native-navigation/ios/Sources/SiriInbox.swift
       - path: Assets.xcassets
       - path: Externals
@@ -60,6 +82,8 @@ targets:
         CFBundleVersion: "0.1.0"
     entitlements:
       path: dds_iOS/dds_iOS.entitlements
+      properties:
+        com.apple.security.application-groups: [group.$(DDS_APP_IDENTIFIER)]
     scheme:
       environmentVariables:
         RUST_BACKTRACE: full
@@ -75,6 +99,8 @@ targets:
         EXCLUDED_ARCHS[sdk=iphoneos*]: x86_64
       groups: [app]
     dependencies:
+      - target: RecentRecord
+        embed: true
       - framework: libapp.a
         embed: false
       - sdk: CoreGraphics.framework

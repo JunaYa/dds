@@ -12,3 +12,8 @@ commands.allow = ["hapticFeedback"]
 identifier = "allow-modal-interaction"
 description = "Temporarily constrains WebView scroll and zoom gestures while a modal is open."
 commands.allow = ["setModalInteraction"]
+
+[[permission]]
+identifier = "allow-widget-snapshot"
+description = "Publish recent records to the app's iOS home screen widget."
+commands.allow = ["updateWidgetSnapshot", "nextWidgetRequest", "dismissWidgetRequest"]
