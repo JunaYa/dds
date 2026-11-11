@@ -15,5 +15,5 @@ commands.allow = ["setModalInteraction"]
 
 [[permission]]
 identifier = "allow-widget-snapshot"
-description = "Publish recent records to the app's iOS home screen widget."
+description = "Publish recent records to the app's home screen widget."
 commands.allow = ["updateWidgetSnapshot", "nextWidgetRequest", "dismissWidgetRequest"]

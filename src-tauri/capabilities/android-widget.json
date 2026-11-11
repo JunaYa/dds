@@ -1,0 +1,6 @@
+{
+  "identifier": "android-widget",
+  "platforms": ["android"],
+  "windows": ["main"],
+  "permissions": ["native-navigation:allow-widget-snapshot"]
+}

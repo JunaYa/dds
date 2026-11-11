@@ -1,0 +1,13 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recent_widget" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:gravity="center_vertical" android:padding="14dp"
+    android:background="@drawable/widget_surface">
+    <TextView android:id="@+id/widget_baby" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/recent_record" android:textSize="14sp" android:textColor="@color/widget_text" android:maxLines="1" android:ellipsize="end" />
+    <TextView android:id="@+id/widget_record_type" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="16sp" android:textStyle="bold" android:textColor="@color/widget_text" android:maxLines="1" android:ellipsize="end" />
+    <TextView android:id="@+id/widget_record_time" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="20sp" android:textColor="@color/widget_text" android:maxLines="1" android:ellipsize="end" />
+    <TextView android:id="@+id/widget_record_date" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="12sp" android:textColor="@color/widget_text" android:maxLines="1" android:ellipsize="end" />
+</LinearLayout>

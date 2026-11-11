@@ -23,7 +23,7 @@ pub fn run() {
                 quick_record::close_requested(window, api);
             }
         });
-    #[cfg(target_os = "ios")]
+    #[cfg(mobile)]
     let builder = builder.plugin(tauri_plugin_native_navigation::init());
 
     builder

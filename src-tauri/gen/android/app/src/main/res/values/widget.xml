@@ -1,0 +1,9 @@
+<resources>
+    <string name="recent_record">Recent record</string>
+    <string name="widget_child">Baby</string>
+    <string name="widget_type">Record type</string>
+    <string name="widget_save">Save</string>
+    <string name="widget_setup">Open Little days to add a baby and record types.</string>
+    <string name="widget_empty">No records yet</string>
+    <string name="widget_reconfigure">Choose a baby and record type</string>
+</resources>

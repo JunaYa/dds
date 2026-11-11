@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { OverlayProvider } from "@vita/ui/overlay";
 import { WorkspaceModal } from "../components/dialogs/WorkspaceModal";
@@ -10,9 +10,10 @@ import { RecentRecordBridge } from "./RecentRecordBridge";
 
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke, isTauri: () => true }));
-vi.mock("../components/layout/ios-platform", () => ({ isIosApp: () => true }));
+afterEach(() => vi.restoreAllMocks());
 
 beforeEach(() => {
+  vi.spyOn(navigator, "userAgent", "get").mockReturnValue("iPhone");
   localStorage.clear();
   invoke.mockReset();
   const data = emptyWorkspace();
@@ -31,7 +32,8 @@ function mount(child: string, type: string) {
     <RecentRecordBridge /><WorkspaceModal />
   </WorkspaceProvider></LocaleProvider></OverlayProvider>);
 }
-it("opens the requested baby's form and publishes its timestamp only after saving", async () => {
+it.each(["iPhone", "Android"])("opens the widget's form on %s and publishes its timestamp after saving", async platform => {
+  vi.spyOn(navigator, "userAgent", "get").mockReturnValue(platform);
   mount("b", "diaper");
   expect(await screen.findByText("Recording for b.")).toBeInTheDocument();
   expect(loadWorkspace().data.records).toHaveLength(0);

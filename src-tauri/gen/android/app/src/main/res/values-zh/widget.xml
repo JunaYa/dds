@@ -1,0 +1,9 @@
+<resources>
+    <string name="recent_record">最近记录</string>
+    <string name="widget_child">宝宝</string>
+    <string name="widget_type">记录类型</string>
+    <string name="widget_save">保存</string>
+    <string name="widget_setup">请先在 Little days 中添加宝宝和记录类型。</string>
+    <string name="widget_empty">暂无记录</string>
+    <string name="widget_reconfigure">请选择宝宝和记录类型</string>
+</resources>

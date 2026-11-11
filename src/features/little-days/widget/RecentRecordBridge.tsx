@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { invoke, isTauri } from "@tauri-apps/api/core";
 import { isIosApp } from "../components/layout/ios-platform";
 import { useApp } from "../hooks/useApp";
 import { useI18n } from "../i18n/useI18n";
@@ -8,11 +8,12 @@ import { typeName } from "../i18n/record-labels";
 type WidgetRequest = { id: string; child: string; type: string };
 
 export function RecentRecordBridge() {
+  const supported = isIosApp() || (isTauri() && /Android/i.test(navigator.userAgent));
   const app = useApp();
   const { data, modal, nursingOpen } = app;
   const { tr, locale } = useI18n();
   useEffect(() => {
-    if (!isIosApp() || !data) return;
+    if (!supported || !data) return;
     const latest: Record<string, Record<string, number>> = Object.create(null);
     for (const record of data.records) {
       const time = new Date(record.time).getTime() / 1000;
@@ -25,7 +26,7 @@ export function RecentRecordBridge() {
       currentChild: data.child, types: data.types.map(type => ({ id: type.id, name: typeName(type, tr) })),
       locale, latest,
     }).catch(error => console.error("Could not update recent record widget", error));
-  }, [data, locale, tr]);
+  }, [supported, data, locale, tr]);
 
   const open = useEffectEvent((request: WidgetRequest) => {
     const child = request.child;
@@ -37,7 +38,7 @@ export function RecentRecordBridge() {
     return true;
   });
   useEffect(() => {
-    if (!isIosApp() || !data || modal || nursingOpen) return;
+    if (!supported || !data || modal || nursingOpen) return;
     let disposed = false;
     let fetching = false;
     let refreshRequested = false;
@@ -72,6 +73,6 @@ export function RecentRecordBridge() {
       window.removeEventListener("focus", receive);
       document.removeEventListener("visibilitychange", receive);
     };
-  }, [data, modal, nursingOpen]);
+  }, [supported, data, modal, nursingOpen]);
   return null;
 }
