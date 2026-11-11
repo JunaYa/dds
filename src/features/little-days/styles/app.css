@@ -214,9 +214,6 @@ main {
   color: var(--care-text);
   margin-bottom: 14px;
 }
-.eyebrow span {
-  margin: 0 8px;
-}
 .primary {
   background: var(--primary) !important;
   color: var(--primary-foreground) !important;

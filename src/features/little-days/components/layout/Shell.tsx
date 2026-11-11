@@ -60,8 +60,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   weekday: "long",
                   month: "long",
                   day: "numeric",
-                })}{" "}
-                <span>•</span> {a.activeChild.age}
+                })}
               </div>
               <p>
                 {a.page === "Today"

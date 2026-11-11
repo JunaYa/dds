@@ -13,7 +13,7 @@ it("counts only the last 90 local dates, includes empty days and updates from ch
   localStorage.clear();
   const records = [record("a", "2027-01-01T00:00"), record("b", "2027-01-01T23:59"), record("c", "2026-10-04T12:00"), record("old", "2026-10-03T23:59"), record("future", "2027-01-02T00:00")];
   const view = render(<LocaleProvider><RecordActivity records={records} day="2027-01-01" /></LocaleProvider>);
-  expect(screen.getByText("3 saved records across 2 days in the last 90 days.")).toBeInTheDocument();
+  expect(screen.getByText("Records saved in the last 90 days: 3.")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Show daily details" }));
   const rows = within(screen.getByRole("table")).getAllByRole("row");
   expect(rows).toHaveLength(91);
@@ -21,7 +21,7 @@ it("counts only the last 90 local dates, includes empty days and updates from ch
   expect(within(rows[2]).getByRole("cell")).toHaveTextContent("0");
   expect(within(rows[90]).getByRole("cell")).toHaveTextContent("1");
   view.rerender(<LocaleProvider><RecordActivity records={[]} day="2027-01-01" /></LocaleProvider>);
-  expect(screen.getByText("0 saved records across 0 days in the last 90 days.")).toBeInTheDocument();
+  expect(screen.getByText("Records saved in the last 90 days: 0.")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Hide daily details" }));
   expect(screen.queryByRole("table")).not.toBeInTheDocument();
 });
@@ -31,7 +31,7 @@ it("exposes Chinese summaries and daily counts without relying on color", () => 
   localStorage.setItem(LOCALE_KEY, "zh-CN");
   render(<LocaleProvider><RecordActivity records={[record("a", "2027-01-01T12:00")]} day="2027-01-01" /></LocaleProvider>);
   expect(screen.getByRole("heading", { name: "记录足迹" })).toBeInTheDocument();
-  expect(screen.getByText("最近 90 天，已保存 1 条记录，覆盖 1 天。")).toBeInTheDocument();
+  expect(screen.getByText("最近 90 天，已保存 1 条记录。")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "查看每日明细" }));
   expect(screen.getByRole("columnheader", { name: "日期" })).toBeInTheDocument();
   expect(within(within(screen.getByRole("table")).getAllByRole("row")[1]).getByRole("cell")).toHaveTextContent("1");

@@ -28,9 +28,8 @@ export function RecordActivity({ records, day }: { records: CareRecord[]; day: s
     return { date, key, count, level: count === 0 ? 0 : count <= 3 ? 1 : count <= 7 ? 2 : count <= 11 ? 3 : 4 };
   });
   const total = days.reduce((sum, item) => sum + item.count, 0);
-  const active = days.filter(item => item.count > 0).length;
   const columns = Math.ceil((offset + days.length) / 7);
-  const description = tr("{count} saved records across {days} days in the last 90 days.", { count: total, days: active });
+  const description = tr("Records saved in the last 90 days: {count}.", { count: total });
   const formatDate = (date: Date) => date.toLocaleDateString(locale, { dateStyle: "medium" });
 
   return (

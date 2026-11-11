@@ -4,17 +4,14 @@ import { Button } from "@vita/ui/button";
 import { LocaleProvider } from "../../i18n/LocaleProvider";
 import { useI18n } from "../../i18n/useI18n";
 import { WorkspaceProvider } from "../../state/WorkspaceProvider";
-import { useApp } from "../../hooks/useApp";
 import { emptyWorkspace } from "../../domain/model";
 import { saveWorkspace } from "../../storage/workspace";
 import { LOCALE_KEY } from "../../storage/locale";
 import { ChildPicker } from "./ChildPicker";
 
 function Header() {
-  const { activeChild } = useApp();
   const { changeLocale } = useI18n();
   return <>
-    <output aria-label="Header age">{activeChild?.age}</output>
     <ChildPicker />
     <Button onClick={() => changeLocale("en")}>English</Button>
   </>;
@@ -39,14 +36,12 @@ function mount() {
   render(<LocaleProvider><WorkspaceProvider><Header /></WorkspaceProvider></LocaleProvider>);
 }
 
-it("uses the same localized age in the header and child picker", () => {
+it("shows the selected child's localized age beside their name", () => {
   mount();
-  expect(screen.getByLabelText("Header age")).toHaveTextContent("30 天");
   expect(within(screen.getByRole("combobox")).getByRole("option", { selected: true })).toHaveTextContent("Baby · 30 天");
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "sibling" } });
-  expect(screen.getByLabelText("Header age")).toHaveTextContent("3 个月 4 周");
+  expect(within(screen.getByRole("combobox")).getByRole("option", { selected: true })).toHaveTextContent("Sibling · 3 个月 4 周");
   fireEvent.click(screen.getByRole("button", { name: "English" }));
-  expect(screen.getByLabelText("Header age")).toHaveTextContent("3 months, 4 weeks");
   expect(within(screen.getByRole("combobox")).getByRole("option", { selected: true })).toHaveTextContent("Sibling · 3 months, 4 weeks");
 });
 
@@ -56,6 +51,5 @@ it("updates the age stage when the app resumes on a new calendar day", () => {
     vi.setSystemTime(new Date(2026, 1, 1, 0, 1));
     window.dispatchEvent(new Event("focus"));
   });
-  expect(screen.getByLabelText("Header age")).toHaveTextContent("1 个月");
   expect(within(screen.getByRole("combobox")).getByRole("option", { selected: true })).toHaveTextContent("Baby · 1 个月");
 });
