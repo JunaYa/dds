@@ -3,7 +3,6 @@
 .quick-records .section-heading { margin-bottom: 8px; }
 .quick-records .focus-types { gap: 10px; }
 .quick-records .focus-types button { min-width: 88px; min-height: 76px; }
-.journal .log-tools { flex-direction: row; justify-content: flex-end; align-items: center; margin-bottom: 8px; }
 .record-range { height: 52px; }
 .record-range button, .record-range [data-slot="segment-indicator"] { width: 44px; height: 44px; }
 .journal-week { margin-bottom: 28px; }

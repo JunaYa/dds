@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { expect, it, vi } from 'vitest'
 import { WeekDatePicker } from './week-date-picker'
 
-const labels = { previousWeek: 'Previous week', nextWeek: 'Next week', today: 'Today', chooseDate: 'Choose date' }
+const labels = { chooseDate: 'Choose date' }
 
 it('updates selection immediately during rapid changes and preserves keyboard focus', () => {
   function Picker() {
@@ -32,12 +32,7 @@ it('shows a Monday-first week across years and selects local calendar dates', ()
   expect(screen.getByRole('button', { pressed: true })).toHaveAccessibleName('Friday, January 1, 2027')
   fireEvent.click(screen.getByRole('button', { name: 'Sunday, January 3, 2027' }))
   expect(onValueChange).toHaveBeenLastCalledWith('2027-01-03')
-  fireEvent.click(screen.getByRole('button', { name: 'Previous week' }))
-  expect(onValueChange).toHaveBeenLastCalledWith('2026-12-25')
-  fireEvent.click(screen.getByRole('button', { name: 'Next week' }))
-  expect(onValueChange).toHaveBeenLastCalledWith('2027-01-08')
-  fireEvent.click(screen.getByRole('button', { name: 'Today' }))
-  expect(onValueChange).toHaveBeenLastCalledWith('2027-01-02')
+  expect(screen.getByRole('button', { name: 'Saturday, January 2, 2027' })).toHaveAttribute('aria-current', 'date')
 })
 
 it('leaves dates unselected when viewing all records and localizes weekday labels', () => {

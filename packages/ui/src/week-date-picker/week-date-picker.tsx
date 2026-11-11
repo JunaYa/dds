@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { type ReactNode, useState } from 'react'
+import { ChevronDownIcon } from 'lucide-react'
 import { enUS, zhCN } from 'react-day-picker/locale'
 import { Button } from '../button/button'
 import { Calendar } from '../calendar/calendar'
@@ -22,10 +22,11 @@ export interface WeekDatePickerProps {
   selected?: boolean
   locale: string
   onValueChange: (value: string) => void
-  labels: { previousWeek: string; nextWeek: string; today: string; chooseDate: string }
+  labels: { chooseDate: string }
+  headerEnd?: ReactNode
 }
 
-export function WeekDatePicker({ value, today, selected = true, locale, onValueChange, labels }: WeekDatePickerProps) {
+export function WeekDatePicker({ value, today, selected = true, locale, onValueChange, labels, headerEnd }: WeekDatePickerProps) {
   const [open, setOpen] = useState(false)
   const [pointerMotion, setPointerMotion] = useState(false)
   const date = new Date(`${value}T12:00:00`)
@@ -59,15 +60,7 @@ export function WeekDatePicker({ value, today, selected = true, locale, onValueC
             />
           </PopoverPopup>
         </Popover>
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" aria-label={labels.previousWeek} onClick={() => onValueChange(localDate(offsetDate(date, -7)))}>
-            <ChevronLeftIcon aria-hidden="true" />
-          </Button>
-          <Button variant="ghost" onClick={() => onValueChange(today)}>{labels.today}</Button>
-          <Button variant="ghost" size="icon" aria-label={labels.nextWeek} onClick={() => onValueChange(localDate(offsetDate(date, 7)))}>
-            <ChevronRightIcon aria-hidden="true" />
-          </Button>
-        </div>
+        {headerEnd}
       </div>
       <div className="relative isolate grid grid-cols-7 gap-0.5" role="group" aria-label={labels.chooseDate}>
         <span
