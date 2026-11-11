@@ -19,6 +19,7 @@ import {
 import { typeName, fieldLabel } from "./record-labels";
 import { translator } from "./translate";
 import { messages } from "./messages";
+import { traditionalMessages } from "./messages.zh-TW";
 
 beforeEach(() => {
   localStorage.clear();
@@ -57,7 +58,8 @@ it("defaults to the device language and falls back for unsupported or invalid pr
   vi.spyOn(navigator, "language", "get").mockReturnValue("zh-TW");
   localStorage.setItem(LOCALE_KEY, "invalid");
   render(<App />);
-  expect(screen.getByLabelText("宝宝姓名")).toBeInTheDocument();
+  expect(screen.getByLabelText("寶寶姓名")).toBeInTheDocument();
+  expect(document.documentElement.lang).toBe("zh-TW");
   cleanup();
   vi.spyOn(navigator, "language", "get").mockReturnValue("fr-FR");
   render(<App />);
@@ -135,11 +137,25 @@ it("never translates user-defined names even when they match a message key", () 
 });
 
 it("keeps interpolation parameters consistent in both languages", () => {
-  for (const [key, value] of Object.entries(messages)) {
+  expect(Object.keys(traditionalMessages).sort()).toEqual(Object.keys(messages).sort());
+  for (const [key, value] of Object.entries(messages).concat(Object.entries(traditionalMessages))) {
     expect(value.match(/\{\w+\}/g)?.sort() ?? [], key).toEqual(
       key.match(/\{\w+\}/g)?.sort() ?? [],
     );
   }
+});
+
+it("switches to Traditional Chinese and restores the preference", () => {
+  const app = render(<App />);
+  fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+  fireEvent.click(screen.getByRole("radio", { name: "繁體中文" }));
+  expect(screen.getByRole("group", { name: "語言" })).toBeInTheDocument();
+  expect(document.documentElement.lang).toBe("zh-TW");
+  expect(localStorage.getItem(LOCALE_KEY)).toBe("zh-TW");
+  app.unmount();
+  render(<App />);
+  expect(screen.getByRole("radio", { name: "繁體中文" })).toBeChecked();
+  expect(translator("zh-TW")("Recording for {name}.", { name: "宝宝 Alex" })).toBe("正在為宝宝 Alex記錄。");
 });
 
 it("reports a missing language provider instead of silently showing an inert English picker", () => {

@@ -11,6 +11,7 @@ export function LanguagePicker() {
           [
             ["en", "English"],
             ["zh-CN", "简体中文"],
+            ["zh-TW", "繁體中文"],
           ] as const
         ).map(([value, label]) => (
           <label key={value} lang={value}>

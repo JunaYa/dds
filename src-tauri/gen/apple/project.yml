@@ -64,6 +64,7 @@ targets:
       path: dds_iOS/Info.plist
       properties:
         LSRequiresIPhoneOS: true
+        CFBundleLocalizations: [en, zh-Hans, zh-Hant]
         NSLocalNetworkUsageDescription: 连接同一网络中的开发电脑，加载应用调试页面并实时更新。
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
