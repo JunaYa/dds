@@ -80,6 +80,9 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
     private var originalConstraints: [NSLayoutConstraint] = []
     private var requestedVisible = true
     private var keyboardVisible = false
+    #if DEBUG
+    private var scrollVerification: NSKeyValueObservation?
+    #endif
     private let contentTransition = SharedWebViewTransition()
     private let addController = UIViewController()
     var onAdd: (() -> Void)?
@@ -141,6 +144,28 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
         // UIKit keeps short pages expanded; the UI test needs a scrollable fixture.
         if ProcessInfo.processInfo.environment["DDS_UI_TEST_LONG_PAGE"] == "1" {
             webview.evaluateJavaScript("document.body.style.minHeight = '5000px'")
+        }
+        if ProcessInfo.processInfo.environment["DDS_UI_TEST_SCROLL"] == "1" {
+            let probe = UILabel(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
+            probe.isAccessibilityElement = true
+            probe.accessibilityIdentifier = "little-days.scroll-verification"
+            probe.accessibilityLabel = "Scroll verification"
+            probe.isUserInteractionEnabled = false
+            view.addSubview(probe)
+            var overscrolled = false
+            var decelerated = false
+            var previous = webview.scrollView.contentOffset.y
+            scrollVerification = webview.scrollView.observe(\.contentOffset, options: [.initial, .new]) { [weak probe] scroll, _ in
+                let minimum = -scroll.adjustedContentInset.top
+                let maximum = max(minimum, scroll.contentSize.height - scroll.bounds.height + scroll.adjustedContentInset.bottom)
+                let offset = scroll.contentOffset.y
+                if scroll.isDragging || scroll.isDecelerating {
+                    overscrolled = overscrolled || offset < minimum - 0.5 || offset > maximum + 0.5
+                }
+                decelerated = decelerated || (scroll.isDecelerating && abs(offset - previous) > 0.5)
+                previous = offset
+                probe?.accessibilityValue = "offset=\(offset);minimum=\(minimum);maximum=\(maximum);bounces=\(scroll.bounces ? 1 : 0);overscrolled=\(overscrolled ? 1 : 0);decelerated=\(decelerated ? 1 : 0);enabled=\(scroll.isScrollEnabled ? 1 : 0)"
+            }
         }
         #endif
     }

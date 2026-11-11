@@ -16,7 +16,13 @@ The test checks all three native selections, scroll minimization and expansion, 
 
 If changing this standalone test runner repeatedly, uninstall only `com.dds.checks.TabChecks.xctrunner` before the next run to avoid reusing a stale test runner. Do not uninstall the Little days app, which contains user data.
 
-## Modal checks
+## Page scrolling check
+
+`ScrollChecks.testEdgesStopWithoutBounceAndFlickStillDecelerates` launches the installed debug app with a temporary long page and an accessibility-only scroll probe. It pulls against both document edges, verifies that native content offsets never exceed the scroll bounds, and checks that a fast flick produces offset changes while UIKit reports deceleration. It also verifies scrolling remains enabled and saves top/bottom screenshots. No saved records are changed.
+
+Use the command above with `-only-testing:TabChecks/ScrollChecks`. Rebuild the iOS app before running so the debug probe is included. The probe is enabled only by `DDS_UI_TEST_SCROLL=1` and is excluded from release builds. Launch normally after the test to remove the temporary page height and probe.
+
+## Modal gesture checks
 
 `ModalChecks.testSheetGesturesAndKeyboard` opens the record chooser, checks a short title drag and a dismissing drag, opens a diaper form, focuses its notes, and cancels without saving records. It also checks that the focused field stays between the header and action bar. It saves chooser, editor, and keyboard screenshots in the result bundle. Add `-only-testing:TabChecks/ModalChecks` to the xcodebuild command to run only this flow.
 
