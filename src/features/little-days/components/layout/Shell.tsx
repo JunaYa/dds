@@ -3,6 +3,7 @@ import { useI18n } from "../../i18n/useI18n";
 import { type ReactNode } from "react";
 import { Toast } from "@vita/ui/toast";
 import { Button } from "@vita/ui/button";
+import { PageElasticity } from "@vita/ui/page-elasticity";
 import { useApp } from "../../hooks/useApp";
 import { PageNavigation } from "./PageNavigation";
 import { MobileNavigation } from "./MobileNavigation";
@@ -23,6 +24,7 @@ export function Shell({ children }: { children: ReactNode }) {
   if (!a.activeChild) return null;
   return (
     <div className={ios ? "ios-workspace" : undefined}>
+      <PageElasticity enabled={!a.modal && !a.nursingOpen} resetKey={`${a.page}:${a.child}`}>
       <div className="app-frame">
         {!ios && <aside className="sidebar">
           <div className="brand">
@@ -104,14 +106,15 @@ export function Shell({ children }: { children: ReactNode }) {
           <SaveError />
           <SessionBanner />
           {children}
-          {a.notice && (
-            <Toast key={a.noticeId} onDismiss={a.dismissNotice} duration={a.undo ? 8000 : 5000}>
-              <span>{a.notice}</span>
-              {a.undo && <Button variant="ghost" onClick={a.undo}>{tr("Undo")}</Button>}
-            </Toast>
-          )}
         </main>
       </div>
+      </PageElasticity>
+      {a.notice && (
+        <Toast key={a.noticeId} onDismiss={a.dismissNotice} duration={a.undo ? 8000 : 5000}>
+          <span>{a.notice}</span>
+          {a.undo && <Button variant="ghost" onClick={a.undo}>{tr("Undo")}</Button>}
+        </Toast>
+      )}
       <WorkspaceModal />
       <NursingMiniBar />
       <NursingTimer />

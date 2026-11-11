@@ -5,6 +5,7 @@
   "description": "Shared UI primitives for the Vita platform monorepo.",
   "type": "module",
   "exports": {
+    "./page-elasticity": "./src/page-elasticity/page-elasticity.tsx",
     "./week-date-picker": "./src/week-date-picker/week-date-picker.tsx",
     "./widget-board": "./src/widget-board/widget-board.tsx",
     "./ascii-loader": "./src/ascii-loaders/index.tsx",

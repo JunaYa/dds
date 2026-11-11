@@ -804,6 +804,7 @@ main {
 
 .app-frame {
   max-width: none;
+  background: var(--background);
   min-height: 100dvh;
   margin: 0;
   border-radius: 0;

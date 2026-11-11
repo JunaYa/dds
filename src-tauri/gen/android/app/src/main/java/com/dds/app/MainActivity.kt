@@ -12,6 +12,7 @@ class MainActivity : TauriActivity() {
   override fun onWebViewCreate(webView: WebView) {
     super.onWebViewCreate(webView)
     webView.isVerticalScrollBarEnabled = false
+    webView.overScrollMode = View.OVER_SCROLL_NEVER
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
