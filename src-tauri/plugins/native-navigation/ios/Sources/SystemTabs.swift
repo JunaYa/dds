@@ -64,6 +64,7 @@ private final class WebTabPage: UIViewController {
             view.addSubview(webview)
         }
         setContentScrollView(webview.scrollView, for: .all)
+        WebViewBackground.syncContainers(for: webview)
     }
 }
 
@@ -122,7 +123,7 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
         guard let webview else { return }
         originalHost = host
         originalBounces = webview.scrollView.bounces
-        webview.scrollView.bounces = true
+        webview.scrollView.bounces = false
         originalFrame = webview.frame
         originalMask = webview.autoresizingMask
         originalTranslates = webview.translatesAutoresizingMaskIntoConstraints
@@ -154,6 +155,7 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
             webview.autoresizingMask = originalMask
             webview.translatesAutoresizingMaskIntoConstraints = originalTranslates
             NSLayoutConstraint.activate(originalConstraints)
+            WebViewBackground.syncContainers(for: webview)
         }
         view.removeFromSuperview()
         removeFromParent()
@@ -168,6 +170,9 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
             controller.tabBarItem.title = titles[index]
         }
         overrideUserInterfaceStyle = theme == "dark" ? .dark : .light
+        if let webview {
+            WebViewBackground.syncContainers(for: webview)
+        }
         addController.tabBarItem.title = addTitle
         addController.tabBarItem.accessibilityLabel = addTitle
         addController.tabBarItem.isEnabled = addTitle != nil

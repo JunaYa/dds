@@ -261,9 +261,12 @@ class NavigationPlugin: Plugin {
     private var session: String?
     private var systemTabs: UIViewController?
     private var modalInteraction: ModalInteraction?
+    private var pageBackground: WebViewBackground?
 
     @objc override func load(webview: WKWebView) {
         self.webview = webview
+        pageBackground = WebViewBackground(webview: webview)
+        webview.scrollView.bounces = false
         webview.scrollView.showsVerticalScrollIndicator = false
         modalInteraction = ModalInteraction(scrollView: webview.scrollView)
     }

@@ -8,8 +8,8 @@
   padding-left: max(20px, env(safe-area-inset-left));
 }
 .app-frame { overflow: clip; }
-.ios-workspace { --ios-tab-height: calc(64px + env(safe-area-inset-bottom)); }
-.ios-workspace .app-frame { display: block; }
+.ios-workspace { --ios-tab-height: calc(64px + env(safe-area-inset-bottom)); background: var(--background); }
+.ios-workspace .app-frame { display: block; background: var(--background); }
 .ios-workspace .app-frame > main {
   padding-top: 12px;
   padding-bottom: calc(var(--ios-tab-height) + 32px);
@@ -25,7 +25,7 @@
   z-index: var(--z-layer-sticky);
   padding-top: max(20px, env(safe-area-inset-top));
   padding-bottom: 12px;
-  background: var(--card);
+  background: var(--background);
 }
 .ios-profile-content {
   max-width: 960px;

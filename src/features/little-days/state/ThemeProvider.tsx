@@ -42,8 +42,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useLayoutEffect(() => {
     document.documentElement.classList.toggle("dark", resolved === "dark");
     document.documentElement.style.colorScheme = resolved;
+    const background = getComputedStyle(document.documentElement).backgroundColor;
     document.querySelector('meta[name="theme-color"]')?.setAttribute(
-      "content", resolved === "dark" ? "#111111" : "#fafafa",
+      "content", background && background !== "rgba(0, 0, 0, 0)" && background !== "transparent"
+        ? background
+        : resolved === "dark" ? "#111111" : "#fafafa",
     );
   }, [resolved]);
 

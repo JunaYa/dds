@@ -1,0 +1,34 @@
+name: BackgroundCheck
+options:
+  bundleIdPrefix: com.dds.testing
+  deploymentTarget:
+    iOS: '16.4'
+settings:
+  CODE_SIGNING_ALLOWED: NO
+targets:
+  BackgroundCheck:
+    type: application
+    platform: iOS
+    sources: [Sources]
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_UILaunchScreen_Generation: YES
+  BackgroundTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests
+      - ../Sources/WebViewBackground.swift
+      - ../Sources/ModalInteraction.swift
+    dependencies:
+      - target: BackgroundCheck
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+schemes:
+  BackgroundCheck:
+    build:
+      targets:
+        BackgroundCheck: all
+        BackgroundTests: all
+    test:
+      targets: [BackgroundTests]

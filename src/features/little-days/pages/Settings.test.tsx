@@ -57,6 +57,23 @@ it("follows system changes only when System is selected", () => {
   cleanup();
   expect(listeners.size).toBe(0);
 });
+it("uses the rendered page background for native theme color in both themes", () => {
+  const style = document.createElement("style");
+  style.textContent = ":root { background-color: rgb(249, 249, 248); } :root.dark { background-color: rgb(17, 17, 16); }";
+  const meta = document.createElement("meta");
+  meta.name = "theme-color";
+  document.head.append(style, meta);
+  try {
+    openSettings();
+    choose("Dark");
+    expect(meta.content).toBe("rgb(17, 17, 16)");
+    choose("Light");
+    expect(meta.content).toBe("rgb(249, 249, 248)");
+  } finally {
+    style.remove();
+    meta.remove();
+  }
+});
 it("keeps the session usable and reports when preferences cannot be saved", () => {
   openSettings();
   vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("Storage unavailable"); });
