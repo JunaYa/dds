@@ -14,9 +14,9 @@ Closing the main desktop window keeps the app in the system tray; use the tray's
 
 ## Development
 
-Use Node.js 22.12+ (Node 24 LTS recommended) and pnpm 12.6.0, pinned in `package.json`.
-If your global pnpm is older, prefix commands with `npm exec --yes --package=pnpm@12.6.0 --`,
-for example `npm exec --yes --package=pnpm@12.6.0 -- pnpm install`.
+Use Node.js 26 LTS (26.13.1 pinned in `.node-version`) and pnpm 12.18.0, pinned in `package.json`.
+If your global pnpm is older, prefix commands with `npm exec --yes --package=pnpm@12.18.0 --`,
+for example `npm exec --yes --package=pnpm@12.18.0 -- pnpm install`.
 
 Android uses AGP 8.13.2, Gradle 8.14.5, and Kotlin 2.1.21 for compatibility with
 Tauri 2.11.6. AGP 9.4.1 / Kotlin 2.4.20 reject the legacy Android and
