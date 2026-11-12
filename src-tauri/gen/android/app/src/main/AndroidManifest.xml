@@ -30,7 +30,15 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".RecentRecordWidget" android:exported="false" android:label="@string/recent_record">
+        <receiver android:name=".FeedingRecordWidget" android:exported="false" android:label="@string/widget_feeding">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/feeding_record_widget" />
+        </receiver>
+        <receiver android:name=".SleepRecordWidget" android:exported="false" android:label="@string/widget_sleep">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/sleep_record_widget" />
+        </receiver>
+        <receiver android:name=".RecentRecordWidget" android:exported="false" android:label="@string/widget_other">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/recent_record_widget" />
         </receiver>

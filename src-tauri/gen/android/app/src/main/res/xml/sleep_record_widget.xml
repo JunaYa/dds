@@ -1,0 +1,5 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_sleep" android:initialLayout="@layout/recent_record_widget" android:minWidth="110dp" android:minHeight="88dp"
+    android:targetCellWidth="2" android:targetCellHeight="2" android:updatePeriodMillis="0"
+    android:configure="com.dds.app.RecentRecordConfiguration" android:widgetFeatures="reconfigurable"
+    android:resizeMode="horizontal|vertical" android:widgetCategory="home_screen" />

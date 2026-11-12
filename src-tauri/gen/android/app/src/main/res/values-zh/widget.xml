@@ -6,4 +6,9 @@
     <string name="widget_setup">请先在 Little days 中添加宝宝和记录类型。</string>
     <string name="widget_empty">暂无记录</string>
     <string name="widget_reconfigure">请选择宝宝和记录类型</string>
+    <string name="widget_feeding">喂奶</string>
+    <string name="widget_sleep">睡眠</string>
+    <string name="widget_other">其他记录</string>
+    <string name="widget_type_missing">此记录类型已移除，请打开 Little days 恢复。</string>
+    <string name="widget_open_app">打开 Little days</string>
 </resources>

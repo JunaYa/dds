@@ -29,7 +29,7 @@ internal class WidgetStore(context: Context) {
     }
 }
 
-class RecentRecordWidget : AppWidgetProvider() {
+open class RecentRecordWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
         val store = WidgetStore(context)
         val snapshot = store.snapshot
@@ -70,8 +70,13 @@ class RecentRecordWidget : AppWidgetProvider() {
         const val OPEN = "com.dds.app.OPEN_RECENT_RECORD"
         fun refresh(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
-            val ids = manager.getAppWidgetIds(ComponentName(context, RecentRecordWidget::class.java))
-            RecentRecordWidget().onUpdate(context, manager, ids)
+            RecordWidgetKind.entries.forEach { kind ->
+                val ids = manager.getAppWidgetIds(ComponentName(context, kind.provider))
+                RecentRecordWidget().onUpdate(context, manager, ids)
+            }
         }
     }
 }
+
+class FeedingRecordWidget : RecentRecordWidget()
+class SleepRecordWidget : RecentRecordWidget()

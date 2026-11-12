@@ -2,7 +2,6 @@ package com.dds.app
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
@@ -16,7 +15,9 @@ class RecentRecordConfiguration : Activity() {
         setResult(RESULT_CANCELED)
         val id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         val manager = AppWidgetManager.getInstance(this)
-        if (manager.getAppWidgetInfo(id)?.provider != ComponentName(this, RecentRecordWidget::class.java)) {
+        val provider = manager.getAppWidgetInfo(id)?.provider
+        val kind = if (provider?.packageName == packageName) RecordWidgetKind.fromProvider(provider.className) else null
+        if (kind == null) {
             finish()
             return
         }
@@ -58,9 +59,26 @@ class RecentRecordConfiguration : Activity() {
         val selection = store.selection(id)
         val child = picker(R.string.widget_child, children, savedInstanceState?.getString("child")
             ?: selection?.optString("child") ?: snapshot.optString("currentChild"))
-        val type = picker(R.string.widget_type, types, savedInstanceState?.getString("type") ?: selection?.optString("type").orEmpty())
+        val fixedType = kind.defaultType?.let { fixed -> types.find { it.id == fixed } }
+        if (kind.defaultType != null && fixedType == null) {
+            layout.addView(TextView(this).apply { setText(R.string.widget_type_missing) })
+            layout.addView(Button(this).apply {
+                setText(R.string.widget_open_app)
+                setOnClickListener { startActivity(Intent(context, MainActivity::class.java)); finish() }
+            })
+            return
+        }
+        val selectedType: () -> String
+        if (fixedType == null) {
+            val type = picker(R.string.widget_type, types,
+                savedInstanceState?.getString("type") ?: selection?.optString("type").orEmpty())
+            selectedType = { (type.selectedItem as WidgetStore.Choice).id }
+        } else {
+            layout.addView(TextView(this).apply { text = fixedType.name; textSize = 18f })
+            selectedType = { fixedType.id }
+        }
         selections = { JSONObject().put("child", (child.selectedItem as WidgetStore.Choice).id)
-            .put("type", (type.selectedItem as WidgetStore.Choice).id) }
+            .put("type", selectedType()) }
         layout.addView(Button(this).apply {
             setText(R.string.widget_save)
             setOnClickListener {

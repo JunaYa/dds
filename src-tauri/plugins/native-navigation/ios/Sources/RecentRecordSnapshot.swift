@@ -12,6 +12,9 @@ struct RecentRecordSnapshot: Codable {
     let locale: String
 
     static let kind = "RecentRecord"
+    static let feedingKind = "RecentRecord.feed"
+    static let sleepKind = "RecentRecord.sleep"
+    static let kinds = [feedingKind, sleepKind, kind]
     static func file() throws -> URL {
         guard let bundle = Bundle.main.bundleIdentifier else { throw CocoaError(.fileNoSuchFile) }
         let suffix = ".RecentRecord"

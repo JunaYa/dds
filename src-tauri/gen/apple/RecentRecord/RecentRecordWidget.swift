@@ -62,8 +62,11 @@ struct RecentProvider: AppIntentTimelineProvider {
     }
     func snapshot(for configuration: RecentRecordIntent, in context: Context) async -> RecentEntry {
         guard let data = try? RecentRecordSnapshot.read() else { return RecentEntry() }
-        let baby = data.children.first { $0.id == (configuration.baby?.id ?? data.currentChild) }
-        let type = data.types.first { $0.id == (configuration.recordType?.id ?? data.types.first?.id) }
+        return Self.entry(data: data, child: configuration.baby?.id, recordType: configuration.recordType?.id)
+    }
+    static func entry(data: RecentRecordSnapshot, child: String?, recordType: String?) -> RecentEntry {
+        let baby = data.children.first { $0.id == (child ?? data.currentChild) }
+        let type = data.types.first { $0.id == (recordType ?? data.types.first?.id) }
         let time = baby.flatMap { data.latest[$0.id] }.flatMap { times in type.flatMap { times[$0.id] } }
         return RecentEntry(baby: baby, type: type, time: time.map(Date.init(timeIntervalSince1970:)), locale: Locale(identifier: data.locale))
     }
@@ -72,27 +75,39 @@ struct RecentProvider: AppIntentTimelineProvider {
     }
 }
 
-@main
-struct RecentRecordWidget: Widget {
-    var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: RecentRecordSnapshot.kind, intent: RecentRecordIntent.self, provider: RecentProvider()) { entry in
-            Group {
-                if let baby = entry.baby, let type = entry.type {
-                    Button(intent: OpenRecentRecord(child: baby.id, recordType: type.id)) {
-                        content(entry).contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                } else {
-                    content(entry)
+struct BabyRecordIntent: WidgetConfigurationIntent {
+    static var title: LocalizedStringResource = "选择宝宝"
+    @Parameter(title: "宝宝") var baby: Baby?
+}
+
+struct FixedRecentProvider: AppIntentTimelineProvider {
+    let recordType: String
+    func placeholder(in context: Context) -> RecentEntry {
+        RecentEntry(baby: .init(id: "", name: "宝宝"),
+                    type: .init(id: recordType, name: recordType == "feed" ? "喂奶" : "睡眠"), time: Date())
+    }
+    func snapshot(for configuration: BabyRecordIntent, in context: Context) async -> RecentEntry {
+        guard let data = try? RecentRecordSnapshot.read() else { return RecentEntry() }
+        return RecentProvider.entry(data: data, child: configuration.baby?.id, recordType: recordType)
+    }
+    func timeline(for configuration: BabyRecordIntent, in context: Context) async -> Timeline<RecentEntry> {
+        Timeline(entries: [await snapshot(for: configuration, in: context)], policy: .never)
+    }
+}
+
+struct RecentRecordView: View {
+    let entry: RecentEntry
+    var body: some View {
+        Group {
+            if let baby = entry.baby, let type = entry.type {
+                Button(intent: OpenRecentRecord(child: baby.id, recordType: type.id)) {
+                    content(entry).contentShape(Rectangle())
                 }
-            }
-            .environment(\.locale, entry.locale)
-            .containerBackground(.background, for: .widget)
+                .buttonStyle(.plain)
+            } else { content(entry) }
         }
-        .configurationDisplayName("最近记录")
-        .description("查看宝宝最近一次记录，轻点添加新记录。")
-        .supportedFamilies([.systemSmall, .systemMedium])
-        .contentMarginsDisabled()
+        .environment(\.locale, entry.locale)
+        .containerBackground(.background, for: .widget)
     }
 
     private func content(_ entry: RecentEntry) -> some View {
@@ -110,5 +125,52 @@ struct RecentRecordWidget: Widget {
         .lineLimit(2)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(16)
+    }
+}
+
+struct FeedingRecordWidget: Widget {
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: RecentRecordSnapshot.feedingKind, intent: BabyRecordIntent.self,
+                               provider: FixedRecentProvider(recordType: "feed")) { entry in
+            RecentRecordView(entry: entry)
+        }
+        .configurationDisplayName("喂奶")
+        .description("查看最近一次喂奶时间，轻点添加喂奶记录。")
+        .supportedFamilies([.systemSmall, .systemMedium])
+        .contentMarginsDisabled()
+    }
+}
+
+struct SleepRecordWidget: Widget {
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: RecentRecordSnapshot.sleepKind, intent: BabyRecordIntent.self,
+                               provider: FixedRecentProvider(recordType: "sleep")) { entry in
+            RecentRecordView(entry: entry)
+        }
+        .configurationDisplayName("睡眠")
+        .description("查看最近一次睡眠时间，轻点添加睡眠记录。")
+        .supportedFamilies([.systemSmall, .systemMedium])
+        .contentMarginsDisabled()
+    }
+}
+
+struct RecentRecordWidget: Widget {
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: RecentRecordSnapshot.kind, intent: RecentRecordIntent.self, provider: RecentProvider()) { entry in
+            RecentRecordView(entry: entry)
+        }
+        .configurationDisplayName("其他记录")
+        .description("选择任意记录类型，包括应用中创建的自定义类型；可添加多个独立小组件。")
+        .supportedFamilies([.systemSmall, .systemMedium])
+        .contentMarginsDisabled()
+    }
+}
+
+@main
+struct RecordWidgets: WidgetBundle {
+    var body: some Widget {
+        FeedingRecordWidget()
+        SleepRecordWidget()
+        RecentRecordWidget()
     }
 }

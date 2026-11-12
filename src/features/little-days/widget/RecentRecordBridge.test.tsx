@@ -66,3 +66,31 @@ it("uses the latest timestamp per baby and type after a synced deletion", async 
   act(() => { saveSyncedWorkspace({ ...data, records: entries.slice(1) }, loadWorkspace().raw); });
   await waitFor(() => expectTime(entries[1].time));
 });
+
+it.each(["iPhone", "Android"])("publishes custom record types and opens their selected form on %s", async platform => {
+  vi.spyOn(navigator, "userAgent", "get").mockReturnValue(platform);
+  const { data } = loadWorkspace();
+  data.types.push({ id: "custom-reading", name: "Custom reading", icon: "spark", description: "",
+    fields: [{ id: "reading", kind: "measure", label: "Reading", unit: "", options: "" }] });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  mount("b", "custom-reading");
+  expect(await screen.findByText("Recording for b.")).toBeInTheDocument();
+  await waitFor(() => expect(invoke).toHaveBeenCalledWith("plugin:native-navigation|updateWidgetSnapshot",
+    expect.objectContaining({ types: expect.arrayContaining([
+      expect.objectContaining({ id: "feed" }), expect.objectContaining({ id: "sleep" }),
+      { id: "custom-reading", name: "Custom reading" },
+    ]) })));
+  fireEvent.change(screen.getByLabelText("Reading"), { target: { value: "12" } });
+  fireEvent.click(screen.getByRole("button", { name: "Save record" }));
+  expect(loadWorkspace().data.records[0]).toMatchObject({ child: "b", type: "custom-reading", values: { reading: 12 } });
+});
+
+it.each([
+  ["iPhone", "feed"], ["iPhone", "sleep"], ["Android", "feed"], ["Android", "sleep"],
+])("opens the independent %s %s widget for its configured baby", async (platform, type) => {
+  vi.spyOn(navigator, "userAgent", "get").mockReturnValue(platform);
+  mount("b", type);
+  expect(await screen.findByText("Recording for b.")).toBeInTheDocument();
+  expect(screen.getByLabelText("Record type")).toHaveValue(type);
+  expect(loadWorkspace().data.records).toHaveLength(0);
+});

@@ -258,7 +258,7 @@ class NavigationPlugin: Plugin {
         if (try? Data(contentsOf: file)) != data {
             try data.write(to: file, options: .atomic)
             if #available(iOS 17.0, *) {
-                WidgetCenter.shared.reloadTimelines(ofKind: RecentRecordSnapshot.kind)
+                RecentRecordSnapshot.kinds.forEach { WidgetCenter.shared.reloadTimelines(ofKind: $0) }
             }
         }
         invoke.resolve()
