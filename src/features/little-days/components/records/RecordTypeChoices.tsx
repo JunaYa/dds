@@ -3,7 +3,7 @@ import { type RecordType } from "../../domain/model";
 import { useApp } from "../../hooks/useApp";
 import { useI18n } from "../../i18n/useI18n";
 import { typeName } from "../../i18n/record-labels";
-import { Icon } from "../common/Icon";
+import { RecordTypeIcon } from "./RecordTypeIcon";
 
 export function RecordTypeChoices({ onPick }: { onPick?: (type: RecordType) => void }) {
   const { tr } = useI18n();
@@ -11,7 +11,7 @@ export function RecordTypeChoices({ onPick }: { onPick?: (type: RecordType) => v
   return <div className="focus-types">
     {types.map(type => (
       <Button unstyled key={type.id} onClick={() => (onPick ?? openRecord)(type)}>
-        <Icon name={type.icon} />
+        <RecordTypeIcon type={type} />
         <span>{typeName(type, tr)}</span>
       </Button>
     ))}

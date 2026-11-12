@@ -3,7 +3,7 @@ import { typeName } from "../../i18n/record-labels";
 import { useI18n } from "../../i18n/useI18n";
 import { useApp } from "../../hooks/useApp";
 import { summary, type CareRecord } from "../../domain/model";
-import { Icon } from "../common/Icon";
+import { RecordTypeIcon } from "./RecordTypeIcon";
 
 export function RecordRow({ record }: { record: CareRecord }) {
   const { tr } = useI18n();
@@ -14,7 +14,7 @@ export function RecordRow({ record }: { record: CareRecord }) {
     <article className="record">
       <time dateTime={record.time}>{record.time.slice(11, 16)}</time>
       <span className={`record-dot ${type.id}`}>
-        <Icon name={type.icon} size={19} />
+        <RecordTypeIcon type={type} size={19} />
       </span>
       <Button
         unstyled

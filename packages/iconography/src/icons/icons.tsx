@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react'
+import { careIcons } from './care-icons'
 import {
   ActivitySquare,
   AlertCircle,
@@ -312,6 +313,7 @@ const StatsIcon = createIconifyIcon('material-symbols:insert-chart-outline-round
 const InboxIcon = createIconifyIcon('material-symbols:inbox-outline-rounded')
 
 const iconMap = {
+  ...careIcons,
   // Semantic product aliases
   agentChat: AgentChatIcon,
   agentChatFilled: AgentChatFilledIcon,

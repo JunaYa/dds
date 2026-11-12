@@ -4,7 +4,7 @@ import { WidgetBoard, type WidgetDefinition, type WidgetItem } from '@vita/ui/wi
 import { useApp } from '../hooks/useApp';
 import { useI18n } from '../i18n/useI18n';
 import { typeName } from '../i18n/record-labels';
-import { Icon } from '../components/common/Icon';
+import { RecordTypeIcon } from '../components/records/RecordTypeIcon';
 import { nightStatus } from './night-status';
 import { NightStatusMetric, NightStatusNotes } from './NightStatus';
 import { defaultWidgetLayout, normalizeWidgetLayout, widgetLayoutKey } from './widget-layout';
@@ -45,7 +45,7 @@ export function QuickRecordWidgets({ child, now, night, editing, highlighted, on
           aria-current={highlighted === type.id ? 'true' : undefined}
           tabIndex={highlighted === type.id || !items.some((item) => item.id === `record:${highlighted}`) ? 0 : -1}
           onFocus={() => onHighlight(type.id)} onClick={() => onPick(type.id)}>
-          <Icon name={type.icon} /><span>{typeName(type, tr)}</span>
+          <RecordTypeIcon type={type} /><span>{typeName(type, tr)}</span>
           {index < 9 && <kbd>{index + 1}</kbd>}
           {type.id === 'feed' && <NightStatusMetric metric={status.feed} kind="feed" detailed={size === 'large'} inline />}
           {type.id === 'sleep' && <NightStatusMetric metric={status.sleep} kind="sleep" detailed={size === 'large'} inline />}

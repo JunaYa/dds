@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../../hooks/useApp";
 import { elapsedSeconds, formatTimer } from "../../domain/model";
-import { Icon } from "../common/Icon";
+import { RecordTypeIcon } from "../records/RecordTypeIcon";
 
 export function SessionBanner() {
   const { tr } = useI18n();
@@ -27,7 +27,7 @@ export function SessionBanner() {
     kid = a.children.find((c) => c.id === session.child);
   return (
     <section className="session-banner">
-      <Icon name={type?.icon} />
+      {type && <RecordTypeIcon type={type} />}
       <div>
         <strong>
           {kid?.name} · {type ? typeName(type, tr) : ""}

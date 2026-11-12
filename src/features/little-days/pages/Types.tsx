@@ -7,7 +7,7 @@ import {
 } from "../i18n/record-labels";
 import { useI18n } from "../i18n/useI18n";
 import { useApp } from "../hooks/useApp";
-import { Icon } from "../components/common/Icon";
+import { RecordTypeIcon } from "../components/records/RecordTypeIcon";
 
 export function Types() {
   const { tr } = useI18n();
@@ -17,7 +17,7 @@ export function Types() {
       {a.types.map((type) => (
         <article className="type-card" key={type.id}>
           <span className={`icon-well ${type.id}`}>
-            <Icon name={type.icon} />
+            <RecordTypeIcon type={type} />
           </span>
           <h2>{typeName(type, tr)}</h2>
           <p>{typeDescription(type, tr)}</p>
