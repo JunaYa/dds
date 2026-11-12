@@ -36,16 +36,11 @@ export function RecordActivity({ records, day }: { records: CareRecord[]; day: s
     <section className="record-activity" aria-labelledby={`${id}-heading`}>
       <h2 id={`${id}-heading`}>{tr("Record activity")}</h2>
       <p className="record-activity-summary">{description}</p>
-      <svg className="record-activity-map" viewBox={`0 0 ${40 + columns * 18} 150`} role="img" aria-labelledby={`${id}-title ${id}-description`}>
+      <svg className="record-activity-map" viewBox={`0 0 ${columns * 18} 150`} role="img" aria-labelledby={`${id}-title ${id}-description`}>
         <title id={`${id}-title`}>{tr("Records by day")}</title>
         <desc id={`${id}-description`}>{description} {formatDate(start)} – {formatDate(end)}. {tr("Open daily details for exact counts.")}</desc>
-        {[0, 2, 4, 6].map(weekday => {
-          const date = new Date(start);
-          date.setDate(date.getDate() - offset + weekday);
-          return <text key={weekday} x="0" y={31 + weekday * 18} className="activity-label">{date.toLocaleDateString(locale, { weekday: "narrow" })}</text>;
-        })}
         {days.map(({ date, key, count, level }, index) => {
-          const x = 40 + Math.floor((offset + index) / 7) * 18;
+          const x = Math.floor((offset + index) / 7) * 18;
           const y = 20 + ((offset + index) % 7) * 18;
           return <g key={key}>
             {(index === 0 || (date.getDate() === 1 && Math.floor((offset + index) / 7) > 0)) && (

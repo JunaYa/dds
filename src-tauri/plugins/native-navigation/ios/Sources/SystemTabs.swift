@@ -82,6 +82,7 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
     private var keyboardVisible = false
     #if DEBUG
     private var scrollVerification: NSKeyValueObservation?
+    private var elasticVerification: Timer?
     #endif
     private let contentTransition = SharedWebViewTransition()
     private let addController = UIViewController()
@@ -120,7 +121,12 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
     }
 
     required init?(coder: NSCoder) { fatalError("Use init(webview:options:)") }
-    deinit { NotificationCenter.default.removeObserver(self) }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        elasticVerification?.invalidate()
+        #endif
+    }
 
     func install(in parent: UIViewController, host: UIView) {
         guard let webview else { return }
@@ -143,7 +149,7 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
         #if DEBUG
         // UIKit keeps short pages expanded; the UI test needs a scrollable fixture.
         if ProcessInfo.processInfo.environment["DDS_UI_TEST_LONG_PAGE"] == "1" {
-            webview.evaluateJavaScript("document.body.style.minHeight = '5000px'")
+            webview.evaluateJavaScript("document.querySelector('.app-frame').style.minHeight = '5000px'")
         }
         if ProcessInfo.processInfo.environment["DDS_UI_TEST_SCROLL"] == "1" {
             let probe = UILabel(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
@@ -155,7 +161,8 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
             var overscrolled = false
             var decelerated = false
             var previous = webview.scrollView.contentOffset.y
-            scrollVerification = webview.scrollView.observe(\.contentOffset, options: [.initial, .new]) { [weak probe] scroll, _ in
+            var elastic = ""
+            let report: (UIScrollView) -> Void = { [weak probe] scroll in
                 let minimum = -scroll.adjustedContentInset.top
                 let maximum = max(minimum, scroll.contentSize.height - scroll.bounds.height + scroll.adjustedContentInset.bottom)
                 let offset = scroll.contentOffset.y
@@ -164,8 +171,29 @@ final class SystemTabs: UITabBarController, UITabBarControllerDelegate {
                 }
                 decelerated = decelerated || (scroll.isDecelerating && abs(offset - previous) > 0.5)
                 previous = offset
-                probe?.accessibilityValue = "offset=\(offset);minimum=\(minimum);maximum=\(maximum);bounces=\(scroll.bounces ? 1 : 0);overscrolled=\(overscrolled ? 1 : 0);decelerated=\(decelerated ? 1 : 0);enabled=\(scroll.isScrollEnabled ? 1 : 0)"
+                probe?.accessibilityValue = "offset=\(offset);minimum=\(minimum);maximum=\(maximum);bounces=\(scroll.bounces ? 1 : 0);overscrolled=\(overscrolled ? 1 : 0);decelerated=\(decelerated ? 1 : 0);enabled=\(scroll.isScrollEnabled ? 1 : 0)\(elastic)"
             }
+            scrollVerification = webview.scrollView.observe(\.contentOffset, options: [.initial, .new]) { scroll, _ in report(scroll) }
+            elasticVerification = Timer(timeInterval: 0.05, repeats: true) { [weak webview] _ in
+                webview?.evaluateJavaScript("""
+                    (() => {
+                        const content = document.querySelector('[data-slot="page-elasticity"]')?.firstElementChild;
+                        if (!content) return null;
+                        const pull = parseFloat(content.style.transform.split(',')[1]) || 0;
+                        const stats = window.__ddsElasticVerification ??= {positive: 0, negative: 0};
+                        stats.positive = Math.max(stats.positive, pull);
+                        stats.negative = Math.min(stats.negative, pull);
+                        return {pull, positive: stats.positive, negative: stats.negative};
+                    })()
+                    """) { [weak webview] value, _ in
+                    guard let values = value as? [String: NSNumber], let webview,
+                          let pull = values["pull"], let positive = values["positive"],
+                          let negative = values["negative"] else { return }
+                    elastic = ";pull=\(pull.doubleValue);maxPull=\(positive.doubleValue);minPull=\(negative.doubleValue)"
+                    report(webview.scrollView)
+                }
+            }
+            if let elasticVerification { RunLoop.main.add(elasticVerification, forMode: .common) }
         }
         #endif
     }

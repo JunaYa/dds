@@ -18,9 +18,9 @@ If changing this standalone test runner repeatedly, uninstall only `com.dds.chec
 
 ## Page scrolling check
 
-`ScrollChecks.testEdgesStopWithoutBounceAndFlickStillDecelerates` launches the installed debug app with a temporary long page and an accessibility-only scroll probe. It pulls against both document edges, verifies that native content offsets never exceed the scroll bounds, and checks that a fast flick produces offset changes while UIKit reports deceleration. It also verifies scrolling remains enabled and saves top/bottom screenshots. No saved records are changed.
+`ScrollChecks.testEdgesStopWithoutBounceAndFlickStillDecelerates` launches the installed debug app with a temporary long page and an accessibility-only scroll probe. It pulls against both document edges, verifies that native content offsets never exceed the scroll bounds, and checks that the page's custom pull is visible without exceeding its global 40px ceiling before settling back to zero. The actual limit adapts between 24px and 40px to viewport height. A fast flick must produce offset changes while UIKit reports deceleration. It also verifies scrolling remains enabled and saves top/bottom screenshots. No saved records are changed.
 
-Use the command above with `-only-testing:TabChecks/ScrollChecks`. Rebuild the iOS app before running so the debug probe is included. The probe is enabled only by `DDS_UI_TEST_SCROLL=1` and is excluded from release builds. Launch normally after the test to remove the temporary page height and probe.
+Use the command above with `-only-testing:TabChecks/ScrollChecks`. Rebuild the iOS app before running so the debug probe is included. Swift dependencies follow Cargo's debug-info setting: use at least `CARGO_PROFILE_DEV_DEBUG=1`; setting it to `0` compiles out their `DEBUG` sections. The probe is enabled only by `DDS_UI_TEST_SCROLL=1` and is excluded from release builds. Launch normally after the test to remove the temporary page height and probe.
 
 ## Modal gesture checks
 
