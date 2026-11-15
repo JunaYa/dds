@@ -13,7 +13,7 @@ import { NursingMiniBar } from "../nursing/NursingMiniBar";
 import { ChildPicker } from "../children/ChildPicker";
 import { SaveError } from "../common/SaveError";
 import { SessionBanner } from "../timers/SessionBanner";
-import { WorkspaceModal } from "../dialogs/WorkspaceModal";
+import { ProfileDetailModal } from "../dialogs/ProfileDetailModal";
 import { IosNavigation } from "./IosNavigation";
 import { isIosApp } from "./ios-platform";
 
@@ -21,10 +21,11 @@ export function Shell({ children }: { children: ReactNode }) {
   const { tr, locale } = useI18n();
   const a = useApp();
   const ios = isIosApp();
+  const page = isProfileDetail(a.page) ? "My" : a.page;
   if (!a.activeChild) return null;
   return (
     <div className={ios ? "ios-workspace" : undefined}>
-      <PageElasticity enabled={!a.modal && !a.nursingOpen} resetKey={`${a.page}:${a.child}`}>
+      <PageElasticity enabled={!a.modal && !a.nursingOpen && !isProfileDetail(a.page)} resetKey={`${page}:${a.child}`}>
       <div className="app-frame">
         {!ios && <aside className="sidebar">
           <div className="brand">
@@ -52,7 +53,7 @@ export function Shell({ children }: { children: ReactNode }) {
         )}
         <main>
           {!ios && <MobileNavigation />}
-          {(isProfileDetail(a.page) || a.page === "Settings") && (
+          {(a.page === "Settings") && (
             <Button variant="ghost" onClick={() => a.setPage("My")}>{tr("← Profile")}</Button>
           )}
           <header className="page-heading">
@@ -65,39 +66,39 @@ export function Shell({ children }: { children: ReactNode }) {
                 })}
               </div>
               <p>
-                {a.page === "Today"
+                {page === "Today"
                   ? tr(a.activeChild.caption)
-                  : a.page === "Analysis"
+                  : page === "Analysis"
                     ? tr("A look at your baby's recent days.")
-                    : a.page === "My"
+                    : page === "My"
                       ? tr("Your family, records, and preferences.")
-                  : a.page === "Supplies"
+                  : page === "Supplies"
                     ? tr(
                         "Family supplies, with one less thing to keep in your head.",
                       )
-                    : ["Settings", "Appearance", "Interaction", "Backup", "Storage", "Cloud"].includes(a.page)
+                    : ["Settings", "Appearance", "Interaction", "Backup", "Storage", "Cloud"].includes(page)
                       ? tr("Small preferences for your everyday.")
                       : tr("Choose what matters. Build a record that fits.")}
               </p>
             </div>
-            {a.page === "Today" ? (
+            {page === "Today" ? (
               <Button
                 className="primary home-add-record"
                 onClick={() => a.openRecord(a.types[0])}
               >
                 {tr("＋ Add a record")}
               </Button>
-            ) : a.page === "Supplies" || a.page === "Record types" ? (
+            ) : page === "Supplies" || page === "Record types" ? (
               <Button
                 className="primary"
                 onClick={() =>
                   a.setModal({
-                    kind: a.page === "Supplies" ? "supply" : "type",
+                    kind: page === "Supplies" ? "supply" : "type",
                   })
                 }
               >
                 ＋{" "}
-                {a.page === "Supplies"
+                {page === "Supplies"
                   ? tr("Add supply")
                   : tr("Create record type")}
               </Button>
@@ -115,7 +116,7 @@ export function Shell({ children }: { children: ReactNode }) {
           {a.undo && <Button variant="ghost" onClick={a.undo}>{tr("Undo")}</Button>}
         </Toast>
       )}
-      <WorkspaceModal />
+      <ProfileDetailModal />
       <NursingMiniBar />
       <NursingTimer />
       {ios && <IosNavigation />}

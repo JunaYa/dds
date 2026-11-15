@@ -42,20 +42,22 @@ beforeEach(() => {
   saveWorkspace(data, null);
 });
 
-it("provides three iOS destinations and preserves access to management pages", () => {
+it("provides three iOS destinations and opens management in a modal", async () => {
   localStorage.setItem(LOCALE_KEY, "zh-CN");
   render(<App />);
   const nav = within(screen.getByRole("navigation", { name: "主导航" }));
   expect(nav.getAllByRole("button").map(button => button.textContent)).toEqual(["随记", "分析", "我的"]);
   expect(screen.queryByRole("button", { name: "打开导航" })).not.toBeInTheDocument();
   fireEvent.click(nav.getByRole("button", { name: "分析", exact: true }));
-  expect(screen.getByRole("heading", { name: "分析", level: 1 })).toBeInTheDocument();
+  expect(screen.getByText("回顾宝宝最近的日常记录。")).toBeInTheDocument();
   expect(nav.getByRole("button", { name: "分析", exact: true })).toHaveAttribute("aria-current", "page");
   fireEvent.click(nav.getByRole("button", { name: "我的", exact: true }));
   fireEvent.click(screen.getByRole("button", { name: "用品", exact: true }));
-  expect(nav.getByRole("button", { name: "我的", exact: true })).toHaveAttribute("aria-current", "page");
-  fireEvent.click(screen.getByRole("button", { name: "← 我的" }));
-  expect(screen.getByRole("heading", { name: "我的", level: 1 })).toBeInTheDocument();
+  expect(screen.getByRole("dialog", { name: "用品" })).toBeInTheDocument();
+  expect(screen.queryByRole("navigation", { name: "主导航" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "关闭弹框" }));
+  await screen.findByRole("navigation", { name: "主导航" });
+  expect(screen.getByRole("heading", { name: "记录管理" })).toBeInTheDocument();
   fireEvent.click(nav.getByRole("button", { name: "随记" }));
   expect(screen.getByText("120 mL")).toBeInTheDocument();
 });
@@ -66,7 +68,7 @@ it("summarizes only the selected child's recent entries and switches child witho
   expect(container.querySelector(".analysis-summary dd")).toHaveTextContent(/^1$/);
   fireEvent.change(screen.getByLabelText("Child", { exact: true }), { target: { value: "sibling" } });
   expect(container.querySelector(".analysis-summary dd")).toHaveTextContent(/^2$/);
-  expect(screen.getByRole("heading", { name: "Analysis", level: 1 })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Analysis", exact: true })).toHaveAttribute("aria-current", "page");
 });
 
 it("hides bottom navigation while a record dialog is open and restores it on cancel", () => {
@@ -97,7 +99,7 @@ it("preserves the shared profile and scrolls after the destination has rendered"
   const picker = screen.getByLabelText("Child", { exact: true });
   const titlesAtScroll: string[] = [];
   vi.mocked(window.scrollTo).mockImplementation(() => {
-    titlesAtScroll.push(screen.getByRole("heading", { level: 1 }).textContent ?? "");
+    titlesAtScroll.push(screen.getByRole("navigation", { name: "Main navigation" }).querySelector('[aria-current="page"]')?.textContent ?? "");
   });
   const nav = within(screen.getByRole("navigation", { name: "Main navigation" }));
   for (const destination of ["Analysis", "Profile", "Journal"]) {
@@ -105,7 +107,7 @@ it("preserves the shared profile and scrolls after the destination has rendered"
     expect(container.querySelector(".ios-profile")).toBe(profile);
     expect(screen.getByLabelText("Child", { exact: true })).toBe(picker);
   }
-  expect(titlesAtScroll).toEqual(["Analysis", "Profile", "Baby’s little day"]);
+  expect(titlesAtScroll).toEqual(["Analysis", "Profile", "Journal"]);
 });
 
 
@@ -131,7 +133,7 @@ it("dismisses the record chooser without opening a record", async () => {
   expect(screen.queryByRole("dialog", { name: "A little moment to remember" })).not.toBeInTheDocument();
 });
 
-it("groups profile settings and opens only the selected child page", () => {
+it("groups profile settings and opens only the selected modal", async () => {
   render(<App />);
   fireEvent.click(screen.getByRole("button", { name: "Profile", exact: true }));
   expect(screen.getByRole("heading", { name: "Data and privacy" })).toBeInTheDocument();
@@ -140,9 +142,39 @@ it("groups profile settings and opens only the selected child page", () => {
   expect(window.location.hash).toBe("#/profile/backup");
   expect(screen.getByRole("button", { name: "Export backup" })).toBeInTheDocument();
   expect(screen.queryByRole("group", { name: "Appearance" })).not.toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Profile", exact: true })).toHaveAttribute("aria-current", "page");
-  fireEvent.click(screen.getByRole("button", { name: "← Profile" }));
+  expect(screen.getByRole("dialog", { name: "Backup and restore" })).toBeInTheDocument();
+  expect(document.querySelector(".profile-groups")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Close dialog" }));
+  await screen.findByRole("button", { name: "Language and appearance" });
   fireEvent.click(screen.getByRole("button", { name: "Language and appearance" }));
   expect(screen.getByRole("group", { name: "Appearance" })).toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "Export backup" })).not.toBeInTheDocument();
+});
+
+it.each(["Record types", "Supplies", "Language and appearance", "Cloud sync", "Backup and restore", "On this device"])(
+  "opens %s over Profile and restores the entry on close", async title => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Profile", exact: true }));
+    const entry = screen.getByRole("button", { name: title, exact: true });
+    entry.focus();
+    fireEvent.click(entry);
+    const dialog = screen.getByRole("dialog", { name: title });
+    expect(document.querySelector(".profile-groups")).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Main navigation" })).not.toBeInTheDocument();
+    fireEvent.click(within(dialog).getByRole("button", { name: "Close dialog" }));
+    await vi.waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(window.location.hash).toBe("#/profile");
+    expect(entry).toHaveFocus();
+  },
+);
+
+it("keeps management open when a nested creation form is cancelled", async () => {
+  render(<App />);
+  fireEvent.click(screen.getByRole("button", { name: "Profile", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: "Supplies", exact: true }));
+  fireEvent.click(within(screen.getByRole("dialog", { name: "Supplies" })).getAllByRole("button", { name: "Add supply", exact: true })[0]);
+  const form = screen.getByRole("dialog", { name: "Add to the cupboard" });
+  fireEvent.click(within(form).getByRole("button", { name: "Close dialog" }));
+  await screen.findByRole("dialog", { name: "Supplies" });
+  expect(window.location.hash).toBe("#/profile/supplies");
 });

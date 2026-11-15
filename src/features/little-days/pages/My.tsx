@@ -29,13 +29,13 @@ export function My() {
       <h2>{tr(group.title)}</h2>
       <div className="profile-links">
         {group.title === "Record management" && (
-          <Button unstyled className="profile-link" aria-label={tr("Add child")} onClick={() => setModal({ kind: "child" })}>
+          <Button unstyled className="profile-link" aria-haspopup="dialog" aria-label={tr("Add child")} onClick={() => setModal({ kind: "child" })}>
             <span><strong>{tr("Add child")}</strong></span>
             <span aria-hidden="true">›</span>
           </Button>
         )}
         {group.items.filter(item => item.page !== "Interaction" || supportsHaptics() || status?.supported).map(item =>
-          <Button unstyled className="profile-link" aria-label={tr(item.title)} key={item.page} onClick={() => setPage(item.page)}>
+          <Button unstyled className="profile-link" aria-haspopup="dialog" aria-label={tr(item.title)} key={item.page} onClick={() => setPage(item.page)}>
             <span><strong>{tr(item.title)}</strong><small>{tr(item.description)}</small></span>
             <span aria-hidden="true">›</span>
           </Button>)}

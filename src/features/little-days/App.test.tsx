@@ -38,7 +38,7 @@ it("creates a real family and preserves a saved record across remount", async ()
   app.unmount();
   render(<App />);
   expect(
-    screen.getByRole("heading", { name: "Test baby’s little day" }),
+    screen.getAllByRole("option", { name: /^Test baby ·/ })[0],
   ).toBeInTheDocument();
   expect(screen.getByText("120 mL")).toBeInTheDocument();
 });
@@ -92,10 +92,11 @@ it("adds custom fields and supplies through the real forms", async () => {
     dialog.getByRole("button", { name: "Create record type", exact: true }),
   );
   expect(loadWorkspace().data.types.at(-1)?.fields).toHaveLength(2);
+  await user.click(screen.getByRole("button", { name: "Close dialog" }));
   await user.click(
     screen.getAllByRole("button", { name: "Supplies", exact: true })[0],
   );
-  await user.click(screen.getByRole("button", { name: "＋ Add supply" }));
+  await user.click(within(screen.getByRole("dialog", { name: "Supplies" })).getAllByRole("button", { name: "Add supply", exact: true })[0]);
   const supply = within(screen.getByRole("dialog"));
   await user.type(supply.getByLabelText("Supply name"), "Wet wipes");
   fireEvent.change(supply.getByLabelText("Quantity in stock"), {

@@ -1,3 +1,4 @@
+import { isProfileDetail } from "../../state/page-routing";
 import { useContext, useLayoutEffect, useRef, useState } from "react";
 import { Sheet, SheetPopup, SheetTitle, SheetDescription } from "@vita/ui/sheet";
 import { type RecordType } from "../../domain/model";
@@ -23,10 +24,10 @@ export function IosNavigation() {
   const [choosing, setChoosing] = useState(false);
   const pending = useRef<RecordType | null>(null);
   const selected = page === "Today" || page === "Analysis" ? page : "My";
-  const blocked = modal !== null || nursingOpen || choosing || pending.current !== null;
+  const blocked = isProfileDetail(page) || modal !== null || nursingOpen || choosing || pending.current !== null;
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
-  }, [page]);
+  }, [selected]);
   const native = useSystemTabs(selected, tabs.map(tab => tr(tab.label)), blocked, setPage, theme, {
     title: tr("Add a record"),
     onAdd: () => setChoosing(true),

@@ -154,6 +154,7 @@ it("keeps the mini timer available across pages and resumes the selected side", 
   fireEvent.click(
     screen.getAllByRole("button", { name: "Supplies", exact: true })[0],
   );
+  fireEvent.click(screen.getByRole("button", { name: "Close dialog" }));
   vi.mocked(Date.now).mockReturnValue(start + 60000);
   fireEvent.click(screen.getByRole("button", { name: "Resume nursing timer" }));
   vi.mocked(Date.now).mockReturnValue(start + 65000);

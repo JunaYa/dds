@@ -1,10 +1,8 @@
-import { CloudSettings } from "../sync/CloudSettings";
+import { isProfileDetail } from "../state/page-routing";
 import { useI18n } from "../i18n/useI18n";
 import { Settings } from "./Settings";
 import { Analysis } from "./Analysis";
 import { My } from "./My";
-import { Supplies } from "./Supplies";
-import { Types } from "./Types";
 import { Shell } from "../components/layout/Shell";
 import { RecordTypeChoices } from "../components/records/RecordTypeChoices";
 import { Log } from "../components/records/Log";
@@ -33,18 +31,10 @@ export default function Focus() {
         </div>
       ) : a.page === "Analysis" ? (
         <Analysis />
-      ) : a.page === "Cloud" ? (
-        <CloudSettings />
-      ) : a.page === "My" ? (
+      ) : a.page === "My" || isProfileDetail(a.page) ? (
         <My />
-      ) : a.page === "Supplies" ? (
-        <Supplies />
-      ) : ["Appearance", "Interaction", "Backup", "Storage"].includes(a.page) ? (
-        <Settings section={a.page as "Appearance" | "Interaction" | "Backup" | "Storage"} />
-      ) : a.page === "Settings" ? (
-        <Settings />
       ) : (
-        <Types />
+        <Settings />
       )}
     </Shell>
   );

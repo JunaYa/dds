@@ -88,6 +88,7 @@ it("saves canonical choice values in Chinese and preserves records when switchin
   fireEvent.click(screen.getByRole("button", { name: "语言与外观" }));
   fireEvent.click(screen.getByRole("radio", { name: "English" }));
   expect(localStorage.getItem(STORAGE_KEY)).toBe(saved);
+  fireEvent.click(screen.getByRole("button", { name: "Close dialog" }));
   fireEvent.click(
     screen.getAllByRole("button", { name: "Today", exact: true })[0],
   );
