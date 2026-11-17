@@ -1,0 +1,4 @@
+<resources>
+    <string name="audio_sleep">Sleep sounds</string><string name="audio_songs">Nursery rhymes</string>
+    <string name="audio_play">Play</string><string name="audio_pause">Pause</string><string name="audio_choose">Choose music in Little days</string>
+</resources>

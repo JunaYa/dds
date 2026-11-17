@@ -12,6 +12,7 @@
     "brand:generate:macos": "node scripts/generate-macos-icon.mjs",
     "check:ui": "node scripts/check-ui-boundaries.mjs",
     "typecheck": "node scripts/check-ui-boundaries.mjs && tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
+    "test:audio:ios": "node scripts/test-audio-ios.mjs",
     "test": "node --test scripts/android-env.test.mjs && vitest run",
     "dev:desktop": "tauri dev",
     "dev:mobile": "node scripts/dev-mobile.mjs",

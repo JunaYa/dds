@@ -1,0 +1,4 @@
+<resources>
+    <string name="audio_sleep">哄睡</string><string name="audio_songs">儿歌</string>
+    <string name="audio_play">播放</string><string name="audio_pause">暂停</string><string name="audio_choose">在 Little days 中添加音乐</string>
+</resources>

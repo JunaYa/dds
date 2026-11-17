@@ -1,0 +1,3 @@
+[default]
+description = "Control the application audio session and its library"
+permissions = ["allow-execute", "allow-snapshot"]

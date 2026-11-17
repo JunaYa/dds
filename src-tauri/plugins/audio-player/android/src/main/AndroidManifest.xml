@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <application>
+        <activity android:name="com.dds.audio.AudioWidgetConfiguration" android:exported="true" android:theme="@android:style/Theme.Material.Light.Dialog.Alert">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" /></intent-filter>
+        </activity>
+        <service android:name="com.dds.audio.PlaybackService" android:exported="false" android:foregroundServiceType="mediaPlayback">
+            <intent-filter><action android:name="androidx.media3.session.MediaSessionService" /></intent-filter>
+        </service>
+        <receiver android:name="com.dds.audio.SleepAudioWidget" android:exported="false" android:label="@string/audio_sleep">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/sleep_audio_widget" />
+        </receiver>
+        <receiver android:name="com.dds.audio.SongsAudioWidget" android:exported="false" android:label="@string/audio_songs">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/songs_audio_widget" />
+        </receiver>
+    </application>
+</manifest>

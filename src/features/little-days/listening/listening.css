@@ -1,0 +1,11 @@
+.audio-dialog { width: min(100%, 44rem); }
+.audio-content, .audio-form, .audio-now, .audio-library { display: grid; gap: 1rem; min-width: 0; }
+.audio-now, .audio-track, .audio-empty { padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
+.audio-track { display: grid; gap: .75rem; }
+.audio-track strong, .audio-track p { overflow-wrap: anywhere; }
+.audio-track p { color: var(--muted-foreground); font-size: .875rem; }
+.audio-options { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; }
+.audio-form label, .audio-options label { display: grid; gap: .5rem; min-width: 0; }
+.audio-empty { min-height: 9rem; align-content: center; }
+.audio-mini { position: sticky; top: 0; display: flex; align-items: center; gap: .75rem; padding: .75rem; margin-block: 1rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+.audio-content h3 { text-wrap: balance; }

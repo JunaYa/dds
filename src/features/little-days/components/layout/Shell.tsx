@@ -1,3 +1,4 @@
+import { MiniAudioPlayer } from "../../listening/Listening";
 import { isProfileDetail } from "../../state/page-routing";
 import { useI18n } from "../../i18n/useI18n";
 import { type ReactNode } from "react";
@@ -106,6 +107,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </header>
           <SaveError />
           <SessionBanner />
+          <MiniAudioPlayer />
           {children}
         </main>
       </div>

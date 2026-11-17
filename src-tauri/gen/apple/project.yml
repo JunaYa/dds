@@ -34,6 +34,8 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - RecentRecord/OpenRecentRecord.swift
+      - RecentRecord/AudioIntent.swift
+      - RecentRecord/AudioWidget.swift
       - RecentRecord/RecentRecordWidget.swift
       - ../../plugins/native-navigation/ios/Sources/RecentRecordSnapshot.swift
     settings:
@@ -42,6 +44,7 @@ targets:
         INFOPLIST_FILE: RecentRecord/Info.plist
         CODE_SIGN_ENTITLEMENTS: RecentRecord/RecentRecord.entitlements
         APPLICATION_EXTENSION_API_ONLY: YES
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: $(inherited) AUDIO_WIDGET_EXTENSION
         SKIP_INSTALL: YES
         MARKETING_VERSION: 0.1.0
         CURRENT_PROJECT_VERSION: 0.1.0
@@ -51,6 +54,7 @@ targets:
     sources:
       - path: Sources
       - path: RecentRecord/OpenRecentRecord.swift
+      - path: RecentRecord/AudioIntent.swift
       - path: ../../plugins/native-navigation/ios/Sources/RecentRecordSnapshot.swift
       - path: ../../plugins/native-navigation/ios/Sources/SiriInbox.swift
       - path: Assets.xcassets
@@ -64,6 +68,7 @@ targets:
       path: dds_iOS/Info.plist
       properties:
         LSRequiresIPhoneOS: true
+        UIBackgroundModes: [audio]
         CFBundleLocalizations: [en, zh-Hans, zh-Hant]
         NSLocalNetworkUsageDescription: 连接同一网络中的开发电脑，加载应用调试页面并实时更新。
         NSAppTransportSecurity:

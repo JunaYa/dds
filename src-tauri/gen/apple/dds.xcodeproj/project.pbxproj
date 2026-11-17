@@ -20,6 +20,7 @@
 		63CB76B39916F89B7C4A482F /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD717F6398D6D9C64B53E24 /* Metal.framework */; };
 		67991ED56432FD725F204BE4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBA73EE9E19B86041C9EB5CD /* CoreGraphics.framework */; };
 		74A06C69A9E22E83D3E18D65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 562DA223554EB8DD46ED7E2B /* Assets.xcassets */; };
+		9067BB4F122FB9C7C9BBD505 /* AudioWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890524885B15BBB6E860858E /* AudioWidget.swift */; };
 		9140B55BD2094960432312D2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3F1DD00B67BF1222400C212 /* LaunchScreen.storyboard */; };
 		A10000000000000000000001 /* RecordIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000002 /* RecordIntents.swift */; };
 		A10000000000000000000003 /* SiriInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000004 /* SiriInbox.swift */; };
@@ -27,6 +28,8 @@
 		CAC8B1C981FAB905548819D4 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E2FC3A4F1ED4790F5C2FE41 /* WebKit.framework */; };
 		D6CEE1E73C2ECEDD803BD6C6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C56DEECAD3FA5D9DBE3EE7BB /* QuartzCore.framework */; };
 		DB484CB4301ED98F67979FD6 /* RecentRecordSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236DE11DF17828CF19D62C03 /* RecentRecordSnapshot.swift */; };
+		E68C146DD1A4A99827876F57 /* AudioIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCF9EC62F82DC362C8B32C /* AudioIntent.swift */; };
+		E998695BAB7BE0E6025BD64E /* AudioIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCF9EC62F82DC362C8B32C /* AudioIntent.swift */; };
 		F22465ED64C6A08C1A1E3D4E /* RecentRecordSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236DE11DF17828CF19D62C03 /* RecentRecordSnapshot.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +77,7 @@
 		64FF90B64C561822867D4206 /* OpenRecentRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OpenRecentRecord.swift; sourceTree = "<group>"; };
 		6B25DB4A10D3BB2BE6BC09CB /* main.rs */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.rs; sourceTree = "<group>"; };
 		87F6A2EC8EA6D443FAF3BB00 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = SOURCE_ROOT; };
+		890524885B15BBB6E860858E /* AudioWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioWidget.swift; path = RecentRecord/AudioWidget.swift; sourceTree = "<group>"; };
 		8AC2DF726729AD7F88F40158 /* task.rs */ = {isa = PBXFileReference; lastKnownFileType = text; path = task.rs; sourceTree = "<group>"; };
 		8B89C7750751E3A4E48AB5D8 /* lib.rs */ = {isa = PBXFileReference; lastKnownFileType = text; path = lib.rs; sourceTree = "<group>"; };
 		A10000000000000000000002 /* RecordIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/dds/RecordIntents.swift; sourceTree = SOURCE_ROOT; };
@@ -81,6 +85,7 @@
 		A3F1DD00B67BF1222400C212 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A4B743AD5BF7BC6847708C97 /* libapp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libapp.a; sourceTree = "<group>"; };
 		ABD717F6398D6D9C64B53E24 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		B9DCF9EC62F82DC362C8B32C /* AudioIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioIntent.swift; path = RecentRecord/AudioIntent.swift; sourceTree = "<group>"; };
 		C173062381D27DBCDDC8C8FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C56DEECAD3FA5D9DBE3EE7BB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CD7CBE93FD91640C1B7E5649 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
@@ -219,6 +224,8 @@
 				AC38529A55FAA5B158522B9C /* Products */,
 				598850395172762ABBFBA327 /* RecentRecord */,
 				236DE11DF17828CF19D62C03 /* RecentRecordSnapshot.swift */,
+				B9DCF9EC62F82DC362C8B32C /* AudioIntent.swift */,
+				890524885B15BBB6E860858E /* AudioWidget.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -359,6 +366,8 @@
 				17B58B1EBB8FFBBC33AC9A2C /* RecentRecordWidget.swift in Sources */,
 				F22465ED64C6A08C1A1E3D4E /* RecentRecordSnapshot.swift in Sources */,
 				1A5C56D535FBD0C07549C579 /* OpenRecentRecord.swift in Sources */,
+				E68C146DD1A4A99827876F57 /* AudioIntent.swift in Sources */,
+				9067BB4F122FB9C7C9BBD505 /* AudioWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +380,7 @@
 				A10000000000000000000003 /* SiriInbox.swift in Sources */,
 				BA9FAFD255CBBA927DBCBDF2 /* OpenRecentRecord.swift in Sources */,
 				DB484CB4301ED98F67979FD6 /* RecentRecordSnapshot.swift in Sources */,
+				E998695BAB7BE0E6025BD64E /* AudioIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,6 +516,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(DDS_APP_IDENTIFIER).RecentRecord";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) AUDIO_WIDGET_EXTENSION";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -582,6 +593,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(DDS_APP_IDENTIFIER).RecentRecord";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) AUDIO_WIDGET_EXTENSION";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

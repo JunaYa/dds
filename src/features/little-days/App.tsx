@@ -1,3 +1,5 @@
+import { AudioProvider } from "~/audio/AudioProvider";
+import { ListeningHub, ListeningLauncher } from "./listening/Listening";
 import { SiriRecordReceiver } from "./siri/SiriRecordReceiver";
 import { RecentRecordBridge } from "./widget/RecentRecordBridge";
 import { useIosModalInteraction } from "./components/layout/use-ios-modal-interaction";
@@ -68,6 +70,7 @@ function Workspace() {
         </p>
         <SaveError />
         <ChildForm />
+        <ListeningLauncher />
         <p className="privacy-note">
           {tr("Saved only on this device. No account needed.")}
         </p>
@@ -81,6 +84,7 @@ export default function LittleDays() {
     <OverlayProvider platform={isIosApp() ? "ios" : "default"}>
     <LocaleProvider>
       <ThemeProvider>
+      <AudioProvider>
         <WorkspaceProvider>
           <SyncProvider>
           <QuickRecordProvider>
@@ -90,9 +94,11 @@ export default function LittleDays() {
             <RecentRecordBridge />
             <Workspace />
             <QuickRecordOverlay />
+            <ListeningHub />
           </QuickRecordProvider>
           </SyncProvider>
         </WorkspaceProvider>
+      </AudioProvider>
       </ThemeProvider>
     </LocaleProvider>
     </OverlayProvider>

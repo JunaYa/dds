@@ -172,5 +172,7 @@ struct RecordWidgets: WidgetBundle {
         FeedingRecordWidget()
         SleepRecordWidget()
         RecentRecordWidget()
+        SleepAudioWidget()
+        SongsAudioWidget()
     }
 }

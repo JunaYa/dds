@@ -1,3 +1,4 @@
+import { ListeningLauncher } from "../listening/Listening";
 import { Button } from "@vita/ui/button";
 import { useApp } from "../hooks/useApp";
 import { useI18n } from "../i18n/useI18n";
@@ -25,6 +26,7 @@ export function My() {
   const { tr } = useI18n();
   const { status } = useQuickRecord();
   return <div className="profile-groups">
+    <ListeningLauncher />
     {groups.map(group => <section className="profile-group" key={group.title} aria-label={tr(group.title)}>
       <h2>{tr(group.title)}</h2>
       <div className="profile-links">
