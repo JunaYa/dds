@@ -218,7 +218,9 @@ impl Engine {
         Ok(())
     }
     fn execute(&mut self, command: Value) -> Result<Value, String> {
-        self.state["error"] = Value::Null;
+        if command["op"] != "snapshot" {
+            self.state["error"] = Value::Null;
+        }
         match command["op"].as_str().unwrap_or("") {
             "snapshot" => return Ok(self.snapshot()),
             "catalog" => {
@@ -268,6 +270,9 @@ impl Engine {
                 }
                 if self.state["trackId"] != id {
                     self.sink = None;
+                    if let Some(controls) = &mut self.controls {
+                        let _ = controls.set_playback(MediaPlayback::Stopped);
+                    }
                     self.state["position"] = json!(0);
                     self.state["deadline"] = Value::Null;
                 }
@@ -290,6 +295,9 @@ impl Engine {
                 }
                 if command["op"] == "stop" {
                     self.sink = None;
+                    if let Some(controls) = &mut self.controls {
+                        let _ = controls.set_playback(MediaPlayback::Stopped);
+                    }
                     self.state["position"] = json!(0);
                     self.state["deadline"] = Value::Null;
                 }
@@ -349,6 +357,9 @@ impl Engine {
         Ok(self.state.clone())
     }
     fn media(&mut self) {
+        if self.sink.is_none() && !self.wanted {
+            return;
+        }
         let track = self.state["trackId"]
             .as_str()
             .and_then(|id| self.track(id))
@@ -465,7 +476,9 @@ pub fn start<R: Runtime>(
                     engine.pending.remove(&id);
                     if let Err(e) = result {
                         engine.state["error"] = json!(e);
-                        engine.state["buffering"] = json!(false);
+                        if engine.state["trackId"] == id {
+                            engine.state["buffering"] = json!(false);
+                        }
                     } else if engine.state["trackId"] == id && engine.wanted {
                         if let Err(e) = engine.load() {
                             engine.state["error"] = json!(e);

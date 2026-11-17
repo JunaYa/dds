@@ -85,7 +85,9 @@ public final class AudioRuntime {
         NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: nil, queue: .main) { [weak self] note in
             guard let self = self, !self.saved.repeating, let item = note.object as? AVPlayerItem, item === self.activeItem else { return }
             self.player.pause(); self.player.removeAllItems(); self.activeItem = nil
-            self.saved.position = 0; self.wantsPlayback = false; self.persist(); self.nowPlaying()
+            self.saved.position = 0; self.wantsPlayback = false
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+            self.persist(); self.nowPlaying()
         }
         let center = MPRemoteCommandCenter.shared()
         center.playCommand.addTarget { [weak self] _ in self?.remote("play"); return .success }
@@ -132,6 +134,7 @@ public final class AudioRuntime {
                 "downloading": Array(downloading), "error": failure as Any? ?? NSNull()]
     }
     public func execute(_ request: AudioRequest) throws {
+        expire()
         failure = nil
         switch request.op {
         case "catalog":
@@ -180,7 +183,10 @@ public final class AudioRuntime {
         case "pause":
             if let id = request.id, id != saved.trackId { break }
             wantsPlayback = false; resumeAfterInterruption = false; player.pause()
-        case "stop": wantsPlayback = false; resumeAfterInterruption = false; player.pause(); looper = nil; player.removeAllItems(); activeItem = nil; saved.position = 0; saved.deadline = nil
+        case "stop":
+            wantsPlayback = false; resumeAfterInterruption = false; player.pause(); looper = nil; player.removeAllItems(); activeItem = nil; saved.position = 0; saved.deadline = nil
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         case "seek":
             let position = request.position ?? 0
             guard position.isFinite, position >= 0 else { throw AudioFailure(message: "Invalid position") }
@@ -226,7 +232,10 @@ public final class AudioRuntime {
     }
     private func expire() {
         if let deadline = saved.deadline, Date().timeIntervalSince1970 * 1000 >= deadline {
-            wantsPlayback = false; player.pause(); saved.deadline = nil; resumeAfterInterruption = false; persist(); nowPlaying()
+            wantsPlayback = false; player.pause(); saved.deadline = nil; resumeAfterInterruption = false
+            do { try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation) }
+            catch { failure = error.localizedDescription }
+            persist(); nowPlaying()
         }
     }
     private func persist(reloadWidget: Bool = true) {
@@ -234,7 +243,7 @@ public final class AudioRuntime {
         do {
             try JSONEncoder().encode(saved).write(to: stateFile, options: .atomic)
             let widget: [String: Any] = ["title": saved.tracks.first(where: { $0.id == saved.trackId })?.title ?? "Little days", "playing": player.timeControlStatus == .playing,
-                "tracks": (try JSONSerialization.jsonObject(with: JSONEncoder().encode(saved.tracks))), "trackId": saved.trackId as Any? ?? NSNull()]
+                "tracks": saved.tracks.map { ["id": $0.id, "title": $0.title, "category": $0.category] }, "trackId": saved.trackId as Any? ?? NSNull()]
             try JSONSerialization.data(withJSONObject: widget).write(to: root.appendingPathComponent("widget.json"), options: .atomic)
             if reloadWidget {
                 WidgetCenter.shared.reloadTimelines(ofKind: "LittleDaysSleepAudio")
@@ -243,10 +252,11 @@ public final class AudioRuntime {
         } catch { failure = error.localizedDescription }
     }
     private func nowPlaying() {
+        guard player.currentItem != nil || wantsPlayback else { return }
         guard let track = saved.tracks.first(where: { $0.id == saved.trackId }) else { return }
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyTitle: track.title, MPMediaItemPropertyArtist: track.artist,
             MPMediaItemPropertyPlaybackDuration: max(knownDuration, finite(player.currentItem?.duration.seconds ?? 0)),
-            MPNowPlayingInfoPropertyElapsedPlaybackTime: finite(player.currentTime().seconds), MPNowPlayingInfoPropertyPlaybackRate: player.rate]
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: finite(player.currentTime().seconds), MPNowPlayingInfoPropertyPlaybackRate: player.timeControlStatus == .playing ? player.rate : 0]
     }
 }
 

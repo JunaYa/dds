@@ -14,6 +14,7 @@ const device = Object.values(inventory.devices).flat().find(device => device.sta
 if (!device) throw new Error('Boot an iOS simulator before running native audio tests.');
 const directory = await mkdtemp(join(tmpdir(), 'little-days-audio-tests-'));
 const runtime = resolve('src-tauri/plugins/audio-player/ios/Sources/AudioRuntime.swift');
+const bridge = resolve('src-tauri/plugins/audio-player/ios/include/AudioBridge.h');
 const tests = resolve('src-tauri/plugins/audio-player/ios/Tests/AudioRuntimeTests.swift');
 await writeFile(join(directory, 'Host.swift'), `import UIKit
 @main final class AudioTestDelegate: UIResponder, UIApplicationDelegate {
@@ -28,7 +29,7 @@ await writeFile(join(directory, 'Host.swift'), `import UIKit
 `);
 const spec = {
   name: 'AudioTestHost', options: { deploymentTarget: { iOS: '16.4' } },
-  settings: { base: { SWIFT_VERSION: '5.0', CODE_SIGNING_ALLOWED: 'NO', GENERATE_INFOPLIST_FILE: 'YES', ENABLE_TESTABILITY: 'YES' } },
+  settings: { base: { SWIFT_VERSION: '5.0', CODE_SIGNING_ALLOWED: 'NO', GENERATE_INFOPLIST_FILE: 'YES', ENABLE_TESTABILITY: 'YES', SWIFT_OBJC_BRIDGING_HEADER: bridge } },
   targets: {
     AudioTestHost: { type: 'application', platform: 'iOS', sources: [runtime, 'Host.swift'],
       settings: { base: { PRODUCT_BUNDLE_IDENTIFIER: 'com.dds.audio.tests', INFOPLIST_KEY_UIBackgroundModes: ['audio'] } } },

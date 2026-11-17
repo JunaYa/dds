@@ -11,6 +11,7 @@ import { nativeAudio } from "~/audio/backend";
 import { activeCue, parseLyrics } from "~/audio/lyrics";
 import { useI18n } from "../i18n/useI18n";
 import "./listening.css";
+import { PixabayResources } from "./PixabayResources";
 
 type Category = Track["category"];
 export function openListening(category: Category) { window.dispatchEvent(new CustomEvent("little-days-listening", { detail: category })); }
@@ -76,7 +77,7 @@ export function ListeningHub() {
     finally { setSaving(false); }
   }
   return <Dialog open={open} onOpenChange={setOpen}>
-    <DialogPopup className="care-dialog audio-dialog" bottomStickOnMobile={false}>
+    <DialogPopup className="care-dialog audio-dialog" bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
       <DialogHeader><DialogTitle>{tr(category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
         <DialogDescription>{tr("One player, across your app, lock screen and widgets.")}</DialogDescription></DialogHeader>
       <div className="audio-content">
@@ -113,6 +114,7 @@ export function ListeningHub() {
           </article>)}
           {!state.tracks.some(item => item.category === category) && <div className="audio-empty"><h3>{tr("Your listening library starts here.")}</h3><p>{tr("Add licensed audio or import a curated catalog to listen and download offline.")}</p></div>}
         </section>
+        {open && <PixabayResources category={category} />}
         <div className="audio-options"><Button variant="outline" onClick={() => setAdding(!adding)}>{tr(adding ? "Cancel" : "Add audio")}</Button>
           <label className="grid gap-1">{tr("Import catalog (JSON)")}<NativeInput type="file" accept="application/json,.json" onChange={event => { void importCatalog(event.target.files?.[0]); event.target.value = ""; }} /></label>
         </div>

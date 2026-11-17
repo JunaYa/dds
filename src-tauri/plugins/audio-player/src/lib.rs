@@ -6,6 +6,24 @@ use tauri::{
 mod desktop;
 #[cfg(desktop)]
 use tauri::Manager;
+#[cfg(desktop)]
+struct DesktopSlot(std::sync::Mutex<Option<desktop::DesktopAudio>>);
+#[cfg(desktop)]
+fn desktop_request<R: Runtime>(
+    app: &tauri::AppHandle<R>,
+    command: serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let slot = app.state::<DesktopSlot>();
+    let mut audio = slot.0.lock().map_err(|e| e.to_string())?;
+    // Windows media controls require the main window, which is absent during plugin setup.
+    if audio.is_none() {
+        *audio = Some(desktop::start(app).map_err(|e| e.to_string())?);
+    }
+    audio
+        .as_ref()
+        .ok_or("Audio runtime unavailable")?
+        .request(command)
+}
 #[cfg(mobile)]
 use tauri::{plugin::PluginHandle, Manager};
 #[cfg(mobile)]
@@ -24,8 +42,7 @@ async fn snapshot<R: Runtime>(_app: tauri::AppHandle<R>) -> Result<serde_json::V
     }
     #[cfg(not(mobile))]
     {
-        let handle = _app.state::<desktop::DesktopAudio>();
-        handle.request(serde_json::json!({"op":"snapshot"}))
+        desktop_request(&_app, serde_json::json!({"op":"snapshot"}))
     }
 }
 #[tauri::command]
@@ -42,8 +59,7 @@ async fn execute<R: Runtime>(
     }
     #[cfg(not(mobile))]
     {
-        let handle = _app.state::<desktop::DesktopAudio>();
-        handle.request(command)
+        desktop_request(&_app, command)
     }
 }
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
@@ -57,7 +73,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             #[cfg(mobile)]
             _app.manage(AudioHandle(handle));
             #[cfg(desktop)]
-            _app.manage(desktop::start(_app)?);
+            _app.manage(DesktopSlot(std::sync::Mutex::new(None)));
             Ok(())
         })
         .build()

@@ -1,10 +1,7 @@
 import AppIntents
 import Foundation
 
-#if !AUDIO_WIDGET_EXTENSION
-@_silgen_name("dds_audio_widget_command")
-private func audioWidgetCommand(_ op: UnsafePointer<CChar>, _ id: UnsafePointer<CChar>) -> Bool
-#endif
+
 
 struct AudioWidgetTrack: Identifiable, Decodable {
     let id: String
@@ -58,7 +55,7 @@ struct ControlAudio: AudioPlaybackIntent {
     init(operation: String, trackId: String) { self.operation = operation; self.trackId = trackId }
     @MainActor func perform() async throws -> some IntentResult {
         #if !AUDIO_WIDGET_EXTENSION
-        let success = operation.withCString { op in trackId.withCString { id in audioWidgetCommand(op, id) } }
+        let success = operation.withCString { op in trackId.withCString { id in dds_audio_widget_command(op, id) } }
         if !success { throw AudioIntentFailure() }
         #endif
         return .result()

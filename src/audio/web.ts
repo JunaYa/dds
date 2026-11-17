@@ -23,10 +23,16 @@ export class WebAudioBackend implements AudioBackend {
     this.audio.addEventListener("waiting", () => { this.state.buffering = true; });
     this.audio.addEventListener("playing", () => { this.state.playing = true; this.state.buffering = false; });
     this.audio.addEventListener("pause", () => { this.state.playing = false; this.persist(); });
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.setActionHandler("play", () => { void this.execute({ op: "play" }).catch(error => console.error("Media session play failed", error)); });
-      navigator.mediaSession.setActionHandler("pause", () => { void this.execute({ op: "pause" }); });
-      navigator.mediaSession.setActionHandler("seekto", e => { if (e.seekTime !== undefined) void this.execute({ op: "seek", position: e.seekTime }); });
+    if (navigator.mediaSession) {
+      const actions: [MediaSessionAction, MediaSessionActionHandler][] = [
+        ["play", () => { void this.execute({ op: "play" }).catch(error => console.error("Media session play failed", error)); }],
+        ["pause", () => { void this.execute({ op: "pause" }).catch(error => console.error("Media session pause failed", error)); }],
+        ["seekto", event => { if (event.seekTime !== undefined) void this.execute({ op: "seek", position: event.seekTime }).catch(error => console.error("Media session seek failed", error)); }],
+      ];
+      for (const [action, handler] of actions) {
+        try { navigator.mediaSession.setActionHandler(action, handler); }
+        catch (error) { console.warn(`Media action ${action} is unavailable`, error); }
+      }
     }
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") this.expire(); this.persist(); });
   }
@@ -40,7 +46,7 @@ export class WebAudioBackend implements AudioBackend {
     this.expire();
     if (this.audio.src) this.state.position = this.audio.currentTime;
     this.state.duration = Number.isFinite(this.audio.duration) ? this.audio.duration : 0;
-    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = this.state.playing ? "playing" : "paused";
+    if (navigator.mediaSession) navigator.mediaSession.playbackState = this.state.playing ? "playing" : "paused";
     return { ...this.state };
   }
   execute(command: AudioCommand) {
@@ -76,7 +82,7 @@ export class WebAudioBackend implements AudioBackend {
             this.audio.src = this.objectUrl ?? track.url;
             this.audio.currentTime = resume;
             this.state.trackId = track.id;
-            if ("mediaSession" in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist });
+            if (navigator.mediaSession && typeof MediaMetadata !== "undefined") navigator.mediaSession.metadata = new MediaMetadata({ title: track.title, artist: track.artist });
           }
           await this.audio.play(); this.state.playing = true; break;
         }

@@ -497,6 +497,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.dds.app;
 				PRODUCT_NAME = "Little days";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/../../plugins/audio-player/ios/include/AudioBridge.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = arm64;
 			};
@@ -637,6 +638,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.dds.app;
 				PRODUCT_NAME = "Little days";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/../../plugins/audio-player/ios/include/AudioBridge.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = arm64;
 			};

@@ -2,6 +2,8 @@ import XCTest
 import AVFoundation
 @testable import AudioTestHost
 
+
+
 final class AudioRuntimeTests: XCTestCase {
     @MainActor func testCachedPlaybackLoopSeekAndNativeDeadline() throws {
         let engine = AudioRuntime.shared
@@ -20,7 +22,8 @@ final class AudioRuntimeTests: XCTestCase {
         ascii("RIFF"); u32(36 + samples * 2); ascii("WAVEfmt "); u32(16); u16(1); u16(1)
         u32(rate); u32(rate * 2); u16(2); u16(16); ascii("data"); u32(samples * 2); wav.append(Data(count: samples * 2))
         try wav.write(to: root.appendingPathComponent("native-test.wav"), options: .atomic)
-        try engine.execute(AudioRequest(op: "play", id: track.id))
+        let accepted = "play".withCString { op in track.id.withCString { id in dds_audio_widget_command(op, id) } }
+        XCTAssertTrue(accepted)
         let looping = expectation(description: "native loop continues beyond the source duration")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             let state = engine.snapshot()

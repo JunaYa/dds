@@ -1,0 +1,4 @@
+<resources>
+    <color name="audio_widget_surface">@android:color/background_dark</color>
+    <color name="audio_widget_text">@android:color/primary_text_dark</color>
+</resources>

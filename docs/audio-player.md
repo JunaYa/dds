@@ -49,7 +49,7 @@ iOS 首版使用 URLSession 下载任务，支持应用活跃期间及系统允�
 ## 维护入口
 
 - src/audio：统一模型、适配器、React 订阅、浏览器缓存与歌词解析。
-- packages/ui/audio-player 公共导出：共享播放和歌词控件。
+- @vita/ui/audio-player 公共导出：共享播放和歌词控件。
 - src-tauri/plugins/audio-player：移动插件、桌面运行时、Android 服务及 Widget。
 - src-tauri/gen/apple/RecentRecord/AudioIntent.swift：同时加入宿主应用和 Widget 扩展。扩展使用 AUDIO_WIDGET_EXTENSION 编译条件；AudioPlaybackIntent 在宿主执行，通过 C ABI 直接调用插件运行时，不依赖 Swift 模块导入或 WebView。
 - src-tauri/gen/apple/project.yml：保存 Widget 文件归属、编译条件和后台音频配置；现有 Xcode 工程也已同步。
@@ -61,3 +61,13 @@ iOS 首版使用 URLSession 下载任务，支持应用活跃期间及系统允�
 自动化覆盖歌词格式/偏移/时间边界、目录校验、拖动进度、歌词安全展示、定时截止、切歌取消旧定时、缓存播放以及下载不阻塞暂停。执行结果以任务交付说明为准。
 
 真机仍须检查：锁屏连续播放 30–60 分钟、后台定时、焦点/来电/耳机切换、Widget 在 WebView 未加载时播放、下载断网与磁盘不足。桌面 Windows/Linux、iOS/Android 真机的行为不能由 macOS 编译和模拟器证明。
+
+### 本次验证结果（2026-11-17 至 18）
+
+- UI 边界与 TypeScript 检查通过；完整前端测试 437 项通过、1 项跳过，新增音频相关测试 10 项通过。
+- 应用 Rust 测试 4 项通过；音频插件测试 3 项通过，包含本机实际音频输出上的解码、循环及定位测试（默认忽略硬件项，本次显式执行）。
+- iOS 原生测试 2 项通过，使用隔离测试宿主和原创静音 WAV，覆盖缓存播放、循环、定位、定时关闭、旧曲目暂停命令隔离，以及 Widget 使用的 C ABI 入口。
+- iOS 模拟器应用归档与 Android arm64 APK 已构建通过。已完成相应增量重建，不等同真机验收。
+- 网页端实际检查了入口、空态及目录录入。iOS 模拟器应用已启动；原生 Widget 在锁屏/冷启动时的系统行为、两端真机 30–60 分钟后台播放、Windows/Linux 仍未验收。
+
+原生测试命令为 pnpm test:audio:ios，需要 macOS、Xcode、xcodegen 和已启动的 iOS 模拟器；脚本创建独立测试宿主，不修改 Little days 的育儿数据，成功后清理临时构建目录。桌面输出测试使用 cargo test --manifest-path src-tauri/plugins/audio-player/Cargo.toml --lib -- --include-ignored，需要可用音频设备。Linux 构建额外需要 CPAL 的 ALSA 开发依赖（例如 Debian 的 libasound2-dev），系统媒体控制使用 D-Bus。
