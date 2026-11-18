@@ -4337,9 +4337,11 @@ dependencies = [
 name = "tauri-plugin-audio-player"
 version = "0.1.0"
 dependencies = [
+ "base64 0.22.1",
  "reqwest 0.12.28",
  "rodio",
  "serde_json",
+ "sha2",
  "souvlaki",
  "tauri",
  "tauri-plugin",

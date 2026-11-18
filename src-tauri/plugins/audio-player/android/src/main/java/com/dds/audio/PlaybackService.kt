@@ -99,7 +99,13 @@ class PlaybackService : MediaSessionService() {
     }
     private fun track(id: String?): JSONObject? = (0 until tracks.length()).map { tracks.getJSONObject(it) }.firstOrNull { it.optString("id") == id }
     private fun validID(id: String) = id.matches(Regex("^[a-zA-Z0-9_-]{1,80}$"))
+    private fun assetFile(id: String): File {
+        val directory = File(filesDir, "audio-v1")
+        check(directory.isDirectory || directory.mkdirs()) { "Audio storage unavailable" }
+        return File(directory, "$id.audio")
+    }
     private fun downloaded(id: String): Uri? {
+        if (validID(id) && assetFile(id).isFile) return Uri.fromFile(assetFile(id))
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadId = prefs.getLong("download.$id", -1)
         if (downloadId < 0) return null
@@ -151,6 +157,24 @@ class PlaybackService : MediaSessionService() {
             "seek" -> { val seconds = command.getDouble("position"); require(seconds.isFinite() && seconds >= 0); player.seekTo((seconds * 1000).toLong()) }
             "repeat" -> { repeating = command.getBoolean("enabled"); player.repeatMode = if (repeating) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF }
             "timer" -> { val minutes = command.getDouble("minutes"); require(minutes.isFinite() && minutes >= 0 && minutes <= 720); deadline = if (minutes > 0) System.currentTimeMillis() + (minutes * 60000).toLong() else null }
+            "cache" -> {
+                val id = command.getString("id")
+                require(validID(id) && track(id) != null && !downloading(id)) { "Invalid audio cache request" }
+                val encoded = command.getString("data")
+                require(encoded.length <= 28 * 1024 * 1024) { "Invalid audio cache payload" }
+                val bytes = android.util.Base64.decode(encoded, android.util.Base64.NO_WRAP)
+                require(bytes.isNotEmpty() && bytes.size <= 20 * 1024 * 1024) { "Invalid audio cache payload" }
+                val actual = java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it.toInt() and 255) }
+                require(actual == command.getString("sha256")) { "Audio checksum did not match." }
+                val destination = assetFile(id)
+                if (!destination.isFile || !destination.readBytes().contentEquals(bytes)) {
+                    require(trackId != id || player.mediaItemCount == 0) { "Stop this track before replacing its download." }
+                    val temporary = File(destination.parentFile, "$id.cache")
+                    try { temporary.writeBytes(bytes); check(temporary.renameTo(destination)) { "Could not save audio cache" } }
+                    finally { temporary.delete() }
+                }
+                error = null
+            }
             "download" -> {
                 val id = command.getString("id"); val item = track(id) ?: throw IllegalArgumentException("Unknown audio track")
                 if (downloaded(id) == null && !downloading(id)) {
@@ -169,6 +193,7 @@ class PlaybackService : MediaSessionService() {
                 require(id != trackId || player.mediaItemCount == 0) { "Choose another track before removing its download." }
                 val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 manager.remove(prefs.getLong("download.$id", -1)); prefs.edit().remove("download.$id").apply()
+                val asset = assetFile(id); if (asset.exists()) check(asset.delete()) { "Could not remove downloaded audio" }
             }
             else -> throw IllegalArgumentException("Unknown audio command")
         }

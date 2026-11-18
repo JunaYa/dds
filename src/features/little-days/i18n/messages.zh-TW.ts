@@ -2,6 +2,14 @@
 import type { messages } from "./messages";
 
 export const traditionalMessages: Record<keyof typeof messages, string> = {
+  "Stop this track before replacing its download.": "請先停止此音訊，再替換下載檔案。",
+  "Audio verification requires a secure browser context.": "請使用 HTTPS 或本機位址開啟應用程式，以校驗音訊。",
+  "Audio checksum did not match.": "音訊校驗不符，請重試。",
+  "Use licensed audio file addresses, not web page addresses.": "請使用已授權的音訊檔案位址，不要填寫網頁位址。",
+  "Could not prepare this audio. Try again.": "無法準備此音訊，請重試。",
+  "Downloaded": "已下載",
+  "Play here or download for offline listening. These recordings are CC0 or public domain.": "直接播放，或儲存後離線聆聽。錄音採用 CC0／公有領域授權。",
+  "Included audio": "內建音訊",
   "System media controls are unavailable on this device.": "此裝置目前無法使用系統媒體控制。",
   "Check the audio details and use HTTPS addresses.": "請核對音訊資訊，並使用 HTTPS 位址。",
   "Source page (optional)": "來源頁面（選填）",
@@ -33,7 +41,6 @@ export const traditionalMessages: Record<keyof typeof messages, string> = {
   "Import catalog (JSON)": "匯入音訊目錄（JSON）",
   "Audio file URL (HTTPS)": "音訊檔案位址（HTTPS）",
   "License or permission reference": "授權說明或許可依據",
-  "Use files you have permission to distribute and cache. Pixabay search pages are not audio file URLs.": "請使用已獲散布與快取許可的檔案。Pixabay 搜尋頁面不是音訊檔案位址。",
   "Lyrics (LRC or WebVTT)": "歌詞（LRC 或 WebVTT）",
   "Artist": "作者",
   "One player, across your app, lock screen and widgets.": "頁面、鎖定畫面與小工具，共用一個播放器。",
@@ -535,14 +542,10 @@ export const traditionalMessages: Record<keyof typeof messages, string> = {
   "{measurement} unit": "{measurement}單位",
   "{measurement} ruler": "{measurement}刻度尺",
   "{value} {unit}, not recorded yet": "{value} {unit}，尚未記錄",
-  "Discover on Pixabay": "Pixabay 音樂探索",
-  "Explore these tracks on Pixabay. In-app playback requires a separately licensed audio file.": "可前往 Pixabay 查看和試聽這些曲目。應用程式內播放需另行取得適用的音訊授權。",
   "Could not load the resource catalog.": "無法載入資源目錄。",
   "Loading resources…": "正在載入資源…",
-  "View on Pixabay": "前往 Pixabay",
   "Lullaby": "搖籃曲",
   "Calm ambient": "舒緩氛圍",
   "Playful instrumental": "歡快器樂",
   "Children’s songs": "兒童歌曲",
-  "AI-generated": "AI 生成",
 };

@@ -40,7 +40,8 @@ export type AudioCommand =
   | { op: "seek"; position: number }
   | { op: "repeat"; enabled: boolean }
   | { op: "timer"; minutes: number }
-  | { op: "download" | "removeDownload"; id: string };
+  | { op: "download" | "removeDownload"; id: string }
+  | { op: "cache"; id: string; data: string; sha256: string };
 export interface AudioBackend {
   snapshot(): Promise<AudioState>;
   execute(command: AudioCommand): Promise<AudioState>;

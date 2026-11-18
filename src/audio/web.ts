@@ -1,3 +1,4 @@
+import { verifiedAudioBytes } from "./binary";
 import { cachedAudio } from "./cache";
 import { catalogSchema, emptyState, type AudioBackend, type AudioCommand, type AudioState } from "./model";
 const key = "little-days.audio.v1";
@@ -96,6 +97,14 @@ export class WebAudioBackend implements AudioBackend {
           this.state.deadline = command.minutes > 0 ? Date.now() + command.minutes * 60_000 : null;
           if (this.state.deadline) this.timer = setTimeout(() => this.expire(), command.minutes * 60_000);
           break;
+        case "cache": {
+          const track = this.state.tracks.find(item => item.id === command.id);
+          if (!track) throw new Error("Choose a track first.");
+          const bytes = await verifiedAudioBytes(command.data, command.sha256);
+          await cachedAudio(track.id, "put", new Blob([bytes], { type: "audio/mpeg" }));
+          this.state.downloaded = [...new Set([...this.state.downloaded, track.id])];
+          break;
+        }
         case "download": {
           const track = this.state.tracks.find(t => t.id === command.id);
           if (!track) throw new Error("Choose a track first.");

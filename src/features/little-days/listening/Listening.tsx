@@ -11,7 +11,7 @@ import { nativeAudio } from "~/audio/backend";
 import { activeCue, parseLyrics } from "~/audio/lyrics";
 import { useI18n } from "../i18n/useI18n";
 import "./listening.css";
-import { PixabayResources } from "./PixabayResources";
+import { AudioResources } from "./AudioResources";
 
 type Category = Track["category"];
 export function openListening(category: Category) { window.dispatchEvent(new CustomEvent("little-days-listening", { detail: category })); }
@@ -86,7 +86,7 @@ export function ListeningHub() {
         {(localError || state.error) && <p role="alert" className="text-destructive">{localError ?? tr(state.error ?? "")}</p>}
         {track && <section className="audio-now">
           <h3>{tr("Now playing")}</h3>
-          <AudioControls key={track.id} title={track.title} playing={state.playing} buffering={state.buffering} position={state.position} duration={state.duration}
+          <AudioControls key={`controls:${track.id}`} title={track.title} playing={state.playing} buffering={state.buffering} position={state.position} duration={state.duration}
             onPlay={() => void send({ op: "play" })} onPause={() => void send({ op: "pause" })} onSeek={position => void send({ op: "seek", position })}
             labels={{ play: tr("Play"), pause: tr("Pause"), seek: tr("Playback position"), buffering: tr("Buffering…") }} />
           <div className="audio-options">
@@ -97,14 +97,14 @@ export function ListeningHub() {
             </NativeSelect></label>
             <Button variant="ghost" onClick={() => void send({ op: "stop" })}>{tr("Stop")}</Button>
           </div>
-          <LyricsView key={track.id} cues={cues} active={activeCue(cues, state.position)} onSeek={position => void send({ op: "seek", position })}
+          <LyricsView key={`lyrics:${track.id}`} cues={cues} active={activeCue(cues, state.position)} onSeek={position => void send({ op: "seek", position })}
             emptyLabel={tr("No lyrics for this track.")} followLabel={tr("Follow lyrics")} />
         </section>}
         <section className="audio-library" aria-label={tr("Audio library")}>
           <h3>{tr("Audio library")}</h3>
           {state.tracks.filter(item => item.category === category).map(item => <article key={item.id} className="audio-track">
             <div className="min-w-0"><strong>{item.title}</strong><p>{item.artist}</p><small className="text-muted-foreground">{item.license}</small>
-              {item.sourcePage && <a href={item.sourcePage} target="_blank" rel="noreferrer">{tr("Source and license")}</a>}</div>
+</div>
             <div className="audio-options">
               <Button variant="secondary" onClick={() => void send({ op: "play", id: item.id })}>{tr("Play")}</Button>
               <Button variant="outline" disabled={busy === item.id || state.downloading.includes(item.id)} onClick={async () => {
@@ -114,7 +114,7 @@ export function ListeningHub() {
           </article>)}
           {!state.tracks.some(item => item.category === category) && <div className="audio-empty"><h3>{tr("Your listening library starts here.")}</h3><p>{tr("Add licensed audio or import a curated catalog to listen and download offline.")}</p></div>}
         </section>
-        {open && <PixabayResources category={category} />}
+        {open && <AudioResources category={category} />}
         <div className="audio-options"><Button variant="outline" onClick={() => setAdding(!adding)}>{tr(adding ? "Cancel" : "Add audio")}</Button>
           <label className="grid gap-1">{tr("Import catalog (JSON)")}<NativeInput type="file" accept="application/json,.json" onChange={event => { void importCatalog(event.target.files?.[0]); event.target.value = ""; }} /></label>
         </div>
@@ -122,9 +122,9 @@ export function ListeningHub() {
           <label>{tr("Title")}<Input name="title" required maxLength={200} /></label>
           <label>{tr("Artist")}<Input name="artist" maxLength={200} /></label>
           <label>{tr("Audio file URL (HTTPS)")}<Input name="url" type="url" required placeholder="https://" /></label>
-          <label>{tr("Source page (optional)")}<Input name="sourcePage" type="url" placeholder="https://pixabay.com/…" /></label>
+          <label>{tr("Source page (optional)")}<Input name="sourcePage" type="url" placeholder="https://…" /></label>
           <label>{tr("License or permission reference")}<Input name="license" required maxLength={500} /></label>
-          <p className="text-sm text-muted-foreground">{tr("Use files you have permission to distribute and cache. Pixabay search pages are not audio file URLs.")}</p>
+          <p className="text-sm text-muted-foreground">{tr("Use licensed audio file addresses, not web page addresses.")}</p>
           <label>{tr("Lyrics (LRC or WebVTT)")}<Textarea name="lyrics" rows={5} maxLength={500000} /></label>
           <Button type="submit" loading={saving}>{tr("Add audio")}</Button>
         </form>}

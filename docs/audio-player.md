@@ -15,7 +15,7 @@
 
 ## 接入素材
 
-没有捆绑未经确认可分发的 Pixabay 曲库，也没有爬取站点或虚构音乐 API。使用“添加音频”输入获准使用的 HTTPS 音频文件地址、作者及许可依据，或导入 JSON 目录。Pixabay 作品页可记录在 sourcePage；作品页和搜索页不能作为音频文件地址。
+已打包 4 首 CC0 纯音乐，可在“内置音频”直接播放、保存离线，无需访问第三方网站。实际音频、JSON 格式、作者和授权来源见 [内置音频目录](audio-catalog.md)。也可使用“添加音频”输入获准使用的 HTTPS 音频文件地址，或导入自有目录；作品页和搜索页不能作为音频文件地址。
 
 目录格式为数组，例如（示例域名不是可播放资源）：
 
@@ -27,7 +27,7 @@
     "artist": "Author",
     "category": "sleep",
     "url": "https://audio.example.com/approved/lullaby.mp3",
-    "sourcePage": "https://pixabay.com/music/your-approved-track/",
+    "sourcePage": "https://example.com/music/your-approved-track/",
     "license": "Distribution and offline permission reference",
     "lyrics": "[00:00.00]First line\n[00:08.50]Second line"
   }
@@ -40,7 +40,7 @@ category 使用 sleep / songs。ID 仅允许字母、数字、下划线及连字
 
 ## 缓存与恢复
 
-播放优先使用本地下载。下载失败保留目录可重试；停止当前曲目后可删除其下载。浏览器需源站允许 CORS；原生使用自己的网络与文件服务。iOS 和桌面按 200 MB 文件上限检查，桌面下载后还检查解码；Android 下载大小与剩余空间由系统下载管理器处理。
+内置音频先从打包资源校验并准备本地缓存，再播放；下载操作不会自动播放。自定义网络音频优先使用本地下载。下载失败保留目录可重试；停止当前曲目后可删除其下载。浏览器下载自定义网络文件需源站允许 CORS；原生使用自己的网络与文件服务。iOS 和桌面按 200 MB 文件上限检查，桌面下载后还检查解码；Android 下载大小与剩余空间由系统下载管理器处理。
 
 原生文件与目录不写入育儿 localStorage 或云同步，不改变现有备份格式。浏览器文件存 IndexedDB、目录存独立 localStorage 键。首版下载文件均按保留文件管理，未实现 LRU 自动淘汰、下载断点统一接口、跨设备曲库同步和多声音混音。
 
@@ -54,7 +54,7 @@ iOS 首版使用 URLSession 下载任务，支持应用活跃期间及系统允�
 - src-tauri/gen/apple/RecentRecord/AudioIntent.swift：同时加入宿主应用和 Widget 扩展。扩展使用 AUDIO_WIDGET_EXTENSION 编译条件；AudioPlaybackIntent 在宿主执行，通过 C ABI 直接调用插件运行时，不依赖 Swift 模块导入或 WebView。
 - src-tauri/gen/apple/project.yml：保存 Widget 文件归属、编译条件和后台音频配置；现有 Xcode 工程也已同步。
 
-新增原生插件后需要原生重建，Vite 热更新不足以加载插件。安装后应先在应用添加目录，再添加音频 Widget。
+新增原生插件后需要原生重建，Vite 热更新不足以加载插件。安装后先在应用播放或下载所需的内置音频（或添加自有目录），再添加音频 Widget。
 
 ## 验证
 
@@ -71,3 +71,7 @@ iOS 首版使用 URLSession 下载任务，支持应用活跃期间及系统允�
 - 网页端实际检查了入口、空态及目录录入。iOS 模拟器应用已启动；原生 Widget 在锁屏/冷启动时的系统行为、两端真机 30–60 分钟后台播放、Windows/Linux 仍未验收。
 
 原生测试命令为 pnpm test:audio:ios，需要 macOS、Xcode、xcodegen 和已启动的 iOS 模拟器；脚本创建独立测试宿主，不修改 Little days 的育儿数据，成功后清理临时构建目录。桌面输出测试使用 cargo test --manifest-path src-tauri/plugins/audio-player/Cargo.toml --lib -- --include-ignored，需要可用音频设备。Linux 构建额外需要 CPAL 的 ALSA 开发依赖（例如 Debian 的 libasound2-dev），系统媒体控制使用 D-Bus。
+
+### 内置音频变更验证（2026-11-18）
+
+移除外跳资源列表，新增四份实际 MP3 和本地目录。完整前端测试 448 项通过、1 项跳过；相关测试 21 项通过；iOS 原生测试及桌面插件输出测试通过，覆盖经 SHA-256 验证后写入本地缓存再播放。四份实际 MP3 均已完整下载、解码并与 JSON 记录的大小、摘要核对。内置曲目均为纯音乐，没有附加未经来源确认的歌词。

@@ -1,5 +1,7 @@
+use base64::Engine as _;
 use rodio::{Decoder, OutputStream, OutputStreamBuilder, Sink, Source};
 use serde_json::{json, Value};
+use sha2::{Digest, Sha256};
 use souvlaki::{
     MediaControlEvent, MediaControls, MediaMetadata, MediaPlayback, MediaPosition, PlatformConfig,
 };
@@ -335,6 +337,50 @@ impl Engine {
                     Value::Null
                 };
             }
+            "cache" => {
+                let id = command["id"]
+                    .as_str()
+                    .filter(|id| valid_id(id))
+                    .ok_or("Unknown audio track")?;
+                if self.track(id).is_none() || self.pending.contains(id) {
+                    return Err("Invalid audio cache request".into());
+                }
+                let encoded = command["data"]
+                    .as_str()
+                    .filter(|value| value.len() <= 28 * 1024 * 1024)
+                    .ok_or("Invalid audio cache payload")?;
+                let bytes = base64::engine::general_purpose::STANDARD
+                    .decode(encoded)
+                    .map_err(error)?;
+                if bytes.is_empty()
+                    || bytes.len() > 20 * 1024 * 1024
+                    || format!("{:x}", Sha256::digest(&bytes))
+                        != command["sha256"].as_str().unwrap_or("")
+                {
+                    return Err("Audio checksum did not match.".into());
+                }
+                let destination = self.file(id);
+                if !destination.exists() || fs::read(&destination).map_err(error)? != bytes {
+                    if self.state["trackId"] == id && self.sink.is_some() {
+                        return Err("Stop this track before replacing its download.".into());
+                    }
+                    let temporary = destination.with_extension("cache");
+                    let result = (|| -> Result<(), String> {
+                        fs::write(&temporary, &bytes).map_err(error)?;
+                        Decoder::try_from(File::open(&temporary).map_err(error)?).map_err(error)?;
+                        #[cfg(target_os = "windows")]
+                        if destination.exists() {
+                            fs::remove_file(&destination).map_err(error)?;
+                        }
+                        fs::rename(&temporary, &destination).map_err(error)?;
+                        Ok(())
+                    })();
+                    if result.is_err() {
+                        let _ = fs::remove_file(temporary);
+                    }
+                    result?;
+                }
+            }
             "download" => self.download(command["id"].as_str().ok_or("Unknown audio track")?)?,
             "removeDownload" => {
                 let id = command["id"]
@@ -578,6 +624,25 @@ mod tests {
         fs::remove_dir_all(engine.root).unwrap();
     }
     #[test]
+    fn packaged_recordings_decode_and_cache_with_the_catalog_checksums() {
+        let mut engine = engine();
+        let public = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../public");
+        let catalog: Value =
+            serde_json::from_slice(&fs::read(public.join("audio/catalog.json")).unwrap()).unwrap();
+        for resource in catalog["resources"].as_array().unwrap() {
+            engine
+                .execute(json!({"op":"catalog","tracks":[resource]}))
+                .unwrap();
+            let bytes = fs::read(public.join(resource["assetPath"].as_str().unwrap())).unwrap();
+            engine.execute(json!({"op":"cache","id":resource["id"],"data":base64::engine::general_purpose::STANDARD.encode(&bytes),"sha256":resource["sha256"]})).unwrap();
+            assert_eq!(
+                fs::read(engine.file(resource["id"].as_str().unwrap())).unwrap(),
+                bytes
+            );
+        }
+        fs::remove_dir_all(engine.root).unwrap();
+    }
+    #[test]
     #[ignore = "requires a local audio output device"]
     fn cached_audio_decodes_loops_and_seeks_on_native_output() {
         let mut engine = engine();
@@ -597,7 +662,15 @@ mod tests {
         wav.extend_from_slice(b"data");
         wav.extend_from_slice(&(samples * 2).to_le_bytes());
         wav.resize(wav.len() + samples as usize * 2, 0);
-        fs::write(engine.file("native"), wav).unwrap();
+        let digest = format!("{:x}", Sha256::digest(&wav));
+        let encoded = base64::engine::general_purpose::STANDARD.encode(&wav);
+        assert!(engine
+            .execute(json!({"op":"cache","id":"native","data":encoded,"sha256":"0".repeat(64)}))
+            .is_err());
+        assert!(!engine.file("native").exists());
+        engine
+            .execute(json!({"op":"cache","id":"native","data":encoded,"sha256":digest}))
+            .unwrap();
         engine.execute(json!({"op":"play","id":"native"})).unwrap();
         std::thread::sleep(Duration::from_millis(300));
         let state = engine.snapshot();

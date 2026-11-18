@@ -1,5 +1,6 @@
 import XCTest
 import AVFoundation
+import CryptoKit
 @testable import AudioTestHost
 
 
@@ -10,10 +11,8 @@ final class AudioRuntimeTests: XCTestCase {
         let track = AudioTrack(id: "native-test", title: "Native audio test", artist: "Test", category: "sleep", url: "https://example.com/native-test.wav", sourcePage: nil, license: "Original test fixture", lyrics: "")
         var catalog = AudioRequest(op: "catalog"); catalog.tracks = [track]
         try engine.execute(catalog)
-        let base = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group." + (Bundle.main.bundleIdentifier ?? "com.dds.audio.tests"))
-            ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        let root = base.appendingPathComponent("Audio-v1")
-        // Match the runtime storage resolution in the isolated test host.
+        try engine.execute(AudioRequest(op: "stop"))
+        try engine.execute(AudioRequest(op: "removeDownload", id: track.id))
         let rate = 8000, samples = 8000
         var wav = Data()
         func ascii(_ s: String) { wav.append(s.data(using: .ascii)!) }
@@ -21,7 +20,12 @@ final class AudioRuntimeTests: XCTestCase {
         func u16(_ n: Int) { var value = UInt16(n).littleEndian; withUnsafeBytes(of: &value) { wav.append(contentsOf: $0) } }
         ascii("RIFF"); u32(36 + samples * 2); ascii("WAVEfmt "); u32(16); u16(1); u16(1)
         u32(rate); u32(rate * 2); u16(2); u16(16); ascii("data"); u32(samples * 2); wav.append(Data(count: samples * 2))
-        try wav.write(to: root.appendingPathComponent("native-test.wav"), options: .atomic)
+        var cache = AudioRequest(op: "cache", id: track.id)
+        cache.data = wav.base64EncodedString(); cache.sha256 = String(repeating: "0", count: 64)
+        XCTAssertThrowsError(try engine.execute(cache))
+        cache.sha256 = SHA256.hash(data: wav).map { String(format: "%02x", $0) }.joined()
+        try engine.execute(cache)
+        XCTAssertTrue((engine.snapshot()["downloaded"] as? [String])?.contains(track.id) == true)
         let accepted = "play".withCString { op in track.id.withCString { id in dds_audio_widget_command(op, id) } }
         XCTAssertTrue(accepted)
         let looping = expectation(description: "native loop continues beyond the source duration")

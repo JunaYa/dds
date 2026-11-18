@@ -1,6 +1,7 @@
 import AVFoundation
 import MediaPlayer
 import Foundation
+import CryptoKit
 import WidgetKit
 
 public struct AudioTrack: Codable {
@@ -20,6 +21,8 @@ public struct AudioRequest: Decodable {
     public var position: Double?
     public var enabled: Bool?
     public var minutes: Double?
+    public var data: String?
+    public var sha256: String?
     public init(op: String, id: String? = nil) { self.op = op; self.id = id }
 }
 private struct AudioSaved: Codable {
@@ -200,6 +203,16 @@ public final class AudioRuntime {
             let minutes = request.minutes ?? 0
             guard minutes.isFinite, minutes >= 0, minutes <= 720 else { throw AudioFailure(message: "Invalid timer") }
             saved.deadline = minutes > 0 ? Date().timeIntervalSince1970 * 1000 + minutes * 60000 : nil
+        case "cache":
+            guard let id = request.id, validID(id), saved.tracks.contains(where: { $0.id == id }),
+                !downloading.contains(id), let encoded = request.data, encoded.utf8.count <= 28 * 1024 * 1024,
+                let bytes = Data(base64Encoded: encoded), !bytes.isEmpty, bytes.count <= 20 * 1024 * 1024,
+                let expected = request.sha256,
+                SHA256.hash(data: bytes).map({ String(format: "%02x", $0) }).joined() == expected else { throw AudioFailure(message: "Audio checksum did not match.") }
+            let destination = mediaFile(id)
+            if FileManager.default.fileExists(atPath: destination.path), try Data(contentsOf: destination) == bytes { break }
+            guard saved.trackId != id || player.currentItem == nil else { throw AudioFailure(message: "Stop this track before replacing its download.") }
+            try bytes.write(to: destination, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         case "download":
             guard let id = request.id, let track = saved.tracks.first(where: { $0.id == id }) else { throw AudioFailure(message: "Unknown audio track") }
             download(track)

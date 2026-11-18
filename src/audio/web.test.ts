@@ -1,3 +1,4 @@
+import { createHash, webcrypto } from "node:crypto";
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { WebAudioBackend } from "./web";
@@ -11,6 +12,7 @@ const track = { id: "moon", title: "Moon", artist: "Author", category: "sleep" a
   url: "https://example.com/moon.mp3", license: "Permission", lyrics: "" };
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ["Date"] }); localStorage.clear();
+  vi.stubGlobal("crypto", webcrypto);
   vi.stubGlobal("Audio", class { constructor() { audio = new TestAudio(); return audio; } });
   vi.stubGlobal("URL", class extends URL { static createObjectURL = () => "blob:cached"; static revokeObjectURL = vi.fn(); });
 });
@@ -48,4 +50,19 @@ it("preserves the catalog when an update changes a stable source ID", async () =
   await backend.execute({ op: "catalog", tracks: [track] });
   await expect(backend.execute({ op: "catalog", tracks: [{ ...track, url: "https://example.com/new.mp3" }] })).rejects.toThrow("new track ID");
   expect((await backend.snapshot()).tracks[0].url).toBe(track.url);
+});
+
+it("verifies bundled bytes before caching and plays them without a network request", async () => {
+  const backend = new WebAudioBackend();
+  const item = { ...track, id: "bundled" };
+  await backend.execute({ op: "catalog", tracks: [item] });
+  const bytes = "original audio fixture";
+  const digest = createHash("sha256").update(bytes).digest("hex");
+  await expect(backend.execute({ op: "cache", id: item.id, data: btoa(bytes + "tampered"), sha256: digest })).rejects.toThrow("checksum");
+  expect((await backend.snapshot()).downloaded).not.toContain(item.id);
+  await backend.execute({ op: "cache", id: item.id, data: btoa(bytes), sha256: digest });
+  vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Offline")));
+  await backend.execute({ op: "play", id: item.id });
+  expect(audio.src).toBe("blob:cached");
+  expect(fetch).not.toHaveBeenCalled();
 });
