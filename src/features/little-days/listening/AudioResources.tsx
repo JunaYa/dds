@@ -5,7 +5,7 @@ import { bundledAudio, loadAudioCatalog, type AudioCatalog, type AudioResource }
 import { trackSchema, type Track } from "~/audio/model";
 import { useI18n } from "../i18n/useI18n";
 
-export function AudioResources({ category }: { category: Track["category"] }) {
+export function AudioResources({ category, onPlayed }: { category: Track["category"]; onPlayed?: () => void }) {
   const { tr } = useI18n();
   const { state, send } = useAudio();
   const [catalog, setCatalog] = useState<AudioCatalog | null>(null);
@@ -38,7 +38,9 @@ export function AudioResources({ category }: { category: Track["category"] }) {
         if (action === "play" && intent !== playIntent.current) return;
         if (!await send({ op: "cache", id: item.id, data, sha256: item.sha256 })) return;
       }
-      if (action === "play" && intent === playIntent.current) await send({ op: "play", id: item.id });
+      if (action === "play" && intent === playIntent.current) {
+        if (await send({ op: "play", id: item.id }) && intent === playIntent.current) onPlayed?.();
+      }
     } catch {
       setActionError(true);
     } finally {
@@ -57,13 +59,12 @@ export function AudioResources({ category }: { category: Track["category"] }) {
       const working = !!pending[item.id];
       const downloading = state.downloading.includes(item.id);
       const downloaded = state.downloaded.includes(item.id);
-      const playing = state.playing && state.trackId === item.id;
       return <article className="audio-track" key={item.id}>
         <div><strong>{item.title}</strong><p>{item.artist}</p>
           <small className="text-muted-foreground">{tr(item.type)} · {Math.floor(item.durationSeconds / 60)}:{String(Math.floor(item.durationSeconds % 60)).padStart(2, "0")} · {item.license}</small>
         </div>
         <div className="audio-options">
-          <Button variant="secondary" loading={pending[item.id] === "play"} disabled={working && !playing} onClick={() => playing ? void send({ op: "pause" }) : void useResource(item, "play")}>{tr(playing ? "Pause" : "Play")}</Button>
+          <Button variant="secondary" loading={pending[item.id] === "play"} disabled={working} onClick={() => void useResource(item, "play")}>{tr("Play")}</Button>
           <Button variant="outline" disabled={working || downloading || downloaded} onClick={() => void useResource(item, "download")}>{tr(downloaded ? "Downloaded" : pending[item.id] === "download" || downloading ? "Downloading…" : "Download")}</Button>
         </div>
       </article>;

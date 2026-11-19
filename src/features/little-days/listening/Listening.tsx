@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Button } from "@vita/ui/button";
+import { Icons } from "@vita/ui/icons";
 import { Input, NativeInput } from "@vita/ui/input";
 import { Textarea } from "@vita/ui/textarea";
 import { NativeSelect } from "@vita/ui/select";
@@ -15,6 +16,7 @@ import { AudioResources } from "./AudioResources";
 
 type Category = Track["category"];
 export function openListening(category: Category) { window.dispatchEvent(new CustomEvent("little-days-listening", { detail: category })); }
+export function openPlayer() { window.dispatchEvent(new Event("little-days-player")); }
 export function ListeningLauncher() {
   const { tr } = useI18n();
   return <section className="profile-group" aria-label={tr("Listening")}>
@@ -31,7 +33,7 @@ export function MiniAudioPlayer() {
   const track = state.tracks.find(item => item.id === state.trackId);
   if (!track) return null;
   return <aside className="audio-mini" aria-label={tr("Now playing")}>
-    <Button variant="ghost" className="min-w-0 flex-1 justify-start truncate" onClick={() => openListening(track.category)}>{track.title}</Button>
+    <Button variant="ghost" className="min-w-0 flex-1 justify-start truncate" onClick={openPlayer}>{track.title}</Button>
     <Button variant="secondary" onClick={() => void send({ op: state.playing ? "pause" : "play" })}>{tr(state.playing ? "Pause" : "Play")}</Button>
   </aside>;
 }
@@ -40,6 +42,7 @@ export function ListeningHub() {
   const { state, send } = useAudio();
   const [category, setCategory] = useState<Category>("sleep");
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState<"library" | "player">("player");
   const [adding, setAdding] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -49,10 +52,15 @@ export function ListeningHub() {
   useEffect(() => {
     const show = (event: Event) => {
       if (!(event instanceof CustomEvent) || !["sleep", "songs"].includes(event.detail)) return;
-      setCategory(event.detail); setOpen(true);
+      setCategory(event.detail); setView("library"); setOpen(true);
     };
+    const showPlayer = () => { setView("player"); setOpen(true); };
     window.addEventListener("little-days-listening", show);
-    return () => window.removeEventListener("little-days-listening", show);
+    window.addEventListener("little-days-player", showPlayer);
+    return () => {
+      window.removeEventListener("little-days-listening", show);
+      window.removeEventListener("little-days-player", showPlayer);
+    };
   }, []);
   async function importCatalog(file: File | undefined) {
     if (!file) return;
@@ -76,15 +84,23 @@ export function ListeningHub() {
     } catch { setLocalError(tr("Check the audio details and use HTTPS addresses.")); }
     finally { setSaving(false); }
   }
-  return <Dialog open={open} onOpenChange={setOpen}>
+  return <>
+    <Button unstyled className="audio-floating-entry" hidden={open}
+      aria-label={tr("Open player")} aria-haspopup="dialog"
+      onClick={openPlayer}>
+      <Icons.headphones aria-hidden="true" />
+      <span>{tr("Player")}</span>
+    </Button>
+    <Dialog open={open} onOpenChange={setOpen}>
     <DialogPopup className="care-dialog audio-dialog" bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
-      <DialogHeader><DialogTitle>{tr(category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
+      <DialogHeader><DialogTitle>{tr(view === "player" ? "Player" : category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
         <DialogDescription>{tr("One player, across your app, lock screen and widgets.")}</DialogDescription></DialogHeader>
       <div className="audio-content">
         {!nativeAudio() && <p className="text-sm text-muted-foreground">{tr("Background playback depends on this browser. Use the mobile app for native widgets and background timers.")}</p>}
         {state.systemControls === false && <p role="status">{tr("System media controls are unavailable on this device.")}</p>}
         {(localError || state.error) && <p role="alert" className="text-destructive">{localError ?? tr(state.error ?? "")}</p>}
-        {track && <section className="audio-now">
+        {view === "player" && <>
+        {track ? <section className="audio-now">
           <h3>{tr("Now playing")}</h3>
           <AudioControls key={`controls:${track.id}`} title={track.title} playing={state.playing} buffering={state.buffering} position={state.position} duration={state.duration}
             onPlay={() => void send({ op: "play" })} onPause={() => void send({ op: "pause" })} onSeek={position => void send({ op: "seek", position })}
@@ -99,14 +115,17 @@ export function ListeningHub() {
           </div>
           <LyricsView key={`lyrics:${track.id}`} cues={cues} active={activeCue(cues, state.position)} onSeek={position => void send({ op: "seek", position })}
             emptyLabel={tr("No lyrics for this track.")} followLabel={tr("Follow lyrics")} />
-        </section>}
+        </section> : <div className="audio-empty"><h3>{tr("Choose something to play.")}</h3><p>{tr("Browse sleep sounds or nursery rhymes to start listening.")}</p></div>}
+        <ListeningLauncher />
+        </>}
+        {view === "library" && <>
         <section className="audio-library" aria-label={tr("Audio library")}>
           <h3>{tr("Audio library")}</h3>
           {state.tracks.filter(item => item.category === category).map(item => <article key={item.id} className="audio-track">
             <div className="min-w-0"><strong>{item.title}</strong><p>{item.artist}</p><small className="text-muted-foreground">{item.license}</small>
 </div>
             <div className="audio-options">
-              <Button variant="secondary" onClick={() => void send({ op: "play", id: item.id })}>{tr("Play")}</Button>
+              <Button variant="secondary" onClick={async () => { if (await send({ op: "play", id: item.id })) setView("player"); }}>{tr("Play")}</Button>
               <Button variant="outline" disabled={busy === item.id || state.downloading.includes(item.id)} onClick={async () => {
                 setBusy(item.id); await send({ op: state.downloaded.includes(item.id) ? "removeDownload" : "download", id: item.id }); setBusy(null);
               }}>{tr(state.downloading.includes(item.id) || busy === item.id ? "Downloading…" : state.downloaded.includes(item.id) ? "Remove download" : "Download")}</Button>
@@ -114,7 +133,7 @@ export function ListeningHub() {
           </article>)}
           {!state.tracks.some(item => item.category === category) && <div className="audio-empty"><h3>{tr("Your listening library starts here.")}</h3><p>{tr("Add licensed audio or import a curated catalog to listen and download offline.")}</p></div>}
         </section>
-        {open && <AudioResources category={category} />}
+        {open && <AudioResources category={category} onPlayed={() => setView("player")} />}
         <div className="audio-options"><Button variant="outline" onClick={() => setAdding(!adding)}>{tr(adding ? "Cancel" : "Add audio")}</Button>
           <label className="grid gap-1">{tr("Import catalog (JSON)")}<NativeInput type="file" accept="application/json,.json" onChange={event => { void importCatalog(event.target.files?.[0]); event.target.value = ""; }} /></label>
         </div>
@@ -128,7 +147,9 @@ export function ListeningHub() {
           <label>{tr("Lyrics (LRC or WebVTT)")}<Textarea name="lyrics" rows={5} maxLength={500000} /></label>
           <Button type="submit" loading={saving}>{tr("Add audio")}</Button>
         </form>}
+        </>}
       </div>
     </DialogPopup>
-  </Dialog>;
+  </Dialog>
+  </>;
 }
