@@ -12,6 +12,7 @@ public struct AudioTrack: Codable {
     public let url: String
     public let sourcePage: String?
     public let license: String
+    public var artwork: String? = nil
     public let lyrics: String
 }
 public struct AudioRequest: Decodable {

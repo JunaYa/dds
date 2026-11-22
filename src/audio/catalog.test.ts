@@ -13,6 +13,7 @@ it("ships directly playable, licensed audio in both categories", () => {
     expect(new URL(resource.url).pathname).toMatch(/\.mp3$/i);
     expect(resource.url).not.toBe(resource.sourcePage);
     expect(resource.license).toBe("CC0-1.0");
+    expect(readFileSync(new URL("../../public/" + resource.artwork, import.meta.url), "utf8")).toContain("<svg");
     const bytes = readFileSync(new URL("../../public/" + resource.assetPath, import.meta.url));
     expect(bytes.byteLength).toBe(resource.byteSize);
     expect(createHash("sha256").update(bytes).digest("hex")).toBe(resource.sha256);
@@ -40,4 +41,12 @@ it("prepares the packaged file and rejects incomplete copies", async () => {
   expect(Buffer.from(await bundledAudio(resource), "base64")).toEqual(bytes);
   expect(fetch.mock.calls[0][0]).toBe("/" + resource.assetPath);
   await expect(bundledAudio(resource)).rejects.toThrow("incomplete");
+});
+
+it("allows HTTPS and bundled album artwork while rejecting unsafe image sources", () => {
+  const resource = catalog.resources[0];
+  expect(trackSchema.safeParse({ ...resource, artwork: "https://example.com/cover.jpg" }).success).toBe(true);
+  for (const artwork of ["javascript:alert(1)", "http://example.com/cover.jpg", "audio/artwork/../secret.svg"]) {
+    expect(trackSchema.safeParse({ ...resource, artwork }).success).toBe(false);
+  }
 });

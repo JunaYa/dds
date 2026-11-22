@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import bundledCatalog from "../../../../public/audio/catalog.json";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { audioCatalogSchema } from "~/audio/catalog";
+import { playTrack } from "~/audio/play-track";
 import { Button } from "@vita/ui/button";
-import { Icons } from "@vita/ui/icons";
 import { Input, NativeInput } from "@vita/ui/input";
 import { Textarea } from "@vita/ui/textarea";
 import { NativeSelect } from "@vita/ui/select";
 import { Dialog, DialogPopup, DialogHeader, DialogTitle, DialogDescription } from "@vita/ui/dialog";
-import { AudioControls, LyricsView } from "@vita/ui/audio-player";
+import { AlbumButton, AudioControls, LyricsView } from "@vita/ui/audio-player";
 import { useAudio } from "~/audio/AudioProvider";
 import { catalogSchema, trackSchema, type Track } from "~/audio/model";
 import { nativeAudio } from "~/audio/backend";
@@ -14,6 +16,7 @@ import { useI18n } from "../i18n/useI18n";
 import "./listening.css";
 import { AudioResources } from "./AudioResources";
 
+const includedTracks = audioCatalogSchema.parse(bundledCatalog).resources;
 type Category = Track["category"];
 export function openListening(category: Category) { window.dispatchEvent(new CustomEvent("little-days-listening", { detail: category })); }
 export function openPlayer() { window.dispatchEvent(new Event("little-days-player")); }
@@ -46,8 +49,20 @@ export function ListeningHub() {
   const [adding, setAdding] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [busy, setBusy] = useState<string | null>(null);
+  const [switching, setSwitching] = useState(false);
+  const switchingRef = useRef(false);
+  const playlist = [...includedTracks, ...state.tracks.filter(item => !includedTracks.some(resource => resource.id === item.id))];
+  async function changeTrack(direction: number) {
+    if (switchingRef.current || playlist.length < 2) return;
+    const index = playlist.findIndex(item => item.id === state.trackId);
+    const next = playlist[(index + direction + playlist.length) % playlist.length];
+    switchingRef.current = true; setSwitching(true);
+    try { await playTrack(next, state.downloaded, send); }
+    catch { setLocalError(tr("Could not prepare this audio. Try again.")); }
+    finally { switchingRef.current = false; setSwitching(false); }
+  }
   const track = state.tracks.find(item => item.id === state.trackId);
+  const artwork = track?.artwork ?? bundledCatalog.resources.find(item => item.id === track?.id)?.artwork;
   const cues = useMemo(() => parseLyrics(track?.lyrics ?? ""), [track?.lyrics]);
   useEffect(() => {
     const show = (event: Event) => {
@@ -85,12 +100,11 @@ export function ListeningHub() {
     finally { setSaving(false); }
   }
   return <>
-    <Button unstyled className="audio-floating-entry" hidden={open}
-      aria-label={tr("Open player")} aria-haspopup="dialog"
-      onClick={openPlayer}>
-      <Icons.headphones aria-hidden="true" />
-      <span>{tr("Player")}</span>
-    </Button>
+    <AlbumButton className="audio-floating-entry" hidden={open} onClick={openPlayer}
+      label={tr("Open player")}
+      artwork={artwork?.startsWith("audio/") ? `${import.meta.env.BASE_URL}${artwork}` : artwork}
+      status={state.error ? "error" : state.buffering ? "buffering" : !track ? "idle" : state.playing ? "playing" : "paused"}
+      description={`${track?.title ?? tr("Player")} · ${tr(state.error ? "Playback error" : state.buffering ? "Buffering…" : !track ? "Choose something to play." : state.playing ? "Playing" : "Paused")}`} />
     <Dialog open={open} onOpenChange={setOpen}>
     <DialogPopup className="care-dialog audio-dialog" bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
       <DialogHeader><DialogTitle>{tr(view === "player" ? "Player" : category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
@@ -105,7 +119,9 @@ export function ListeningHub() {
           <AudioControls key={`controls:${track.id}`} title={track.title} playing={state.playing} buffering={state.buffering} position={state.position} duration={state.duration}
             onPlay={() => void send({ op: "play" })} onPause={() => void send({ op: "pause" })} onSeek={position => void send({ op: "seek", position })}
             labels={{ play: tr("Play"), pause: tr("Pause"), seek: tr("Playback position"), buffering: tr("Buffering…") }} />
-          <div className="audio-options">
+          <div className="audio-options audio-transport">
+            <Button variant="outline" disabled={switching || playlist.length < 2} onClick={() => void changeTrack(-1)}>{tr("Previous track")}</Button>
+            <Button variant="outline" disabled={switching || playlist.length < 2} onClick={() => void changeTrack(1)}>{tr("Next track")}</Button>
             <Button variant="outline" aria-pressed={state.repeat} onClick={() => void send({ op: "repeat", enabled: !state.repeat })}>{tr(state.repeat ? "Repeat on" : "Repeat off")}</Button>
             <label>{tr("Sleep timer")}<NativeSelect aria-label={tr("Sleep timer")} value={state.deadline ? "active" : "0"} onChange={event => void send({ op: "timer", minutes: Number(event.target.value) })}>
               <option value="0">{tr("Off")}</option>{state.deadline && <option value="active" disabled>{tr("Stops at {time}", { time: new Date(state.deadline).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) })}</option>}
@@ -116,23 +132,9 @@ export function ListeningHub() {
           <LyricsView key={`lyrics:${track.id}`} cues={cues} active={activeCue(cues, state.position)} onSeek={position => void send({ op: "seek", position })}
             emptyLabel={tr("No lyrics for this track.")} followLabel={tr("Follow lyrics")} />
         </section> : <div className="audio-empty"><h3>{tr("Choose something to play.")}</h3><p>{tr("Browse sleep sounds or nursery rhymes to start listening.")}</p></div>}
-        <ListeningLauncher />
+        {open && <AudioResources onPlayed={() => setView("player")} />}
         </>}
         {view === "library" && <>
-        <section className="audio-library" aria-label={tr("Audio library")}>
-          <h3>{tr("Audio library")}</h3>
-          {state.tracks.filter(item => item.category === category).map(item => <article key={item.id} className="audio-track">
-            <div className="min-w-0"><strong>{item.title}</strong><p>{item.artist}</p><small className="text-muted-foreground">{item.license}</small>
-</div>
-            <div className="audio-options">
-              <Button variant="secondary" onClick={async () => { if (await send({ op: "play", id: item.id })) setView("player"); }}>{tr("Play")}</Button>
-              <Button variant="outline" disabled={busy === item.id || state.downloading.includes(item.id)} onClick={async () => {
-                setBusy(item.id); await send({ op: state.downloaded.includes(item.id) ? "removeDownload" : "download", id: item.id }); setBusy(null);
-              }}>{tr(state.downloading.includes(item.id) || busy === item.id ? "Downloading…" : state.downloaded.includes(item.id) ? "Remove download" : "Download")}</Button>
-            </div>
-          </article>)}
-          {!state.tracks.some(item => item.category === category) && <div className="audio-empty"><h3>{tr("Your listening library starts here.")}</h3><p>{tr("Add licensed audio or import a curated catalog to listen and download offline.")}</p></div>}
-        </section>
         {open && <AudioResources category={category} onPlayed={() => setView("player")} />}
         <div className="audio-options"><Button variant="outline" onClick={() => setAdding(!adding)}>{tr(adding ? "Cancel" : "Add audio")}</Button>
           <label className="grid gap-1">{tr("Import catalog (JSON)")}<NativeInput type="file" accept="application/json,.json" onChange={event => { void importCatalog(event.target.files?.[0]); event.target.value = ""; }} /></label>

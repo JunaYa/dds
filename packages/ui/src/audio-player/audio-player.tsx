@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { Icons } from "../icons/icons";
+import { cn } from "../lib/utils";
+import "./album-button.css";
+import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "../button/button";
 import { NativeInput } from "../input/input";
 export function audioTime(seconds: number) {
@@ -47,4 +50,22 @@ export function LyricsView({ cues, active, onSeek, emptyLabel, followLabel }: {
         aria-current={index === active ? "true" : undefined} onClick={() => onSeek(cue.start)}>{cue.text || "♪"}</Button>)}
     </div>
   </section>;
+}
+
+export function AlbumButton({ artwork, status, label, description, onClick, hidden, className }: {
+  artwork?: string; status: "idle" | "playing" | "paused" | "buffering" | "error";
+  label: string; description: string; onClick: () => void; hidden?: boolean; className?: string;
+}) {
+  const [failedArtwork, setFailedArtwork] = useState<string | null>(null);
+  const descriptionId = useId();
+  const StatusIcon = status === "error" ? Icons.alertCircle : status === "paused" ? Icons.pause : status === "playing" ? Icons.audioLines : Icons.headphones;
+  return <Button unstyled className={cn("album-button", className)} hidden={hidden} onClick={onClick}
+    aria-label={label} aria-describedby={descriptionId} aria-haspopup="dialog" data-state={status} title={description}>
+    <span className="album-button-disc" aria-hidden="true">
+      {artwork && failedArtwork !== artwork ? <img src={artwork} width={64} height={64} alt="" draggable={false} onError={() => setFailedArtwork(artwork)} /> :
+        <span className="album-button-fallback"><Icons.music /></span>}
+    </span>
+    <span className="album-button-status" aria-hidden="true">{status === "buffering" ? <span className="album-button-spinner" /> : <StatusIcon />}</span>
+    <span id={descriptionId} className="sr-only">{description}</span>
+  </Button>;
 }

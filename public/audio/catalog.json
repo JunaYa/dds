@@ -17,7 +17,8 @@
       "byteSize": 442152,
       "sha256": "9fa0b0e96860eace536fa36f4e9c2c1284db894a8df3cdaa19ddae429b1bfd42",
       "lyrics": "",
-      "assetPath": "audio/files/oga-happy-lullaby-song17.mp3"
+      "assetPath": "audio/files/oga-happy-lullaby-song17.mp3",
+      "artwork": "audio/artwork/oga-happy-lullaby-song17.svg"
     },
     {
       "id": "oga-calm-music-morsi",
@@ -34,7 +35,8 @@
       "byteSize": 1680892,
       "sha256": "4960c5b054e8b9fa9d8d7d1d825afff607c97a94161f6c0aa1ee1944fa8dad14",
       "lyrics": "",
-      "assetPath": "audio/files/oga-calm-music-morsi.mp3"
+      "assetPath": "audio/files/oga-calm-music-morsi.mp3",
+      "artwork": "audio/artwork/oga-calm-music-morsi.svg"
     },
     {
       "id": "oga-childrens-march-theme",
@@ -51,7 +53,8 @@
       "byteSize": 2562218,
       "sha256": "5f3948419dc9b9f15ead808fa2d5da901efd1b806f4369fcd60f45c0501e07fc",
       "lyrics": "",
-      "assetPath": "audio/files/oga-childrens-march-theme.mp3"
+      "assetPath": "audio/files/oga-childrens-march-theme.mp3",
+      "artwork": "audio/artwork/oga-childrens-march-theme.svg"
     },
     {
       "id": "oga-remember-the-time",
@@ -68,7 +71,8 @@
       "byteSize": 3963954,
       "sha256": "b17052810aecb435537bd0e64c8560197df125798b43b3cb1c2423309dae023a",
       "lyrics": "",
-      "assetPath": "audio/files/oga-remember-the-time.mp3"
+      "assetPath": "audio/files/oga-remember-the-time.mp3",
+      "artwork": "audio/artwork/oga-remember-the-time.svg"
     }
   ]
 }

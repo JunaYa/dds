@@ -1,0 +1,34 @@
+.album-button[data-slot="button"] {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  isolation: isolate;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  padding: 3px;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--border);
+  touch-action: manipulation;
+  transition: transform 150ms ease-out;
+}
+.album-button[hidden] { display: none; }
+.album-button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 4px; }
+.album-button:active { transform: scale(.96); }
+.album-button-disc { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: 50%; pointer-events: none; user-select: none; animation: album-disc-turn 16s linear infinite paused; }
+.album-button[data-state="playing"] .album-button-disc { animation-play-state: running; }
+.album-button-disc img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.album-button-fallback { display: grid; place-items: center; width: 100%; height: 100%; background: var(--muted); color: var(--muted-foreground); border: 6px double var(--border); border-radius: 50%; }
+.album-button-fallback svg { width: 24px; height: 24px; }
+.album-button-status { position: absolute; right: 4px; bottom: 4px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card); color: var(--foreground); box-shadow: 0 0 0 1px var(--border); pointer-events: none; }
+.album-button-status svg { width: 13px; height: 13px; }
+.album-button[data-state="error"] .album-button-status { color: var(--destructive); }
+.album-button-spinner { width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--foreground); border-radius: 50%; animation: album-disc-turn 1s linear infinite; }
+@keyframes album-disc-turn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .album-button-disc, .album-button-spinner { animation: none; }
+  .album-button[data-slot="button"] { transition: none; }
+  .album-button:active { transform: none; }
+}

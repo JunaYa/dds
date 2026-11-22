@@ -1,11 +1,12 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import catalog from "../../../../public/audio/catalog.json";
 import { emptyState } from "~/audio/model";
 import { ListeningHub, openListening, openPlayer } from "./Listening";
 const state = { ...emptyState, playing: true, trackId: "selected", duration: 60, position: 1,
   tracks: [{ id: "selected", title: "Selected recording", artist: "Author", category: "sleep", url: "https://example.com/selected.mp3", license: "CC0-1.0", lyrics: "[00:00.00]First line" }] };
-vi.mock("~/audio/AudioProvider", () => ({ useAudio: () => ({ state, send: vi.fn().mockResolvedValue(true) }) }));
+const { send } = vi.hoisted(() => ({ send: vi.fn().mockResolvedValue(true) }));
+vi.mock("~/audio/AudioProvider", () => ({ useAudio: () => ({ state, send }) }));
 vi.mock("../i18n/useI18n", () => ({ useI18n: () => ({ tr: (text: string) => text }) }));
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 it("renders playback controls and lyrics together without duplicate sibling keys or external links", async () => {
@@ -51,8 +52,29 @@ it("keeps category browsing separate from playback controls and opens the player
   expect(await screen.findByRole("heading", { name: "Sleep sounds" })).toBeInTheDocument();
   expect(screen.queryByRole("slider", { name: "Playback position" })).not.toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "First line" })).not.toBeInTheDocument();
-  fireEvent.click(screen.getAllByRole("button", { name: "Play" })[0]);
+  const row = (await screen.findByText("Selected recording")).closest("article")!;
+  fireEvent.click(within(row).getByRole("button", { name: "Play" }));
   expect(await screen.findByRole("heading", { name: "Player" })).toBeInTheDocument();
   expect(screen.getByRole("slider", { name: "Playback position" })).toBeInTheDocument();
   expect(screen.queryByRole("region", { name: "Audio library" })).not.toBeInTheDocument();
+});
+
+it("shows a deduplicated mixed playlist and navigates previous/next with wrapping", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => catalog }));
+  state.downloaded = catalog.resources.map(item => item.id);
+  send.mockClear();
+  try {
+    render(<ListeningHub />);
+    act(() => openPlayer());
+    expect(await screen.findByRole("heading", { name: "Playlist" })).toBeInTheDocument();
+    expect(await screen.findByText("Children’s March Theme")).toBeInTheDocument();
+    expect(screen.getByText("Happy Lullaby")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Repeat on" })).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(screen.getByRole("button", { name: "Next track" }));
+    await waitFor(() => expect(send).toHaveBeenLastCalledWith({ op: "play", id: catalog.resources[0].id }));
+    fireEvent.click(screen.getByRole("button", { name: "Previous track" }));
+    await waitFor(() => expect(send).toHaveBeenLastCalledWith({ op: "play", id: catalog.resources.at(-1)!.id }));
+    fireEvent.click(screen.getByRole("button", { name: "Repeat on" }));
+    expect(send).toHaveBeenLastCalledWith({ op: "repeat", enabled: false });
+  } finally { state.downloaded = []; }
 });

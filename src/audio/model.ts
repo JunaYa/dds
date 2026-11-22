@@ -6,6 +6,10 @@ export const trackSchema = z.object({
   artist: z.string().max(200).default(""),
   category: z.enum(["sleep", "songs"]),
   url: z.url().refine(value => new URL(value).protocol === "https:", "HTTPS required"),
+  artwork: z.union([
+    z.url().refine(value => value.startsWith("https:"), "HTTPS required"),
+    z.string().regex(/^audio\/artwork\/[a-zA-Z0-9_-]+\.svg$/),
+  ]).optional(),
   sourcePage: z.url().refine(value => new URL(value).protocol === "https:").optional(),
   license: z.string().trim().min(1).max(500),
   lyrics: z.string().max(500_000).default(""),
