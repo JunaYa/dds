@@ -30,16 +30,6 @@ export function ListeningLauncher() {
     </div>
   </section>;
 }
-export function MiniAudioPlayer() {
-  const { state, send } = useAudio();
-  const { tr } = useI18n();
-  const track = state.tracks.find(item => item.id === state.trackId);
-  if (!track) return null;
-  return <aside className="audio-mini" aria-label={tr("Now playing")}>
-    <Button variant="ghost" className="min-w-0 flex-1 justify-start truncate" onClick={openPlayer}>{track.title}</Button>
-    <Button variant="secondary" onClick={() => void send({ op: state.playing ? "pause" : "play" })}>{tr(state.playing ? "Pause" : "Play")}</Button>
-  </aside>;
-}
 export function ListeningHub() {
   const { tr } = useI18n();
   const { state, send } = useAudio();
