@@ -24,3 +24,27 @@ body:has(.audio-floating-entry) .app-frame > main::after,
 body:has(.audio-floating-entry) main.onboarding::after { content: ""; display: block; height: 72px; flex-shrink: 0; }
 .audio-transport > [data-slot="button"] { min-height: 44px; }
 .audio-track[aria-current="true"] { border-color: var(--primary); background: var(--accent); }
+
+/* One bounded scroll owner keeps the controls and the entire playlist reachable. */
+.audio-dialog-viewport[data-slot="dialog-viewport"],
+.audio-dialog-viewport[data-slot="dialog-viewport"][data-overlay-platform="ios"]:not([data-overlay-fullscreen]) {
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+}
+.audio-dialog-viewport > .audio-dialog[data-slot="dialog-popup"],
+.audio-dialog-viewport[data-overlay-platform="ios"] > .audio-dialog[data-slot="dialog-popup"] {
+  grid-row: 1;
+  display: block;
+  min-height: 0;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+.audio-dialog .audio-content { padding-block: 16px; }
+.audio-dialog [data-slot="dialog-header"] { flex-shrink: 0; }
+.audio-now > section { min-width: 0; }
+@media (max-width: 767px) {
+  .audio-dialog-viewport[data-slot="dialog-viewport"][data-overlay-platform="ios"]:not([data-overlay-fullscreen]) { align-items: end; }
+}

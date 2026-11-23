@@ -106,7 +106,7 @@ export function ListeningHub() {
       status={state.error ? "error" : state.buffering ? "buffering" : !track ? "idle" : state.playing ? "playing" : "paused"}
       description={`${track?.title ?? tr("Player")} · ${tr(state.error ? "Playback error" : state.buffering ? "Buffering…" : !track ? "Choose something to play." : state.playing ? "Playing" : "Paused")}`} />
     <Dialog open={open} onOpenChange={setOpen}>
-    <DialogPopup className="care-dialog audio-dialog" bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
+    <DialogPopup className="care-dialog audio-dialog" viewportProps={{ className: "audio-dialog-viewport" }} bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
       <DialogHeader><DialogTitle>{tr(view === "player" ? "Player" : category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
         <DialogDescription>{tr("One player, across your app, lock screen and widgets.")}</DialogDescription></DialogHeader>
       <div className="audio-content">

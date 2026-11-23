@@ -1,14 +1,15 @@
 import { beforeEach, expect, it, vi } from "vitest";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within, waitFor } from "@testing-library/react";
 import App from "../../App";
 import { emptyWorkspace, today } from "../../domain/model";
 import { saveWorkspace } from "../../storage/workspace";
 import { LOCALE_KEY } from "../../storage/locale";
 
-const platform = vi.hoisted(() => ({ ios: true, native: false, add: () => {} }));
+const platform = vi.hoisted(() => ({ ios: true, native: false, blocked: false, add: () => {} }));
 vi.mock("./use-system-tabs", () => ({
   useSystemTabs: (_page: unknown, _titles: unknown, _blocked: unknown, _navigate: unknown,
     _theme: unknown, action: { onAdd: () => void }) => {
+    platform.blocked = Boolean(_blocked);
     platform.add = action.onAdd;
     return platform.native;
   },
@@ -71,7 +72,7 @@ it("summarizes only the selected child's recent entries and switches child witho
   expect(screen.getByRole("button", { name: "Analysis", exact: true })).toHaveAttribute("aria-current", "page");
 });
 
-it("hides bottom navigation while a record dialog is open and restores it on cancel", () => {
+it("hides bottom navigation while a record dialog is open and restores it on cancel", async () => {
   render(<App />);
   fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   expect(screen.queryByRole("navigation", { name: "Main navigation" })).not.toBeInTheDocument();
@@ -80,10 +81,10 @@ it("hides bottom navigation while a record dialog is open and restores it on can
   expect(close.textContent).toBe("");
   expect(document.querySelector('.care-dialog [data-slot="overlay-grabber"]')).not.toBeNull();
   fireEvent.click(close);
-  expect(screen.getByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
+  expect(await screen.findByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "＋ Add a record" }));
   fireEvent.click(screen.getByRole("button", { name: "Cancel", exact: true }));
-  expect(screen.getByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
+  expect(await screen.findByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
 });
 
 it("keeps the existing navigation outside the native iOS app", () => {
@@ -177,4 +178,14 @@ it("keeps management open when a nested creation form is cancelled", async () =>
   fireEvent.click(within(form).getByRole("button", { name: "Close dialog" }));
   await screen.findByRole("dialog", { name: "Supplies" });
   expect(window.location.hash).toBe("#/profile/supplies");
+});
+
+it("blocks native tabs for the independently opened player and restores them after closing", async () => {
+  platform.native = true;
+  render(<App />);
+  fireEvent.click(screen.getByRole("button", { name: "Open player" }));
+  await screen.findByRole("dialog", { name: "Player" });
+  await waitFor(() => expect(platform.blocked).toBe(true));
+  fireEvent.click(screen.getByRole("button", { name: "Close dialog" }));
+  await waitFor(() => expect(platform.blocked).toBe(false));
 });

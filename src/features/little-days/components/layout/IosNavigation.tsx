@@ -1,3 +1,4 @@
+import { useOpenOverlay } from "./use-open-overlay";
 import { isProfileDetail } from "../../state/page-routing";
 import { useContext, useLayoutEffect, useRef, useState } from "react";
 import { Sheet, SheetPopup, SheetTitle, SheetDescription } from "@vita/ui/sheet";
@@ -24,7 +25,8 @@ export function IosNavigation() {
   const [choosing, setChoosing] = useState(false);
   const pending = useRef<RecordType | null>(null);
   const selected = page === "Today" || page === "Analysis" ? page : "My";
-  const blocked = isProfileDetail(page) || modal !== null || nursingOpen || choosing || pending.current !== null;
+  const overlayOpen = useOpenOverlay();
+  const blocked = overlayOpen || isProfileDetail(page) || modal !== null || nursingOpen || choosing || pending.current !== null;
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, [selected]);
