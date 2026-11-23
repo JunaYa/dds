@@ -2,7 +2,8 @@ import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testi
 import { afterEach, expect, it, vi } from "vitest";
 import catalog from "../../../../public/audio/catalog.json";
 import { emptyState } from "~/audio/model";
-import { ListeningHub, openListening, openPlayer } from "./Listening";
+import { ListeningHub } from "./Listening";
+import { openListening, openPlayer } from "./listening-events";
 const state = { ...emptyState, playing: true, trackId: "selected", duration: 60, position: 1,
   tracks: [{ id: "selected", title: "Selected recording", artist: "Author", category: "sleep", url: "https://example.com/selected.mp3", license: "CC0-1.0", lyrics: "[00:00.00]First line" }] };
 const { send } = vi.hoisted(() => ({ send: vi.fn().mockResolvedValue(true) }));
@@ -14,7 +15,7 @@ it("renders playback controls and lyrics together without duplicate sibling keys
   const errors = vi.spyOn(console, "error");
   render(<ListeningHub />);
   act(() => openPlayer());
-  await screen.findByText("Now playing");
+  await screen.findByRole("region", { name: "Selected recording" });
   expect(screen.getByRole("slider", { name: "Playback position" })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "First line" })).toBeInTheDocument();
   expect(screen.queryByRole("link")).not.toBeInTheDocument();
@@ -77,4 +78,18 @@ it("shows a deduplicated mixed playlist and navigates previous/next with wrappin
     fireEvent.click(screen.getByRole("button", { name: "Repeat on" }));
     expect(send).toHaveBeenLastCalledWith({ op: "repeat", enabled: false });
   } finally { state.downloaded = []; }
+});
+
+it("keeps the timer operable through its icon and removes explanatory subtitles", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => catalog }));
+  send.mockClear();
+  render(<ListeningHub />);
+  act(() => openPlayer());
+  expect(await screen.findByRole("heading", { name: "Player" })).toBeInTheDocument();
+  expect(screen.queryByText("One player, across your app, lock screen and widgets.")).not.toBeInTheDocument();
+  expect(screen.queryByText("Sleep timer")).not.toBeInTheDocument();
+  fireEvent.change(screen.getByRole("combobox", { name: "Sleep timer" }), { target: { value: "15" } });
+  expect(send).toHaveBeenLastCalledWith({ op: "timer", minutes: 15 });
+  fireEvent.change(screen.getByRole("combobox", { name: "Sleep timer" }), { target: { value: "0" } });
+  expect(send).toHaveBeenLastCalledWith({ op: "timer", minutes: 0 });
 });

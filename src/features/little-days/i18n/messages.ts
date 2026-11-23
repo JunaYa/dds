@@ -50,7 +50,6 @@ export const messages: Record<string, string> = {
   "License or permission reference": "授权说明或许可依据",
   "Lyrics (LRC or WebVTT)": "歌词（LRC 或 WebVTT）",
   "Artist": "作者",
-  "One player, across your app, lock screen and widgets.": "页面、锁屏与小组件，共享一个播放器。",
   "Background playback depends on this browser. Use the mobile app for native widgets and background timers.": "当前播放依赖浏览器能力。原生小组件和后台定时请使用移动端应用。",
   "Catalog must be smaller than 2 MB.": "音频目录须小于 2 MB。",
   "Choose a track first.": "请先选择音频。",

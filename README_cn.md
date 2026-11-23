@@ -18,7 +18,7 @@ Little days 定位为陪伴家庭从怀孕、分娩到产后与育儿的记录�
 pnpm install
 pnpm dev
 pnpm dev:desktop
-pnpm dev:ios 'iPhone 17 Pro'
+pnpm dev:ios:sim          # 已启动的 iOS 模拟器，UI 热更新
 pnpm dev:android
 ```
 
@@ -35,3 +35,5 @@ pnpm build
 正式代码位于 `src/features/little-days/`。新安装从空档案开始，记录、类型、库存和计时状态保存在设备本地 localStorage，重启可恢复。目前没有加密存储、备份恢复或云同步，各设备数据独立；清除应用数据或卸载会丢失记录。旧 Journal/Collage 数据不会自动迁移或删除。
 
 examples 已移除；旧功能源码与无关原型保留历史开发内容，不接入正式构建入口。小组件、Live Activities、后台通知、数据导入导出和商店发布配置尚未实现。完整结构与边界见 [README](README.md)。
+
+修改界面时使用 `pnpm dev:ios:sim` 并保持进程运行，React、CSS 和共享 UI 包修改会自动更新。需要先启动模拟器，且 1424/1425 端口未被其他开发进程占用。`pnpm start:ios:sim` 仅打开已安装应用；`pnpm build:ios:sim` 生成内置静态界面的独立安装包，这两种方式不会启动热更新。

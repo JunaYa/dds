@@ -19,6 +19,7 @@
     "build:desktop": "tauri build",
     "init:ios": "tauri ios init --ci",
     "dev:ios": "tauri ios dev",
+    "dev:ios:sim": "node scripts/dev-ios-simulator.mjs",
     "start:ios:sim": "xcrun simctl launch booted com.dds.app",
     "start:ios:device": "xcrun devicectl device process launch --device \"JunaYa的iPhone\" com.junaya.littledays.dev",
     "build:ios": "tauri ios build",

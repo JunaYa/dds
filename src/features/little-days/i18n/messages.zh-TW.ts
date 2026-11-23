@@ -52,7 +52,6 @@ export const traditionalMessages: Record<keyof typeof messages, string> = {
   "License or permission reference": "授權說明或許可依據",
   "Lyrics (LRC or WebVTT)": "歌詞（LRC 或 WebVTT）",
   "Artist": "作者",
-  "One player, across your app, lock screen and widgets.": "頁面、鎖定畫面與小工具，共用一個播放器。",
   "Background playback depends on this browser. Use the mobile app for native widgets and background timers.": "目前播放依賴瀏覽器能力。原生小工具與背景定時請使用行動版應用程式。",
   "Catalog must be smaller than 2 MB.": "音訊目錄須小於 2 MB。",
   "Choose a track first.": "請先選擇音訊。",

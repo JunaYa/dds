@@ -1,13 +1,14 @@
-import bundledCatalog from "../../../../public/audio/catalog.json";
+import { openListening, openPlayer } from "./listening-events";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { audioCatalogSchema } from "~/audio/catalog";
+import { loadAudioCatalog, type AudioResource } from "~/audio/catalog";
 import { playTrack } from "~/audio/play-track";
+import { Icons } from "@vita/ui/icons";
 import { Button } from "@vita/ui/button";
 import { Input, NativeInput } from "@vita/ui/input";
 import { Textarea } from "@vita/ui/textarea";
 import { NativeSelect } from "@vita/ui/select";
-import { Dialog, DialogPopup, DialogHeader, DialogTitle, DialogDescription } from "@vita/ui/dialog";
-import { AlbumButton, AudioControls, LyricsView } from "@vita/ui/audio-player";
+import { Dialog, DialogPopup, DialogHeader, DialogTitle, DialogClose } from "@vita/ui/dialog";
+import { AlbumButton, AudioArtwork, AudioControls, LyricsView } from "@vita/ui/audio-player";
 import { useAudio } from "~/audio/AudioProvider";
 import { catalogSchema, trackSchema, type Track } from "~/audio/model";
 import { nativeAudio } from "~/audio/backend";
@@ -16,10 +17,7 @@ import { useI18n } from "../i18n/useI18n";
 import "./listening.css";
 import { AudioResources } from "./AudioResources";
 
-const includedTracks = audioCatalogSchema.parse(bundledCatalog).resources;
 type Category = Track["category"];
-export function openListening(category: Category) { window.dispatchEvent(new CustomEvent("little-days-listening", { detail: category })); }
-export function openPlayer() { window.dispatchEvent(new Event("little-days-player")); }
 export function ListeningLauncher() {
   const { tr } = useI18n();
   return <section className="profile-group" aria-label={tr("Listening")}>
@@ -36,6 +34,18 @@ export function ListeningHub() {
   const [category, setCategory] = useState<Category>("sleep");
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<"library" | "player">("player");
+  const [includedTracks, setIncludedTracks] = useState<AudioResource[]>([]);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    setCatalogError(null);
+    void loadAudioCatalog(controller.signal).then(catalog => {
+      if (!controller.signal.aborted) setIncludedTracks(catalog.resources);
+    }).catch(() => {
+      if (!controller.signal.aborted) setCatalogError("Could not load the resource catalog.");
+    });
+    return () => controller.abort();
+  }, [open]);
   const [adding, setAdding] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -52,7 +62,7 @@ export function ListeningHub() {
     finally { switchingRef.current = false; setSwitching(false); }
   }
   const track = state.tracks.find(item => item.id === state.trackId);
-  const artwork = track?.artwork ?? bundledCatalog.resources.find(item => item.id === track?.id)?.artwork;
+  const artwork = track?.artwork ?? includedTracks.find(item => item.id === track?.id)?.artwork;
   const cues = useMemo(() => parseLyrics(track?.lyrics ?? ""), [track?.lyrics]);
   useEffect(() => {
     const show = (event: Event) => {
@@ -90,34 +100,41 @@ export function ListeningHub() {
     finally { setSaving(false); }
   }
   return <>
-    <AlbumButton className="audio-floating-entry" hidden={open} onClick={openPlayer}
+    <div className="audio-floating-area">
+    <AlbumButton draggable className="audio-floating-entry" hidden={open} onClick={openPlayer}
       label={tr("Open player")}
       artwork={artwork?.startsWith("audio/") ? `${import.meta.env.BASE_URL}${artwork}` : artwork}
       status={state.error ? "error" : state.buffering ? "buffering" : !track ? "idle" : state.playing ? "playing" : "paused"}
       description={`${track?.title ?? tr("Player")} · ${tr(state.error ? "Playback error" : state.buffering ? "Buffering…" : !track ? "Choose something to play." : state.playing ? "Playing" : "Paused")}`} />
+    </div>
     <Dialog open={open} onOpenChange={setOpen}>
-    <DialogPopup className="care-dialog audio-dialog" viewportProps={{ className: "audio-dialog-viewport" }} bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
-      <DialogHeader><DialogTitle>{tr(view === "player" ? "Player" : category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
-        <DialogDescription>{tr("One player, across your app, lock screen and widgets.")}</DialogDescription></DialogHeader>
+    <DialogPopup className="care-dialog audio-dialog" viewportProps={{ className: "audio-dialog-viewport" }} showCloseButton={false} bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
+      <DialogHeader className="audio-dialog-heading"><DialogTitle>{tr(view === "player" ? "Player" : category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
+        <DialogClose aria-label={tr("Close dialog")} render={<Button variant="ghost" size="icon" />}><Icons.chevronDown aria-hidden="true" /></DialogClose>
+      </DialogHeader>
       <div className="audio-content">
         {!nativeAudio() && <p className="text-sm text-muted-foreground">{tr("Background playback depends on this browser. Use the mobile app for native widgets and background timers.")}</p>}
         {state.systemControls === false && <p role="status">{tr("System media controls are unavailable on this device.")}</p>}
-        {(localError || state.error) && <p role="alert" className="text-destructive">{localError ?? tr(state.error ?? "")}</p>}
+        {(localError || state.error || catalogError) && <p role="alert" className="text-destructive">{localError ?? tr(state.error ?? catalogError ?? "")}</p>}
         {view === "player" && <>
         {track ? <section className="audio-now">
-          <h3>{tr("Now playing")}</h3>
-          <AudioControls key={`controls:${track.id}`} title={track.title} playing={state.playing} buffering={state.buffering} position={state.position} duration={state.duration}
+          <AudioControls key={`controls:${track.id}`} title={track.title} artist={track.artist}
+            artwork={<AudioArtwork src={artwork?.startsWith("audio/") ? `${import.meta.env.BASE_URL}${artwork}` : artwork} />}
+            previous={{ label: tr("Previous track"), disabled: switching || playlist.length < 2, onClick: () => void changeTrack(-1) }}
+            next={{ label: tr("Next track"), disabled: switching || playlist.length < 2, onClick: () => void changeTrack(1) }} playing={state.playing} buffering={state.buffering} position={state.position} duration={state.duration}
             onPlay={() => void send({ op: "play" })} onPause={() => void send({ op: "pause" })} onSeek={position => void send({ op: "seek", position })}
             labels={{ play: tr("Play"), pause: tr("Pause"), seek: tr("Playback position"), buffering: tr("Buffering…") }} />
           <div className="audio-options audio-transport">
-            <Button variant="outline" disabled={switching || playlist.length < 2} onClick={() => void changeTrack(-1)}>{tr("Previous track")}</Button>
-            <Button variant="outline" disabled={switching || playlist.length < 2} onClick={() => void changeTrack(1)}>{tr("Next track")}</Button>
-            <Button variant="outline" aria-pressed={state.repeat} onClick={() => void send({ op: "repeat", enabled: !state.repeat })}>{tr(state.repeat ? "Repeat on" : "Repeat off")}</Button>
-            <label>{tr("Sleep timer")}<NativeSelect aria-label={tr("Sleep timer")} value={state.deadline ? "active" : "0"} onChange={event => void send({ op: "timer", minutes: Number(event.target.value) })}>
-              <option value="0">{tr("Off")}</option>{state.deadline && <option value="active" disabled>{tr("Stops at {time}", { time: new Date(state.deadline).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) })}</option>}
-              {[15, 30, 60].map(minutes => <option key={minutes} value={minutes}>{tr("{minutes} minutes", { minutes })}</option>)}
-            </NativeSelect></label>
-            <Button variant="ghost" onClick={() => void send({ op: "stop" })}>{tr("Stop")}</Button>
+            <Button variant="outline" size="icon" aria-label={tr(state.repeat ? "Repeat on" : "Repeat off")} title={tr(state.repeat ? "Repeat on" : "Repeat off")} aria-pressed={state.repeat} onClick={() => void send({ op: "repeat", enabled: !state.repeat })}><Icons.repeat aria-hidden="true" /></Button>
+            <label className="audio-timer" data-active={state.deadline ? "true" : undefined}>
+              <Icons.clock aria-hidden="true" />
+              <NativeSelect aria-label={tr("Sleep timer")} title={tr("Sleep timer")} value={state.deadline ? "active" : "0"} onChange={event => void send({ op: "timer", minutes: Number(event.target.value) })}>
+                <option value="0">{tr("Off")}</option>{state.deadline && <option value="active" disabled>{tr("Stops at {time}", { time: new Date(state.deadline).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) })}</option>}
+                {[15, 30, 60].map(minutes => <option key={minutes} value={minutes}>{tr("{minutes} minutes", { minutes })}</option>)}
+              </NativeSelect>
+              {state.deadline && <span className="audio-timer-indicator" aria-hidden="true" />}
+            </label>
+            <Button variant="ghost" size="icon" aria-label={tr("Stop")} title={tr("Stop")} onClick={() => void send({ op: "stop" })}><Icons.square aria-hidden="true" /></Button>
           </div>
           <LyricsView key={`lyrics:${track.id}`} cues={cues} active={activeCue(cues, state.position)} onSeek={position => void send({ op: "seek", position })}
             emptyLabel={tr("No lyrics for this track.")} followLabel={tr("Follow lyrics")} />

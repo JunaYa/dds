@@ -29,6 +29,7 @@ pnpm dev                 # Browser: http://localhost:1424
 pnpm dev:desktop         # Tauri desktop
 pnpm init:ios            # Once, with Xcode installed
 pnpm dev:ios             # Select a simulator/device
+pnpm dev:ios:sim         # Booted simulator with UI hot reload
 pnpm init:android        # Once, with Android SDK/NDK installed
 pnpm dev:android
 ```
@@ -69,3 +70,5 @@ For SDK paths, standalone APK builds, and USB installation, see [Android physica
 New installations start empty; no fictional children or medical records are inserted. Data uses the versioned `little-days.workspace.v1` local-storage key. Writes validate the full workspace; failed saves preserve the form, and unreadable data is never silently reset. Timers persist their start timestamps and paused duration; elapsed time is recalculated after reopening. Each browser origin and each native installation has its own storage. This is not encrypted storage or a backup service; uninstalling or clearing app data removes records. Old Journal/Collage storage is not imported or deleted.
 
 LocalStorage is the first persistence adapter. Cloud sync, backup/export/import, profile editing, notifications, widgets, Live Activities, and store release setup are not implemented. Timers do not require a continuously running WebView, but there are no background notifications. Vaccination and vitamin entries record caregiver input; the app does not prescribe schedules or dosage.
+
+Keep `pnpm dev:ios:sim` running while editing React, CSS, or shared UI packages. Boot a simulator first and free ports 1424/1425. `start:ios:sim` only opens the installed app; `build:ios:sim` bundles static assets and does not provide hot reload.

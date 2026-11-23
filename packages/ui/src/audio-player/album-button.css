@@ -32,3 +32,6 @@
   .album-button[data-slot="button"] { transition: none; }
   .album-button:active { transform: none; }
 }
+.album-button[data-draggable] { touch-action: none; user-select: none; cursor: grab; }
+.album-button[data-dragging] { cursor: grabbing; }
+.album-button[data-dragging]:active { transform: none; }
