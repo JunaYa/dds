@@ -1,3 +1,4 @@
+import bundledCatalog from "./catalog-data.json";
 import { z } from "zod";
 import { trackSchema } from "./model";
 
@@ -23,9 +24,8 @@ export type AudioResource = z.infer<typeof audioResourceSchema>;
 export type AudioCatalog = z.infer<typeof audioCatalogSchema>;
 
 export async function loadAudioCatalog(signal?: AbortSignal): Promise<AudioCatalog> {
-  const response = await fetch(`${import.meta.env.BASE_URL}audio/catalog.json`, { signal });
-  if (!response.ok) throw new Error(`Catalog request failed (${response.status})`);
-  return audioCatalogSchema.parse(await response.json());
+  signal?.throwIfAborted();
+  return audioCatalogSchema.parse(bundledCatalog);
 }
 
 export async function bundledAudio(resource: AudioResource): Promise<string> {

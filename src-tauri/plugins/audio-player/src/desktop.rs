@@ -627,8 +627,10 @@ mod tests {
     fn packaged_recordings_decode_and_cache_with_the_catalog_checksums() {
         let mut engine = engine();
         let public = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../public");
-        let catalog: Value =
-            serde_json::from_slice(&fs::read(public.join("audio/catalog.json")).unwrap()).unwrap();
+        let catalog: Value = serde_json::from_slice(
+            &fs::read(public.join("../src/audio/catalog-data.json")).unwrap(),
+        )
+        .unwrap();
         for resource in catalog["resources"].as_array().unwrap() {
             engine
                 .execute(json!({"op":"catalog","tracks":[resource]}))

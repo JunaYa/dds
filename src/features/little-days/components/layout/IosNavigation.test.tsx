@@ -186,6 +186,6 @@ it("blocks native tabs for the independently opened player and restores them aft
   fireEvent.click(screen.getByRole("button", { name: "Open player" }));
   await screen.findByRole("dialog", { name: "Player" });
   await waitFor(() => expect(platform.blocked).toBe(true));
-  fireEvent.click(screen.getByRole("button", { name: "Close dialog" }));
+  fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape", code: "Escape" });
   await waitFor(() => expect(platform.blocked).toBe(false));
 });

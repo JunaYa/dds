@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import catalog from "../../../../public/audio/catalog.json";
+import catalog from "~/audio/catalog-data.json";
 import { AudioResources } from "./AudioResources";
 import { emptyState } from "~/audio/model";
 const { send } = vi.hoisted(() => ({ send: vi.fn() }));
@@ -10,7 +10,6 @@ vi.mock("../i18n/useI18n", () => ({ useI18n: () => ({ tr: (text: string) => text
 beforeEach(() => {
   send.mockReset().mockResolvedValue(true);
   vi.stubGlobal("fetch", vi.fn(async (url: string) => {
-    if (url.endsWith("catalog.json")) return { ok: true, json: async () => catalog };
     const resource = catalog.resources.find(item => url.endsWith(item.assetPath));
     if (!resource) throw new Error("Unexpected asset request");
     const bytes = readFileSync(new URL("../../../../public/" + resource.assetPath, import.meta.url));
@@ -74,11 +73,13 @@ it("keeps the most recent play choice when registration resolves out of order", 
   await waitFor(() => expect(first.getByRole("button", { name: "Play" })).toBeEnabled());
   expect(send.mock.calls.filter(([command]) => command.op === "play").map(([command]) => command.id)).toEqual(["oga-calm-music-morsi"]);
 });
-it("allows retry after a failed local catalog request", async () => {
-  vi.stubGlobal("fetch", vi.fn().mockRejectedValueOnce(new Error("failed")).mockResolvedValueOnce({ ok: true, json: async () => catalog }));
-  render(<AudioResources category="sleep" />);
-  await screen.findByRole("alert");
-  fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+it("shows the full built-in list without network access", async () => {
+  const fetch = vi.fn().mockRejectedValue(new Error("Network unavailable"));
+  vi.stubGlobal("fetch", fetch);
+  render(<AudioResources />);
   await screen.findByText("Happy Lullaby");
+  await screen.findByText("Children’s March Theme");
+  await screen.findByText("Remember the Time We Use to Play");
+  expect(fetch).not.toHaveBeenCalled();
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });

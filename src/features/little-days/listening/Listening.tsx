@@ -7,7 +7,7 @@ import { Button } from "@vita/ui/button";
 import { Input, NativeInput } from "@vita/ui/input";
 import { Textarea } from "@vita/ui/textarea";
 import { NativeSelect } from "@vita/ui/select";
-import { Dialog, DialogPopup, DialogHeader, DialogTitle, DialogClose } from "@vita/ui/dialog";
+import { Dialog, DialogPopup, DialogTitle } from "@vita/ui/dialog";
 import { AlbumButton, AudioArtwork, AudioControls, LyricsView } from "@vita/ui/audio-player";
 import { useAudio } from "~/audio/AudioProvider";
 import { catalogSchema, trackSchema, type Track } from "~/audio/model";
@@ -109,9 +109,7 @@ export function ListeningHub() {
     </div>
     <Dialog open={open} onOpenChange={setOpen}>
     <DialogPopup className="care-dialog audio-dialog" viewportProps={{ className: "audio-dialog-viewport" }} showCloseButton={false} bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
-      <DialogHeader className="audio-dialog-heading"><DialogTitle>{tr(view === "player" ? "Player" : category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
-        <DialogClose aria-label={tr("Close dialog")} render={<Button variant="ghost" size="icon" />}><Icons.chevronDown aria-hidden="true" /></DialogClose>
-      </DialogHeader>
+      <DialogTitle className="sr-only">{tr(view === "player" ? "Player" : category === "sleep" ? "Sleep sounds" : "Nursery rhymes")}</DialogTitle>
       <div className="audio-content">
         {!nativeAudio() && <p className="text-sm text-muted-foreground">{tr("Background playback depends on this browser. Use the mobile app for native widgets and background timers.")}</p>}
         {state.systemControls === false && <p role="status">{tr("System media controls are unavailable on this device.")}</p>}

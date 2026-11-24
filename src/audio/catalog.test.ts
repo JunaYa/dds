@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { afterEach, expect, it, vi } from "vitest";
-import catalog from "../../public/audio/catalog.json";
+import catalog from "./catalog-data.json";
 import { audioCatalogSchema, bundledAudio, loadAudioCatalog } from "./catalog";
 import { trackSchema } from "./model";
 afterEach(() => vi.unstubAllGlobals());
@@ -20,11 +20,7 @@ it("ships directly playable, licensed audio in both categories", () => {
   }
 });
 it("loads the local JSON and rejects duplicate IDs or source pages as audio", async () => {
-  const fetch = vi.fn().mockResolvedValueOnce({ ok: true, json: async () => catalog }).mockResolvedValueOnce({ ok: false, status: 404 });
-  vi.stubGlobal("fetch", fetch);
   expect(await loadAudioCatalog()).toEqual(audioCatalogSchema.parse(catalog));
-  expect(fetch.mock.calls[0][0]).toBe("/audio/catalog.json");
-  await expect(loadAudioCatalog()).rejects.toThrow("404");
   const first = catalog.resources[0];
   expect(audioCatalogSchema.safeParse({ ...catalog, resources: [first, first] }).success).toBe(false);
   expect(audioCatalogSchema.safeParse({ ...catalog, resources: [{ ...first, url: first.sourcePage }] }).success).toBe(false);
@@ -49,4 +45,16 @@ it("allows HTTPS and bundled album artwork while rejecting unsafe image sources"
   for (const artwork of ["javascript:alert(1)", "http://example.com/cover.jpg", "audio/artwork/../secret.svg"]) {
     expect(trackSchema.safeParse({ ...resource, artwork }).success).toBe(false);
   }
+});
+
+it("loads the built-in list even when network requests fail", async () => {
+  const fetch = vi.fn().mockRejectedValue(new Error("Network unavailable"));
+  vi.stubGlobal("fetch", fetch);
+  expect((await loadAudioCatalog()).resources).toHaveLength(4);
+  expect(fetch).not.toHaveBeenCalled();
+});
+
+it("respects cancellation before loading the bundled list", async () => {
+  const controller = new AbortController(); controller.abort();
+  await expect(loadAudioCatalog(controller.signal)).rejects.toThrow();
 });

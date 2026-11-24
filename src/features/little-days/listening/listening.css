@@ -75,9 +75,6 @@ body:has(.audio-floating-entry) main.onboarding::after { content: ""; display: b
 .audio-track-actions { display: flex; align-items: center; gap: 0; }
 .audio-track-actions > [data-slot="button"] { width: 44px; height: 44px; }
 .audio-dialog .audio-track[aria-current="true"] { background: var(--accent); border-radius: 12px; border-bottom-color: transparent; }
-.audio-dialog[data-slot="dialog-popup"] .audio-dialog-heading[data-slot="dialog-header"] { display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding-block: 4px 12px; }
-.audio-dialog[data-slot="dialog-popup"] .audio-dialog-heading[data-slot="dialog-header"] > [data-slot="dialog-title"] { padding: 0; min-height: 0; text-align: start; }
-.audio-dialog-heading > [data-slot="button"] { width: 44px; height: 44px; flex-shrink: 0; }
 @media (max-width: 380px) {
   .audio-dialog .audio-track { grid-template-columns: 36px minmax(0, 1fr) auto; gap: 8px; padding-inline: 0; }
   .audio-track .audio-artwork { width: 36px; height: 36px; }

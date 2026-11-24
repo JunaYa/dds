@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import catalog from "../../../../public/audio/catalog.json";
+import catalog from "~/audio/catalog-data.json";
 import { emptyState } from "~/audio/model";
 import { ListeningHub } from "./Listening";
 import { openListening, openPlayer } from "./listening-events";
@@ -31,7 +31,8 @@ it("opens the global player before a track is selected and restores its entry on
     fireEvent.click(screen.getByRole("button", { name: "Open player" }));
     expect(await screen.findByRole("heading", { name: "Choose something to play." })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Open player" })).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Close dialog" }));
+    expect(screen.queryByRole("button", { name: "Close dialog" })).not.toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape", code: "Escape" });
     expect(await screen.findByRole("button", { name: "Open player" })).toBeInTheDocument();
   } finally { state.trackId = selected; }
 });
