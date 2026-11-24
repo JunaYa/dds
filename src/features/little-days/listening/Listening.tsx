@@ -54,14 +54,17 @@ export function ListeningHub() {
   const playlist = [...includedTracks, ...state.tracks.filter(item => !includedTracks.some(resource => resource.id === item.id))];
   async function changeTrack(direction: number) {
     if (switchingRef.current || playlist.length < 2) return;
-    const index = playlist.findIndex(item => item.id === state.trackId);
+    const index = playlist.findIndex(item => item.id === (state.trackId || includedTracks[0]?.id));
     const next = playlist[(index + direction + playlist.length) % playlist.length];
     switchingRef.current = true; setSwitching(true);
-    try { await playTrack(next, state.downloaded, send); }
+    try { await playTrack(next, send); }
     catch { setLocalError(tr("Could not prepare this audio. Try again.")); }
     finally { switchingRef.current = false; setSwitching(false); }
   }
-  const track = state.tracks.find(item => item.id === state.trackId);
+  const track = state.tracks.find(item => item.id === state.trackId) ?? includedTracks[0];
+  const selected = !!track && state.trackId === track.id;
+  const playing = selected && state.playing;
+  const duration = (selected ? state.duration : 0) || includedTracks.find(item => item.id === track?.id)?.durationSeconds || 0;
   const artwork = track?.artwork ?? includedTracks.find(item => item.id === track?.id)?.artwork;
   const cues = useMemo(() => parseLyrics(track?.lyrics ?? ""), [track?.lyrics]);
   useEffect(() => {
@@ -104,8 +107,8 @@ export function ListeningHub() {
     <AlbumButton draggable className="audio-floating-entry" hidden={open} onClick={openPlayer}
       label={tr("Open player")}
       artwork={artwork?.startsWith("audio/") ? `${import.meta.env.BASE_URL}${artwork}` : artwork}
-      status={state.error ? "error" : state.buffering ? "buffering" : !track ? "idle" : state.playing ? "playing" : "paused"}
-      description={`${track?.title ?? tr("Player")} · ${tr(state.error ? "Playback error" : state.buffering ? "Buffering…" : !track ? "Choose something to play." : state.playing ? "Playing" : "Paused")}`} />
+      status={state.error ? "error" : selected && state.buffering ? "buffering" : !track ? "idle" : playing ? "playing" : "paused"}
+      description={`${track?.title ?? tr("Player")} · ${tr(state.error ? "Playback error" : selected && state.buffering ? "Buffering…" : !track ? "Choose something to play." : playing ? "Playing" : "Paused")}`} />
     </div>
     <Dialog open={open} onOpenChange={setOpen}>
     <DialogPopup className="care-dialog audio-dialog" viewportProps={{ className: "audio-dialog-viewport" }} showCloseButton={false} bottomStickOnMobile={false} closeLabel={tr("Close dialog")}>
@@ -119,8 +122,8 @@ export function ListeningHub() {
           <AudioControls key={`controls:${track.id}`} title={track.title} artist={track.artist}
             artwork={<AudioArtwork src={artwork?.startsWith("audio/") ? `${import.meta.env.BASE_URL}${artwork}` : artwork} />}
             previous={{ label: tr("Previous track"), disabled: switching || playlist.length < 2, onClick: () => void changeTrack(-1) }}
-            next={{ label: tr("Next track"), disabled: switching || playlist.length < 2, onClick: () => void changeTrack(1) }} playing={state.playing} buffering={state.buffering} position={state.position} duration={state.duration}
-            onPlay={() => void send({ op: "play" })} onPause={() => void send({ op: "pause" })} onSeek={position => void send({ op: "seek", position })}
+            next={{ label: tr("Next track"), disabled: switching || playlist.length < 2, onClick: () => void changeTrack(1) }} playing={playing} buffering={selected && state.buffering} position={selected ? state.position : 0} duration={duration}
+            onPlay={() => void playTrack(track, send)} onPause={() => void send({ op: "pause" })} onSeek={position => void send({ op: "seek", position })}
             labels={{ play: tr("Play"), pause: tr("Pause"), seek: tr("Playback position"), buffering: tr("Buffering…") }} />
           <div className="audio-options audio-transport">
             <Button variant="outline" size="icon" aria-label={tr(state.repeat ? "Repeat on" : "Repeat off")} title={tr(state.repeat ? "Repeat on" : "Repeat off")} aria-pressed={state.repeat} onClick={() => void send({ op: "repeat", enabled: !state.repeat })}><Icons.repeat aria-hidden="true" /></Button>

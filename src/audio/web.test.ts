@@ -66,3 +66,14 @@ it("verifies bundled bytes before caching and plays them without a network reque
   expect(audio.src).toBe("blob:cached");
   expect(fetch).not.toHaveBeenCalled();
 });
+
+it("streams an uncached track directly without starting a download", async () => {
+  const backend = new WebAudioBackend();
+  const uncached = { ...track, id: "uncached-stream" };
+  await backend.execute({ op: "catalog", tracks: [uncached] });
+  vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("No download expected")));
+  await backend.execute({ op: "play", id: uncached.id });
+  expect(audio.src).toBe(uncached.url);
+  expect((await backend.snapshot()).downloaded).not.toContain(uncached.id);
+  expect(fetch).not.toHaveBeenCalled();
+});

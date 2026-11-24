@@ -35,7 +35,7 @@ export function AudioResources({ category, onPlayed }: { category?: Track["categ
     setPending(previous => ({ ...previous, [item.id]: action }));
     try {
       if (action === "play") {
-        if (await playTrack(item, state.downloaded, send, () => intent === playIntent.current)) onPlayed?.();
+        if (await playTrack(item, send, () => intent === playIntent.current)) onPlayed?.();
       } else {
         if (!await send({ op: "catalog", tracks: [trackSchema.parse(item)] })) return;
         if (!state.downloaded.includes(item.id)) {

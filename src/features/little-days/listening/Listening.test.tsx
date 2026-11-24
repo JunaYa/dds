@@ -24,12 +24,18 @@ it("renders playback controls and lyrics together without duplicate sibling keys
 
 it("opens the global player before a track is selected and restores its entry on close", async () => {
   vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => catalog }));
+  send.mockClear();
   const selected = state.trackId;
   state.trackId = "";
   try {
     render(<ListeningHub />);
     fireEvent.click(screen.getByRole("button", { name: "Open player" }));
-    expect(await screen.findByRole("heading", { name: "Choose something to play." })).toBeInTheDocument();
+    const player = await screen.findByRole("region", { name: "Happy Lullaby" });
+    expect(within(player).getByRole("slider")).toHaveAttribute("max", String(catalog.resources[0].durationSeconds));
+    expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ op: "play" }));
+    fireEvent.click(within(player).getByRole("button", { name: "Play" }));
+    await waitFor(() => expect(send).toHaveBeenLastCalledWith({ op: "play", id: catalog.resources[0].id }));
+    expect(send.mock.calls.some(([command]) => command.op === "cache" || command.op === "download")).toBe(false);
     expect(screen.queryByRole("button", { name: "Open player" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Close dialog" })).not.toBeInTheDocument();
     fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape", code: "Escape" });

@@ -33,7 +33,8 @@ it("plays inside the application without external links and filters categories",
   expect(registered.url).toMatch(/\/song17\.mp3$/);
   expect(registered.license).toBe("CC0-1.0");
   expect(registered.sha256).toBeUndefined();
-  expect(send.mock.calls[1][0]).toEqual({ op: "cache", id: registered.id, data: expect.any(String), sha256: catalog.resources[0].sha256 });
+  expect(send.mock.calls.map(([command]) => command.op)).toEqual(["catalog", "play"]);
+  expect(fetch).not.toHaveBeenCalled();
   view.rerender(<AudioResources category="songs" />);
   await screen.findByText("Children’s March Theme");
   expect(screen.queryByText("Happy Lullaby")).not.toBeInTheDocument();
@@ -52,14 +53,6 @@ it("does not play when library registration fails", async () => {
   fireEvent.click(controls.getByRole("button", { name: "Play" }));
   await waitFor(() => expect(send).toHaveBeenCalledOnce());
   expect(send.mock.calls[0][0].op).toBe("catalog");
-});
-it("does not play when cache preparation fails", async () => {
-  send.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
-  render(<AudioResources category="sleep" />);
-  const controls = await row("Happy Lullaby");
-  fireEvent.click(controls.getByRole("button", { name: "Play" }));
-  await waitFor(() => expect(send).toHaveBeenCalledTimes(2));
-  expect(send.mock.calls.some(([command]) => command.op === "play")).toBe(false);
 });
 it("keeps the most recent play choice when registration resolves out of order", async () => {
   let finishFirst!: (value: boolean) => void;
