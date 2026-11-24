@@ -15,7 +15,7 @@
   transition: transform 150ms ease-out;
 }
 .album-button[hidden] { display: none; }
-.album-button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 4px; }
+.album-button:focus-visible:where(html:not([data-input-modality="pointer"]) *) { outline: 2px solid var(--foreground); outline-offset: 4px; }
 .album-button:active { transform: scale(.96); }
 .album-button-disc { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: 50%; pointer-events: none; user-select: none; animation: album-disc-turn 16s linear infinite paused; }
 .album-button[data-state="playing"] .album-button-disc { animation-play-state: running; }

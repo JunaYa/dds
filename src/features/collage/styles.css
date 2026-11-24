@@ -31,11 +31,11 @@ button:disabled {
 button {
   min-height: 44px;
 }
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
+button:focus-visible:where(html:not([data-input-modality="pointer"]) *),
+a:focus-visible:where(html:not([data-input-modality="pointer"]) *),
+input:focus-visible:where(html:not([data-input-modality="pointer"]) *),
+textarea:focus-visible:where(html:not([data-input-modality="pointer"]) *),
+select:focus-visible:where(html:not([data-input-modality="pointer"]) *) {
   outline: 2px solid var(--foreground);
   outline-offset: 3px;
 }

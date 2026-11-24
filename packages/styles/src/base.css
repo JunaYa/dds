@@ -31,7 +31,15 @@
 
 @custom-variant coarse (@media (pointer: coarse));
 
+/* WebKit can retain :focus-visible when touch actions restore focus. */
+@custom-variant focus-visible (&:focus-visible:where(html:not([data-input-modality="pointer"]) *));
+@custom-variant has-focus-visible (&:has(:focus-visible):where(html:not([data-input-modality="pointer"]) *));
+
 @layer base {
+  :where(button, a, input, select, textarea, [tabindex], [role="button"]):focus:where(html[data-input-modality="pointer"] *) {
+    outline: none;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
   }

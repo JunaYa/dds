@@ -50,7 +50,7 @@
   background: var(--care-soft);
 }
 
-.record-choice-option:has(input:focus-visible) {
+.record-choice-option:has(input:focus-visible:where(html:not([data-input-modality="pointer"]) *)) {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
 }

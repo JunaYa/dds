@@ -60,7 +60,7 @@ body:has(.audio-floating-entry) main.onboarding::after { content: ""; display: b
 .audio-options label.audio-timer { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--muted-foreground); }
 .audio-timer > svg { width: 22px; height: 22px; pointer-events: none; }
 .audio-timer select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-.audio-timer:focus-within { outline: 2px solid var(--foreground); outline-offset: 2px; }
+.audio-timer:has(:focus-visible):where(html:not([data-input-modality="pointer"]) *) { outline: 2px solid var(--foreground); outline-offset: 2px; }
 .audio-options .audio-timer[data-active] { background: var(--accent); color: var(--primary); }
 .audio-timer-indicator { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: currentColor; bottom: 3px; pointer-events: none; }
 .audio-dialog .audio-library { gap: 0; border-top: 1px solid var(--border); padding-top: 20px; }

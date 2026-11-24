@@ -18,7 +18,7 @@
   );
   mask-image: linear-gradient(transparent, black 40%, black 60%, transparent);
 }
-.ui-wheel-picker:focus-visible {
+.ui-wheel-picker:focus-visible:where(html:not([data-input-modality="pointer"]) *) {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
   border-radius: 8px;

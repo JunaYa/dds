@@ -181,7 +181,7 @@
   }
 }
 
-[data-overlay-platform="ios"] [data-slot="alert-dialog-footer"] button:focus-visible {
+[data-overlay-platform="ios"] [data-slot="alert-dialog-footer"] button:focus-visible:where(html:not([data-input-modality="pointer"]) *) {
   outline: 2px solid var(--foreground);
   outline-offset: -4px;
 }

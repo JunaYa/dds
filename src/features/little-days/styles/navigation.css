@@ -74,7 +74,7 @@
   color: var(--primary);
   background: var(--accent);
 }
-.ios-bottom-navigation button:focus-visible { outline: 2px solid var(--ring); outline-offset: -3px; }
+.ios-bottom-navigation button:focus-visible:where(html:not([data-input-modality="pointer"]) *) { outline: 2px solid var(--ring); outline-offset: -3px; }
 .ios-bottom-navigation button:active { background: var(--accent); }
 .ios-workspace .nursing-minibar { bottom: calc(var(--ios-tab-height) + 8px); }
 .ios-workspace:has(input:focus, textarea:focus, [contenteditable="true"]:focus) .ios-bottom-navigation { display: none; }

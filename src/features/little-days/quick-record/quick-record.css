@@ -50,7 +50,7 @@
 .quick-recorder [data-slot="sheet-backdrop"] { transition: opacity 240ms ease-out; }
 .quick-recorder-form h2 { margin-top: 16px; font-size: 24px; font-weight: 600; }
 .quick-recorder-form .record-form { padding: 0; }
-.quick-recorder button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
+.quick-recorder button:focus-visible:where(html:not([data-input-modality="pointer"]) *) { outline: 2px solid var(--foreground); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   .quick-recorder-popup[data-slot="dialog-popup"] { transition: none; }
   .quick-record-sheet[data-slot="sheet-popup"],
@@ -100,8 +100,8 @@
 .quick-recorder .vita-widget-body:has(> .quick-record-widget-action) { padding: 0; }
 .quick-record-widget-action { width: 100%; height: 100%; min-height: 100px; display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; align-content: center; gap: 12px; padding: 28px; border: 0; background: transparent; color: inherit; font-size: 20px; font-weight: 500; white-space: normal; text-align: left; cursor: pointer; }
 .quick-record-widget-action:disabled { cursor: default; opacity: 0.5; }
-.quick-recorder .quick-record-widget-action:focus-visible { outline: none; }
-.quick-recorder .vita-widget-card:has(.quick-record-widget-action:focus-visible) { outline: 2px solid var(--foreground); outline-offset: 3px; }
+.quick-recorder .quick-record-widget-action:focus-visible:where(html:not([data-input-modality="pointer"]) *) { outline: none; }
+.quick-recorder .vita-widget-card:has(.quick-record-widget-action:focus-visible:where(html:not([data-input-modality="pointer"]) *)) { outline: 2px solid var(--foreground); outline-offset: 3px; }
 .quick-recorder .vita-widget-card:has(.quick-record-widget-action:not(:disabled):hover) > .vita-widget-surface { background: color-mix(in srgb, var(--primary) 8%, var(--card, var(--background))); }
 .quick-record-widget-action svg { width: 28px; height: 28px; }
 .quick-record-widget-action kbd { margin-left: auto; }

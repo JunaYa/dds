@@ -21,7 +21,7 @@
 .vita-widget-size-code { width: 12px; color: var(--muted-foreground); font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .vita-widget-options:active:not(:disabled) { transform: none; }
 .vita-widget-options:hover { background: var(--muted); }
-.vita-widget-drag:focus-visible, .vita-widget-options:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
+.vita-widget-drag:focus-visible:where(html:not([data-input-modality="pointer"]) *), .vita-widget-options:focus-visible:where(html:not([data-input-modality="pointer"]) *) { outline: 2px solid var(--foreground); outline-offset: 2px; }
 .vita-widget-card[data-dragging] { outline: 2px dashed var(--ring); background: var(--muted); }
 .vita-widget-card[data-dragging] > * { opacity: 0; }
 .vita-widget-overlay { height: 100%; cursor: grabbing; box-shadow: 0 16px 40px #0003; }

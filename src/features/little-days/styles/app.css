@@ -40,10 +40,10 @@ button:disabled {
   opacity: 0.42;
   cursor: default;
 }
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
+button:focus-visible:where(html:not([data-input-modality="pointer"]) *),
+input:focus-visible:where(html:not([data-input-modality="pointer"]) *),
+select:focus-visible:where(html:not([data-input-modality="pointer"]) *),
+textarea:focus-visible:where(html:not([data-input-modality="pointer"]) *) {
   outline: 2px solid var(--foreground);
   outline-offset: 3px;
 }

@@ -48,7 +48,7 @@
 .theme-option:has(input:checked) {
   box-shadow: 0 0 0 2px var(--foreground);
 }
-.theme-option:has(input:focus-visible) {
+.theme-option:has(input:focus-visible:where(html:not([data-input-modality="pointer"]) *)) {
   outline: 2px solid var(--foreground);
   outline-offset: 5px;
 }
@@ -244,7 +244,7 @@
 .profile-link strong, .profile-link small { display: block; }
 .profile-link strong { font-size: 16px; font-weight: 500; }
 .profile-link small { margin-top: 4px; font-size: 13px; color: var(--muted-foreground); line-height: 1.5; }
-.profile-link:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
+.profile-link:focus-visible:where(html:not([data-input-modality="pointer"]) *) { outline: 2px solid var(--primary); outline-offset: -3px; }
 @media (hover: hover) { .profile-link:hover { background: var(--care-soft); } }
 
 .cloud-settings p { margin: 12px 0; line-height: 1.6; color: var(--muted-foreground); }

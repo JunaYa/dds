@@ -23,6 +23,7 @@
     "./tabs": "./src/tabs/tabs.tsx",
     "./textarea": "./src/textarea/textarea.tsx",
     "./lib/utils": "./src/lib/utils.ts",
+    "./lib/focus-modality": "./src/lib/focus-modality.ts",
     "./lib/scroll-area-restoration": "./src/lib/scroll-area-restoration.ts",
     "./animated-border": "./src/animated-border/animated-border.tsx",
     "./aspect-ratio": "./src/aspect-ratio/aspect-ratio.tsx",
